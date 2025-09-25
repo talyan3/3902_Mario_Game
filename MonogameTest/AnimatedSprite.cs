@@ -7,6 +7,7 @@ namespace MonogameTest;
 
 public abstract class AnimatedSprite : ISprite
 {
+    // Adding protected variables specific to AnimatedSprite to be used in implementing classes
     protected int _currentFrame;
     protected TimeSpan _elapsed;
     protected Animation _animation;

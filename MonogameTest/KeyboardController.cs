@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonogameTest;
 
+// Class used to store KeyCombo and their respective command(s)
 public class KeyboardController : IController
 {
     private Dictionary<KeyCombo, ICommand> keyMap;
@@ -49,6 +50,7 @@ public class KeyboardController : IController
         return toReturn;
     }
 
+    // Checks the current state of the game and what keys are pressed, and executes any matching states (KeyCombo)
     public void checkKeys()
     {
         foreach (Keys key in Keyboard.GetState().GetPressedKeys())

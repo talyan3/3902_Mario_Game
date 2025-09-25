@@ -2,10 +2,15 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace MonogameTest;
 
+// A box designated by two Location objects
 public class BoundingBox
 {
+    // Top left of box
     public Location BoxStart { get; set; }
+    // Bottom right of box
     public Location BoxEnd { get; set; }
+
+    // Constructors
     public BoundingBox()
     {
         BoxStart = new Location();
@@ -24,6 +29,7 @@ public class BoundingBox
         BoxEnd = endLoc;
     }
 
+    // Checks if a Location falls inside (or on the border of) this BoundingBox
     public bool locationIsWithinBox(Location loc)
     {
         return BoxStart.X <= loc.X && BoxStart.Y <= loc.Y && BoxEnd.X >= loc.X && BoxEnd.Y >= loc.Y;

@@ -5,6 +5,7 @@ namespace MonogameTest;
 
 public class AnimatedMovingMarioSprite : AnimatedSprite
 {
+    // See StaticMarioSprite for in-depth comments
     public Color Color { get; set; } = Color.White;
     public float Rotation { get; set; } = 0.0f;
     public Vector2 Scale { get; set; } = new Vector2(5,5);
@@ -13,7 +14,10 @@ public class AnimatedMovingMarioSprite : AnimatedSprite
     public float LayerDepth { get; set; } = 0.0f;
     public float Width => Region.Width * Scale.X;
     public float Height => Region.Height * Scale.Y;
+
+    // Variables establishing position on screen
     public float xPos { get; set; } = 0;
+    public float yPos { get; set; } = 0;
 
     public AnimatedMovingMarioSprite(TextureRegion region, Animation animation)
     {
@@ -21,6 +25,8 @@ public class AnimatedMovingMarioSprite : AnimatedSprite
         Animation = animation;
     }
 
+
+    // TODO: Check if this needs to be called every frame of animation
     public void CenterOrigin()
     {
         Origin = new Vector2(Region.Width, Region.Height) * 0.5f;

@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 namespace MonogameTest;
 
+// Class storing mapping of mouse actions and their respective command(s)
 public class MouseController : IController
 {
     private Dictionary<MouseCombo, ICommand> mouseMap;
@@ -46,9 +47,11 @@ public class MouseController : IController
         return toReturn;
     }
 
+
+    // Checks the current state of the mouse and executes any commands that the state matches
     public void checkClicks()
     {
-        
+
         foreach (MouseCombo combo in mouseMap.Keys)
         {
             if (combo.stateMatchesCombo()) mouseMap[combo].Execute();

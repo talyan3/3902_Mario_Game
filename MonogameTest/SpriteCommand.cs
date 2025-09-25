@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonogameTest;
 
+// ICommand that interacts with a sprite
 public class SpriteCommand : ICommand
 {
     int key;
@@ -31,6 +32,7 @@ public class SpriteCommand : ICommand
         MarioManager.ActiveSprite = sprite;
     }
 
+    // This is currently hardcoded to the requirements of sprint0, but as states in CommandManager.cs, there are other ways to do this, this just was the most stuitable for the task
     private ISprite getSprite(int key)
     {
         Texture2D texture = Texture2D.FromFile(GraphicsDevice, "mario.png");
@@ -54,13 +56,14 @@ public class SpriteCommand : ICommand
         return toReturn;
     }
 
+    // Currently the only animation in the game (left walking). This can be moved to another class that stores other animations of Mario
     private Animation getMarioAnimation()
     {
         Texture2D texture = Texture2D.FromFile(GraphicsDevice, "mario.png");
         List<TextureRegion> frames = new List<TextureRegion>();
-        for (int i = 5; i >2; i--)
+        for (int i = 5; i > 2; i--)
         {
-            frames.Add(new TextureRegion(texture, 30*i, 0, 28, 28));
+            frames.Add(new TextureRegion(texture, 30 * i, 0, 28, 28));
         }
         return new Animation(frames);
     }

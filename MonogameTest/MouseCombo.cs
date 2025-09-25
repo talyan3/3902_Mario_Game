@@ -13,6 +13,7 @@ public enum MouseAction
     CURSOR_MOVE
 }
 
+// Combinations of mouse clicks / locations that can be used for certain commands. Includes a BoundingBox specifying a boxed location you can click in (optional), and a mouse action
 public class MouseCombo
 {
     public MouseAction Action { get; }
@@ -42,6 +43,7 @@ public class MouseCombo
         BoundingBox = boundingBox;
     }
 
+    // Checks if the mouse action falls within the BoundingBox if there is one, and if the click matches
     public bool stateMatchesCombo()
     {
         Point coursorLocation = Mouse.GetState().Position;

@@ -5,6 +5,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonogameTest;
 
+// Creates Controllers and assigns them commands
+// This can be abstracted but at some point the controls need to all be assigned. There may be a way to take input from a file and use user based commands,
+// but it's more realistic to hard code the basic functions of the game because theres only a few commands, and that is what this class does. 
+//
+// Commands can be assigned and unassigned during run time
 public class CommandManager
 {
     public KeyboardController KeyboardController { get; } = new KeyboardController();
@@ -25,7 +30,7 @@ public class CommandManager
     private KeyCombo num2KeyCombo = new KeyCombo(Keys.NumPad2, KeyAction.PRESS);
     private KeyCombo num3KeyCombo = new KeyCombo(Keys.NumPad3, KeyAction.PRESS);
     private KeyCombo num4KeyCombo = new KeyCombo(Keys.NumPad4, KeyAction.PRESS);
-    
+
 
 
     private MouseCombo _1QuadCombo;
@@ -35,9 +40,10 @@ public class CommandManager
     private MouseCombo _quitCombo = new MouseCombo(MouseAction.RIGHT_CLICK);
 
 
+    // Not allowing a CommandManager to be created with no variables
+    private CommandManager() { }
 
-
-
+    // TODO: Find a lower level parameter to pass than Game. To much access
     public CommandManager(Game game, MarioManager marioManager)
     {
         KeyboardController = new KeyboardController();
@@ -49,6 +55,7 @@ public class CommandManager
         populateControllers();
     }
 
+    // Creates the quadrants used in sprint 0
     private void populateMouseCombos()
     {
         int h = GraphicsDevice.Viewport.Height;
@@ -66,6 +73,11 @@ public class CommandManager
         _4QuadCombo = new MouseCombo(MouseAction.LEFT_CLICK, screenCenter, bottomRightScreen);
     }
 
+    // Adds ICommand to each mapping that is being used.
+    //
+    // This is where commands are added / deleted initially. For future sprints, change this to add functionality to Mario / The game
+    //
+    // TODO: Check if commands are only executed once dependent on a button state (for example a command doesn't get continously executed for a mouse click if it is held down)
     private void populateControllers()
     {
         SpriteBatch SpriteBatch = new SpriteBatch(GraphicsDevice);

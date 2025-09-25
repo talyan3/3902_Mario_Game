@@ -5,7 +5,7 @@ namespace MonogameTest;
 
 public class AnimatedMarioSprite : AnimatedSprite
 {
-
+    // See StaticMarioSprite for in-depth comments
     public Color Color { get; set; } = Color.White;
     public float Rotation { get; set; } = 0.0f;
     public Vector2 Scale { get; set; } = new Vector2(5,5);
@@ -22,6 +22,8 @@ public class AnimatedMarioSprite : AnimatedSprite
         Animation = animation;
     }
 
+
+    // TODO: Check if this needs to be called every frame of animation
     public void CenterOrigin()
     {
         Origin = new Vector2(Region.Width, Region.Height) * 0.5f;

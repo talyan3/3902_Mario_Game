@@ -10,6 +10,7 @@ public enum KeyAction
     RELEASE
 }
 
+// Combinations of keys that can be used for certain commands. Includes a key from the Keys class, and an action: Press, Hold, and Release
 public class KeyCombo
 {
     private Keys key;
@@ -43,6 +44,6 @@ public class KeyCombo
     public override int GetHashCode()
     {
         int res = 31;
-        return res*37 + ((int)key) + ((int)action);
+        return res * 37 + ((int)key) + ((int)action);
     }
 }

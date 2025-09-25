@@ -5,6 +5,7 @@ namespace MonogameTest;
 
 public class Animation
 {
+    // Code from MonoGame tutorial
     public List<TextureRegion> Frames { get; set; }
     public TimeSpan Delay { get; set; }
     public Animation()
