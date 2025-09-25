@@ -3,6 +3,7 @@ using System.Security.Cryptography.X509Certificates;
 
 namespace MonogameTest;
 
+// An ambiguous (X, Y) location
 public class Location
 {
     public int X { get; set; }
@@ -33,6 +34,6 @@ public class Location
     public override int GetHashCode()
     {
         int res = 31;
-        return res * 37 + X + Y;
+        return res * 37 + X + (Y % 31);
     }
 }
