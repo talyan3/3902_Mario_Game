@@ -1,0 +1,63 @@
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\MonogameTest.exe
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\MonogameTest.deps.json
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\MonogameTest.runtimeconfig.json
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\MonogameTest.dll
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\MonogameTest.pdb
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\MonoGame.Framework.dll
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\NVorbis.dll
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\android-arm\native\libopenal.so
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\android-arm64\native\libopenal.so
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\android-x64\native\libopenal.so
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\android-x86\native\libopenal.so
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\ios-arm64\native\libopenal.dylib
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\iossimulator-arm64\native\libopenal.dylib
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\iossimulator-x64\native\libopenal.dylib
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\linux-x64\native\libopenal.so
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\osx\native\libopenal.dylib
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\win-x64\native\openal.dll
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\linux-x64\native\libSDL2-2.0.so.0
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\osx\native\libSDL2-2.0.0.dylib
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\bin\Debug\net8.0\runtimes\win-x64\native\SDL2.dll
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.csproj.AssemblyReference.cache
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.GeneratedMSBuildEditorConfig.editorconfig
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.AssemblyInfoInputs.cache
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.AssemblyInfo.cs
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.csproj.CoreCompileInputs.cache
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\Monogame.5543CF47.Up2Date
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.dll
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\refint\MonogameTest.dll
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.pdb
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.genruntimeconfig.cache
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\ref\MonogameTest.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\MonogameTest.exe
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\MonogameTest.deps.json
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\MonogameTest.runtimeconfig.json
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\MonogameTest.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\MonogameTest.pdb
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\MonoGame.Framework.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\NVorbis.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\android-arm\native\libopenal.so
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\android-arm64\native\libopenal.so
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\android-x64\native\libopenal.so
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\android-x86\native\libopenal.so
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\ios-arm64\native\libopenal.dylib
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\iossimulator-arm64\native\libopenal.dylib
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\iossimulator-x64\native\libopenal.dylib
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\linux-x64\native\libopenal.so
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\osx\native\libopenal.dylib
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\win-x64\native\openal.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\linux-x64\native\libSDL2-2.0.so.0
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\osx\native\libSDL2-2.0.0.dylib
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\win-x64\native\SDL2.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.csproj.AssemblyReference.cache
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.AssemblyInfoInputs.cache
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.AssemblyInfo.cs
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.csproj.CoreCompileInputs.cache
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\Monogame.5543CF47.Up2Date
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\refint\MonogameTest.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.pdb
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.genruntimeconfig.cache
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\ref\MonogameTest.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\mario.xnb

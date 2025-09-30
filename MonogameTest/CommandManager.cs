@@ -1,0 +1,113 @@
+using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
+
+namespace MonogameTest;
+
+// Creates Controllers and assigns them commands
+// This can be abstracted but at some point the controls need to all be assigned. There may be a way to take input from a file and use user based commands,
+// but it's more realistic to hard code the basic functions of the game because theres only a few commands, and that is what this class does. 
+//
+// Commands can be assigned and unassigned during run time
+public class CommandManager
+{
+    public KeyboardController KeyboardController { get; } = new KeyboardController();
+    public MouseController MouseController { get; } = new MouseController();
+    private DisplayMode DisplayMode;
+    private GraphicsDevice GraphicsDevice;
+    private MarioManager MarioManager;
+    private Game Game;
+
+    // Mappings declaration
+    private KeyCombo _0KeyCombo = new KeyCombo(Keys.D0, KeyAction.PRESS);
+    private KeyCombo _1KeyCombo = new KeyCombo(Keys.D1, KeyAction.PRESS);
+    private KeyCombo _2KeyCombo = new KeyCombo(Keys.D2, KeyAction.PRESS);
+    private KeyCombo _3KeyCombo = new KeyCombo(Keys.D3, KeyAction.PRESS);
+    private KeyCombo _4KeyCombo = new KeyCombo(Keys.D4, KeyAction.PRESS);
+    private KeyCombo num0KeyCombo = new KeyCombo(Keys.NumPad0, KeyAction.PRESS);
+    private KeyCombo num1KeyCombo = new KeyCombo(Keys.NumPad1, KeyAction.PRESS);
+    private KeyCombo num2KeyCombo = new KeyCombo(Keys.NumPad2, KeyAction.PRESS);
+    private KeyCombo num3KeyCombo = new KeyCombo(Keys.NumPad3, KeyAction.PRESS);
+    private KeyCombo num4KeyCombo = new KeyCombo(Keys.NumPad4, KeyAction.PRESS);
+
+
+
+    private MouseCombo _1QuadCombo;
+    private MouseCombo _2QuadCombo;
+    private MouseCombo _3QuadCombo;
+    private MouseCombo _4QuadCombo;
+    private MouseCombo _quitCombo = new MouseCombo(MouseAction.RIGHT_CLICK);
+
+
+    // Not allowing a CommandManager to be created with no variables
+    private CommandManager() { }
+
+    // TODO: Find a lower level parameter to pass than Game. To much access
+    public CommandManager(Game game, MarioManager marioManager)
+    {
+        KeyboardController = new KeyboardController();
+        MouseController = new MouseController();
+        GraphicsDevice = game.GraphicsDevice;
+        DisplayMode = GraphicsDevice.DisplayMode;
+        MarioManager = marioManager;
+        populateMouseCombos();
+        populateControllers();
+    }
+
+    // Creates the quadrants used in sprint 0
+    private void populateMouseCombos()
+    {
+        int h = GraphicsDevice.Viewport.Height;
+        int w = GraphicsDevice.Viewport.Width;
+        Location screenCenter = new Location(w / 2, h / 2);
+        Location topMiddleScreen = new Location(w / 2, 0);
+        Location leftMiddleScreen = new Location(0, h / 2);
+        Location rightMiddleScreen = new Location(w, h / 2);
+        Location bottomMiddleScreen = new Location(w / 2, h);
+        Location bottomRightScreen = new Location(w, h);
+
+        _1QuadCombo = new MouseCombo(MouseAction.LEFT_CLICK, new Location(), screenCenter);
+        _2QuadCombo = new MouseCombo(MouseAction.LEFT_CLICK, topMiddleScreen, rightMiddleScreen);
+        _3QuadCombo = new MouseCombo(MouseAction.LEFT_CLICK, leftMiddleScreen, bottomMiddleScreen);
+        _4QuadCombo = new MouseCombo(MouseAction.LEFT_CLICK, screenCenter, bottomRightScreen);
+    }
+
+    // Adds ICommand to each mapping that is being used.
+    //
+    // This is where commands are added / deleted initially. For future sprints, change this to add functionality to Mario / The game
+    //
+    // TODO: Check if commands are only executed once dependent on a button state (for example a command doesn't get continously executed for a mouse click if it is held down)
+    private void populateControllers()
+    {
+        SpriteBatch SpriteBatch = new SpriteBatch(GraphicsDevice);
+        KeyboardController.addMapping(_0KeyCombo, new QuitCommand(Game));
+        KeyboardController.addMapping(_1KeyCombo, new SpriteCommand(GraphicsDevice, MarioManager));
+        KeyboardController.addMapping(_2KeyCombo, new SpriteCommand(2, GraphicsDevice, MarioManager));
+        KeyboardController.addMapping(_3KeyCombo, new SpriteCommand(3, GraphicsDevice, MarioManager));
+        KeyboardController.addMapping(_4KeyCombo, new SpriteCommand(4, GraphicsDevice, MarioManager));
+
+        KeyboardController.addMapping(num0KeyCombo, new QuitCommand(Game));
+        KeyboardController.addMapping(num1KeyCombo, new SpriteCommand(GraphicsDevice, MarioManager));
+        KeyboardController.addMapping(num2KeyCombo, new SpriteCommand(2, GraphicsDevice, MarioManager));
+        KeyboardController.addMapping(num3KeyCombo, new SpriteCommand(3, GraphicsDevice, MarioManager));
+        KeyboardController.addMapping(num4KeyCombo, new SpriteCommand(4, GraphicsDevice, MarioManager));
+
+        MouseController.addMapping(_quitCombo, new QuitCommand(Game));
+        MouseController.addMapping(_1QuadCombo, new SpriteCommand(GraphicsDevice, MarioManager));
+        MouseController.addMapping(_2QuadCombo, new SpriteCommand(2, GraphicsDevice, MarioManager));
+        MouseController.addMapping(_3QuadCombo, new SpriteCommand(3, GraphicsDevice, MarioManager));
+        MouseController.addMapping(_4QuadCombo, new SpriteCommand(4, GraphicsDevice, MarioManager));
+    }
+
+    public void checkKeys()
+    {
+        KeyboardController.checkKeys();
+    }
+
+    public void checkClicks()
+    {
+        MouseController.checkClicks();
+    }
+
+}
