@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\MonogameTest.csproj": {}
+    "C:\\Users\\beck-king.1\\Documents\\GitHub\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\MonogameTest.csproj": {
+    "C:\\Users\\beck-king.1\\Documents\\GitHub\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\MonogameTest.csproj",
+        "projectUniqueName": "C:\\Users\\beck-king.1\\Documents\\GitHub\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj",
         "projectName": "MonogameTest",
-        "projectPath": "C:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\MonogameTest.csproj",
-        "packagesPath": "C:\\Users\\bjhob\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\obj\\",
+        "projectPath": "C:\\Users\\beck-king.1\\Documents\\GitHub\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj",
+        "packagesPath": "C:\\Users\\beck-king.1\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\beck-king.1\\Documents\\GitHub\\3902_Mario_Game\\MonogameTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\bjhob\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\beck-king.1\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -37,8 +37,7 @@
           "enableAudit": "true",
           "auditLevel": "low",
           "auditMode": "direct"
-        },
-        "SdkAnalysisLevel": "9.0.300"
+        }
       },
       "frameworks": {
         "net8.0": {
@@ -64,30 +63,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.19, 8.0.19]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.19, 8.0.19]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.19, 8.0.19]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.19, 8.0.19]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.304/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.413/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
