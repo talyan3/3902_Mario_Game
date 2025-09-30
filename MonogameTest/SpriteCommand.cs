@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.Mime;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -36,6 +37,7 @@ public class SpriteCommand : ICommand
     private ISprite getSprite(int key)
     {
         Texture2D texture = Texture2D.FromFile(GraphicsDevice, "mario.png");
+    
         ISprite toReturn;
         switch (key)
         {
@@ -67,4 +69,5 @@ public class SpriteCommand : ICommand
         }
         return new Animation(frames);
     }
+    
 }

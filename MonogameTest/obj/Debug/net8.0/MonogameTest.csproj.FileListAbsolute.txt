@@ -61,3 +61,5 @@ C:\Users\beck-king.1\Documents\GitHub\3902_Mario_Game\MonogameTest\obj\Debug\net
 C:\Users\beck-king.1\Documents\GitHub\3902_Mario_Game\MonogameTest\obj\Debug\net8.0\MonogameTest.pdb
 C:\Users\beck-king.1\Documents\GitHub\3902_Mario_Game\MonogameTest\obj\Debug\net8.0\MonogameTest.genruntimeconfig.cache
 C:\Users\beck-king.1\Documents\GitHub\3902_Mario_Game\MonogameTest\obj\Debug\net8.0\ref\MonogameTest.dll
+C:\Users\beck-king.1\Documents\GitHub\3902_Mario_Game\MonogameTest\bin\Debug\net8.0\Content\Sprites\goomba-Final.xnb
+C:\Users\beck-king.1\Documents\GitHub\3902_Mario_Game\MonogameTest\bin\Debug\net8.0\Content\Sprites\green-koopa.xnb
