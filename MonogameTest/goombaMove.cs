@@ -5,7 +5,7 @@ namespace MonogameTest;
 
 class moveGoom : ISprite
 {
-   private SpriteBatch _spriteBatch;
+    private SpriteBatch _spriteBatch;
     private Texture2D sprite;
 
     Rectangle sRect;
@@ -45,9 +45,16 @@ class moveGoom : ISprite
         int i = 1;
         while (i < 7)
         {
-            dRect = new Rectangle(50 + frames , 100, 205, 165);
+            dRect = new Rectangle(50 + i, 300, 205, 165);
             sRect = new Rectangle(frames * 32, 0, 32, 20);
             i++;
+        }
+        int j = 1;
+        while (i > 0)
+        {
+            dRect = new Rectangle(350 - (50 + j), 100, 205, 165);
+            //sRect = new Rectangle(frames * 32, 0, 32, 20);
+            j++;
         }
        
     }
