@@ -1,3 +1,7 @@
 # 3902_Mario_Game
 
-Hello!!
+# Program Controls
+
+# Descriptions of known bugs
+
+# Code Metrics
