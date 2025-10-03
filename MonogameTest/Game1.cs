@@ -12,8 +12,12 @@ public class Game1 : Game
     public MarioManager MarioManager { get; set; } = new MarioManager();
     public CommandManager CommandManager { get; set; }
     private BlockManager blockManager; // ********
-
     private PowerupManager powerupManager; // ********
+    public Texture2D goombaSprite;
+    public Texture2D koopaSprite;
+    public ISprite goom;
+    public ISprite koop;
+    public Vector2 pos;
 
     KeyboardState previousState; // ********
 
@@ -39,12 +43,17 @@ public class Game1 : Game
         blockManager = new BlockManager(blocksTexture); // **********
         Texture2D powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png"); // *******
         powerupManager = new PowerupManager(powerupTexture); // **********
+        goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
+        koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
+        // TODO: use this.Content to load your game content here
+        goom = new moveGoom(goombaSprite,_spriteBatch);
+        koop = new moveKoop(koopaSprite,_spriteBatch);
 
         // TODO: use this.Content to load your game content here
         new SpriteCommand(GraphicsDevice, MarioManager).Execute();
     }
 
-    protected override void Update(GameTime gameTime)
+    protected override void Update(GameTime gameTime) // TODO - seperate class for keyboard input: Anika
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
@@ -69,10 +78,14 @@ public class Game1 : Game
         }
         previousState = state; // *************
 
+        goom.Update(gameTime);
+        koop.Update(gameTime);
         base.Update(gameTime);
     }
 
-    protected override void Draw(GameTime gameTime)
+    protected override void Draw(GameTime gameTime) // Think about how to introduce several blocks beyond 1 to prevent drawing to game every time.
+    // Get grid system class that loops over block calls from external file using enum to decide what is drawn on each tile.
+    // Think about ways to make 'shortcuts' in code, grouping and simplifiying things where you can, especially for collision which is expensive
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
@@ -85,8 +98,10 @@ public class Game1 : Game
             int w = GraphicsDevice.Viewport.Width;
             MarioManager.ActiveSprite.Draw(_spriteBatch, new Vector2(w/2, h/2));
         }
-        blockManager.Draw(_spriteBatch, new Vector2(100, 100)); // ********
-        powerupManager.Draw(_spriteBatch, new Vector2(200, 100)); // ********
+        blockManager.Draw(_spriteBatch, new Vector2(500, 100)); // ********
+        powerupManager.Draw(_spriteBatch, new Vector2(575, 100)); // ********
+        goom.Draw(_spriteBatch,pos);
+        koop.Draw(_spriteBatch,pos);
 
         _spriteBatch.End();
 

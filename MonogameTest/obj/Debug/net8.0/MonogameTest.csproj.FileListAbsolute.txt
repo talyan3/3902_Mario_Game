@@ -61,3 +61,6 @@ C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\Monoga
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.genruntimeconfig.cache
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\ref\MonogameTest.dll
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\mario.xnb
+c:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.sourcelink.json
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\goomba-Final.xnb
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\green-koopa.xnb

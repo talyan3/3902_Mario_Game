@@ -1,1 +1,3 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
+"C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/goomba-Final.png","C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/bin/DesktopGL/Content/Sprites/goomba-Final.xnb","TextureProcessor","Texture2DContent",770,15445,0.2362705
+"C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/green-koopa.png","C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/bin/DesktopGL/Content/Sprites/green-koopa.xnb","TextureProcessor","Texture2DContent",1270,28885,0.0234058
