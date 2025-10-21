@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -22,7 +24,15 @@ public class Game1 : Game
     private BigMarioSprite _bigMario;
 	private StaticSprite _currentMario;
 	private bool _isBig = false;
-	private bool _bHeldLast = false;
+    private bool _bHeldLast = false;
+    private Texture2D _tileset;
+    private List<Tile> _mapTiles;
+    const int TilesVisibleX = 16;
+    const int TileSize = 16;
+    const int ViewWidth = TilesVisibleX * TileSize; // 256
+    private Camera2D camera;
+
+    const int scale = 5;
 
     KeyboardState previousState; // ********
 
@@ -36,6 +46,9 @@ public class Game1 : Game
     protected override void Initialize()
     {
         CommandManager = new CommandManager(this, MarioManager);
+        _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
+        _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
+        _graphics.ApplyChanges();
         base.Initialize();
     }
 
@@ -65,8 +78,23 @@ public class Game1 : Game
 		_smallMario.Position = pos;
 		_bigMario.Position = pos;
 
-		// start the game with small mario active
-		_currentMario = _smallMario;
+        // start the game with small mario active
+        _currentMario = _smallMario;
+        
+        // Load the tileset image directly from disk (same folder as .cs files)
+        using (FileStream fs = new FileStream("blocksV2.png", FileMode.Open))
+        {
+            _tileset = Texture2D.FromStream(GraphicsDevice, fs);
+        }
+
+        // Load the map JSON (same folder)
+        string mapPath = Path.Combine(Directory.GetCurrentDirectory(), "level1.json");
+
+        // tilesPerRow = (tilesetWidth / tileWidth)
+        _mapTiles = TiledMapLoader.Load(mapPath, _tileset, tilesPerRow: 11);
+
+        camera = new Camera2D(GraphicsDevice.Viewport);
+        camera.LookAt(Vector2.Zero);
     }
 
     protected override void Update(GameTime gameTime) // TODO - seperate class for keyboard input: Anika
@@ -78,7 +106,6 @@ public class Game1 : Game
         CommandManager.checkKeys();
         CommandManager.checkClicks();
         if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
-        //Draw(gameTime);
 
         KeyboardState state = Keyboard.GetState(); // ********
 
@@ -106,7 +133,7 @@ public class Game1 : Game
 
         goom.Update(gameTime);
         koop.Update(gameTime);
-        //_smallMario.Update(gameTime); // Added
+
         base.Update(gameTime);
     }
     
@@ -131,19 +158,24 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
-        _spriteBatch.Begin();
+        _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
         _currentMario.Draw(_spriteBatch, Vector2.Zero);
         
-        if (MarioManager.ActiveSprite != null)
+        //if (MarioManager.ActiveSprite != null)
+        //{
+            //int h = GraphicsDevice.Viewport.Height;
+            //int w = GraphicsDevice.Viewport.Width;
+            //MarioManager.ActiveSprite.Draw(_spriteBatch, new Vector2(w / 2, h / 2));
+        //}
+        //blockManager.Draw(_spriteBatch, new Vector2(500, 100)); // ********
+        //powerupManager.Draw(_spriteBatch, new Vector2(575, 100)); // ********
+        //goom.Draw(_spriteBatch, pos);
+        //koop.Draw(_spriteBatch, pos);
+
+        foreach (var tile in _mapTiles)
         {
-            int h = GraphicsDevice.Viewport.Height;
-            int w = GraphicsDevice.Viewport.Width;
-            MarioManager.ActiveSprite.Draw(_spriteBatch, new Vector2(w / 2, h / 2));
+            tile.Draw(_spriteBatch);
         }
-        blockManager.Draw(_spriteBatch, new Vector2(500, 100)); // ********
-        powerupManager.Draw(_spriteBatch, new Vector2(575, 100)); // ********
-        goom.Draw(_spriteBatch, pos);
-        koop.Draw(_spriteBatch, pos);
 
         _spriteBatch.End();
 
