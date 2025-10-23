@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -32,6 +32,8 @@ public class Game1 : Game
     const int ViewWidth = TilesVisibleX * TileSize; // 256
     private Camera2D camera;
 
+    private List<Rectangle> _solidRects; //Added
+
     const int scale = 5;
 
     KeyboardState previousState; // ********
@@ -46,8 +48,8 @@ public class Game1 : Game
     protected override void Initialize()
     {
         CommandManager = new CommandManager(this, MarioManager);
-        _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
-        _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
+        _graphics.PreferredBackBufferWidth = 800; // 256 pixels
+        _graphics.PreferredBackBufferHeight = 600;      // typical NES height
         _graphics.ApplyChanges();
         base.Initialize();
     }
@@ -73,7 +75,7 @@ public class Game1 : Game
         _bigMario = new BigMarioSprite(GraphicsDevice);
         
         var vp = GraphicsDevice.Viewport;//Added
-        var pos = new Vector2(vp.Width * 0.5f, vp.Height * 0.85f);
+        var pos = new Vector2(vp.Width * 0.5f, vp.Height * 0.35f);
 
 		_smallMario.Position = pos;
 		_bigMario.Position = pos;
@@ -92,6 +94,13 @@ public class Game1 : Game
 
         // tilesPerRow = (tilesetWidth / tileWidth)
         _mapTiles = TiledMapLoader.Load(mapPath, _tileset, tilesPerRow: 11);
+
+        /**** Added  ****/
+        // After loading your map tiles:
+    _solidRects = new List<Rectangle>(_mapTiles.Count);
+    foreach (var tile in _mapTiles)
+        _solidRects.Add(tile.Bounds); // Tile.cs already has a Bounds property
+    /****  End Added  ****/
 
         camera = new Camera2D(GraphicsDevice.Viewport);
         camera.LookAt(Vector2.Zero);
@@ -127,6 +136,23 @@ public class Game1 : Game
 		_bHeldLast = bDown;
 
         _currentMario.Update(gameTime);
+
+        // === Static ground/wall collision handling ===
+if (StaticCollisionHandler.HandleMany(_currentMario, _solidRects, out var res))
+{
+    if (res.Landed)
+    {
+        // Mario landed on ground 
+    }
+    if (res.BonkedHead)
+    {
+        // Mario hit a ceiling
+    }
+    if (res.HitWall)
+    {
+        // Mario ran into a wall
+    }
+}
 
         if (MarioManager.ActiveSprite != null)
 			MarioManager.ActiveSprite.Update(gameTime);
