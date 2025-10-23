@@ -7,11 +7,17 @@ namespace MonogameTest
     {
         private readonly Viewport _viewport;
 
-        public Vector2 Position { get; private set; } = Vector2.Zero;
+        private Vector2 _position = Vector2.Zero;
+        public Vector2 Position
+        {
+            get => _position;
+            private set => _position = value;
+        }
 
         private float _smoothSpeed = 0.15f;  // how smoothly camera follows target
-        private float _levelWidth = 2000f;   // total level width (adjust once LevelManager is ready)
-        private float _levelHeight = 720f;   // level height
+        private float _levelWidth = TiledMapLoader.MapWidth * 16f;
+        private float _levelHeight = TiledMapLoader.MapHeight * 16f;
+
 
         private float _furthestRight = 0f;   // store max scroll position for one-way behavior
         private float _horizontalOffsetRatio = 0.35f; 
@@ -30,23 +36,24 @@ namespace MonogameTest
 
         // follows mario around screen
         public void LookAt(Vector2 target)
-        {
-            float targetX = target.X - (_viewport.Width * _horizontalOffsetRatio);
-            float targetY = 0f; 
+    {
+      // NES: camera follows Mario, but keeps him slightly to the left of screen center
+     float desiredX = target.X - (_viewport.Width * _horizontalOffsetRatio);
 
-            Vector2 desiredPosition = new(targetX, targetY);
-            Position = Vector2.Lerp(Position, desiredPosition, _smoothSpeed);
+        // Smoothly interpolate to that position
+      _position = Vector2.Lerp(_position, new Vector2(desiredX, 0), _smoothSpeed);
 
-            // level bouncs
-            Position.X = MathHelper.Clamp(Position.X, 0, _levelWidth - _viewport.Width);
-            Position.Y = MathHelper.Clamp(Position.Y, 0, _levelHeight - _viewport.Height);
+      // Clamp camera inside level bounds (never scroll left)
+      _position.X = MathHelper.Clamp(_position.X, 0, _levelWidth - _viewport.Width);
+      _position.Y = 0;
 
-            // Prevent scrolling backward
-            if (Position.X > _furthestRight)
-                _furthestRight = Position.X;
-            else
-                Position = new Vector2(_furthestRight, Position.Y);
-        }
+      // Track furthest right (prevents back-scrolling)
+      if (_position.X > _furthestRight)
+          _furthestRight = _position.X;
+       else
+          _position.X = _furthestRight;
+    }
+
 
         //moves camera if needed
         public void Move(Vector2 delta)
