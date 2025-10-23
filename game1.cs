@@ -1,4 +1,6 @@
 using System;
+using System.IO;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,77 +9,146 @@ namespace MonogameTest;
 
 public class Game1 : Game
 {
-	private GraphicsDeviceManager _graphics;
-	private SpriteBatch _spriteBatch;
-	public MarioManager MarioManager { get; set; } = new MarioManager();
-	public CommandManager CommandManager { get; set; }
-
-	private SmallMarioSprite _smallMario;
-	private BigMarioSprite _bigMario;
+    private GraphicsDeviceManager _graphics;
+    private SpriteBatch _spriteBatch;
+    public MarioManager MarioManager { get; set; } = new MarioManager();
+    public CommandManager CommandManager { get; set; }
+    private BlockManager blockManager; // ********
+    private PowerupManager powerupManager; // ********
+    public Texture2D goombaSprite;
+    public Texture2D koopaSprite;
+    public ISprite goom;
+    public ISprite koop;
+    public Vector2 pos;
+    private SmallMarioSprite _smallMario;
+    private BigMarioSprite _bigMario;
 	private StaticSprite _currentMario;
 	private bool _isBig = false;
-	private bool _bHeldLast = false;
+    private bool _bHeldLast = false;
+    private Texture2D _tileset;
+    private List<Tile> _mapTiles;
+    const int TilesVisibleX = 16;
+    const int TileSize = 16;
+    const int ViewWidth = TilesVisibleX * TileSize; // 256
+    private ICamera camera;
 
-	public Game1()
-	{
-		_graphics = new GraphicsDeviceManager(this);
-		Content.RootDirectory = "Content";
-		IsMouseVisible = true;
-	}
 
-	protected override void Initialize()
-	{
-		CommandManager = new CommandManager(this, MarioManager);
-		base.Initialize();
-	}
+    const int scale = 5;
 
-	protected override void LoadContent()
-	{
-		_spriteBatch = new SpriteBatch(GraphicsDevice);
+    KeyboardState previousState; // ********
 
-		new SpriteCommand(GraphicsDevice, MarioManager).Execute();
+    public Game1()
+    {
+        _graphics = new GraphicsDeviceManager(this);
+        Content.RootDirectory = "Content";
+        IsMouseVisible = true;
+    }
 
-		// load both mario sprites so i can switch between them
-		_smallMario = new SmallMarioSprite(GraphicsDevice);
-		_bigMario = new BigMarioSprite(GraphicsDevice);
+    protected override void Initialize()
+    {
+        CommandManager = new CommandManager(this, MarioManager);
+        _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
+        _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
+        _graphics.ApplyChanges();
+        base.Initialize();
+    }
 
-		// set both at the same starting position
-		var vp = GraphicsDevice.Viewport;
-		var pos = new Vector2(vp.Width * 0.5f, vp.Height * 0.85f);
+    protected override void LoadContent()
+    {
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+        Texture2D blocksTexture = Texture2D.FromFile(GraphicsDevice, "blocks-Final.png"); // *******
+        blockManager = new BlockManager(blocksTexture); // **********
+        Texture2D powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png"); // *******
+        powerupManager = new PowerupManager(powerupTexture); // **********
+
+        goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
+        koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
+        goom = new moveGoom(goombaSprite, _spriteBatch);
+        koop = new moveKoop(koopaSprite, _spriteBatch);
+
+        // TODO: use this.Content to load your game content here
+        new SpriteCommand(GraphicsDevice, MarioManager).Execute();
+        
+        _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
+        _bigMario = new BigMarioSprite(GraphicsDevice);
+        
+        var vp = GraphicsDevice.Viewport;//Added
+        var pos = new Vector2(vp.Width * 0.5f, vp.Height * 0.35f);
+
 
 		_smallMario.Position = pos;
 		_bigMario.Position = pos;
 
-		// start the game with small mario active
-		_currentMario = _smallMario;
-	}
+        // start the game with small mario active
+        _currentMario = _smallMario;
+        
+        // Load the tileset image directly from disk (same folder as .cs files)
+        using (FileStream fs = new FileStream("blocksV2.png", FileMode.Open))
+        {
+            _tileset = Texture2D.FromStream(GraphicsDevice, fs);
+        }
 
-	protected override void Update(GameTime gameTime)
-	{
-		var kb = Keyboard.GetState();
+        // Load the map JSON (same folder)
+        string mapPath = Path.Combine(Directory.GetCurrentDirectory(), "level1.json");
 
-		if (kb.IsKeyDown(Keys.Escape))
-			Exit();
+        // tilesPerRow = (tilesetWidth / tileWidth)
+        _mapTiles = TiledMapLoader.Load(mapPath, _tileset, tilesPerRow: 11);
 
-		CommandManager.checkKeys();
-		CommandManager.checkClicks();
+        //loads the camera on mario
+        camera = new CameraManager(GraphicsDevice.Viewport);
+        camera.Reset(_currentMario.Position); // start centered on Mario
+        camera.LookAt(_currentMario.Position); // immediately focus on him
 
-		// press B to toggle between small and big mario
-		bool bDown = kb.IsKeyDown(Keys.B);
+    }
+
+    protected override void Update(GameTime gameTime) // TODO - seperate class for keyboard input: Anika
+    {
+        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            Exit();
+
+        // TODO: Add your update logic here
+        CommandManager.checkKeys();
+        CommandManager.checkClicks();
+        if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
+
+        KeyboardState state = Keyboard.GetState(); // ********
+
+        if (state.IsKeyDown(Keys.P) && !previousState.IsKeyDown(Keys.P)) // *******
+        {
+            blockManager.NextBlock();
+            powerupManager.NextPowerup();
+        }
+        if (state.IsKeyDown(Keys.O) && !previousState.IsKeyDown(Keys.O))
+        {
+            blockManager.PreviousBlock();
+            powerupManager.PreviousPowerup();
+        }
+        previousState = state; // *************
+
+        bool bDown = state.IsKeyDown(Keys.B);
 		if (bDown && !_bHeldLast)
 			ToggleMarioSize();
 		_bHeldLast = bDown;
 
-		// update the active mario sprite
-		_currentMario.Update(gameTime);
+        _currentMario.Update(gameTime);
+        Vector2 marioPos = _currentMario is SmallMarioSprite sm ? sm.Position :
+                   _currentMario is BigMarioSprite bm ? bm.Position :
+                   Vector2.Zero;
+        camera.LookAt(marioPos);
 
-		if (MarioManager.ActiveSprite != null)
+
+
+        if (MarioManager.ActiveSprite != null)
 			MarioManager.ActiveSprite.Update(gameTime);
 
-		base.Update(gameTime);
-	}
+        goom.Update(gameTime);
+        koop.Update(gameTime);
 
-	private void ToggleMarioSize()
+        base.Update(gameTime);
+    }
+    
+    private void ToggleMarioSize()
 	{
 		_isBig = !_isBig;
 
@@ -91,24 +162,35 @@ public class Game1 : Game
 		if (_currentMario is BigMarioSprite bm2) bm2.Position = pos;
 	}
 
-	protected override void Draw(GameTime gameTime)
-	{
-		GraphicsDevice.Clear(Color.CornflowerBlue);
+    protected override void Draw(GameTime gameTime) // Think about how to introduce several blocks beyond 1 to prevent drawing to game every time.
+    // Get grid system class that loops over block calls from external file using enum to decide what is drawn on each tile.
+    // Think about ways to make 'shortcuts' in code, grouping and simplifiying things where you can, especially for collision which is expensive
+    {
+        GraphicsDevice.Clear(Color.CornflowerBlue);
 
-		_spriteBatch.Begin();
+        // TODO: Add your drawing code here
+        _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
+        _currentMario.Draw(_spriteBatch, _currentMario.Position);
 
-		// only draw whichever mario is currently active
-		_currentMario.Draw(_spriteBatch, Vector2.Zero);
+        //if (MarioManager.ActiveSprite != null)
+        //{
+        //int h = GraphicsDevice.Viewport.Height;
+        //int w = GraphicsDevice.Viewport.Width;
+        //MarioManager.ActiveSprite.Draw(_spriteBatch, new Vector2(w / 2, h / 2));
+        //}
+        //blockManager.Draw(_spriteBatch, new Vector2(500, 100)); // ********
+        //powerupManager.Draw(_spriteBatch, new Vector2(575, 100)); // ********
+        //goom.Draw(_spriteBatch, pos);
+        //koop.Draw(_spriteBatch, pos);
 
-		if (MarioManager.ActiveSprite != null)
-		{
-			int h = GraphicsDevice.Viewport.Height;
-			int w = GraphicsDevice.Viewport.Width;
-			MarioManager.ActiveSprite.Draw(_spriteBatch, new Vector2(w / 2, h / 2));
-		}
+        foreach (var tile in _mapTiles)
+        {
+            tile.Draw(_spriteBatch);
+        }
+        
 
-		_spriteBatch.End();
+        _spriteBatch.End();
 
-		base.Draw(gameTime);
-	}
+        base.Draw(gameTime);
+    }
 }
