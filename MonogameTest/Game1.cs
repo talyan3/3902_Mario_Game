@@ -137,7 +137,7 @@ public class Game1 : Game
 
         _currentMario.Update(gameTime);
 
-        // === Static ground/wall collision handling ===
+        //Static ground/wall collision handling 
 if (StaticCollisionHandler.HandleMany(_currentMario, _solidRects, out var res))
 {
     if (res.Landed)
