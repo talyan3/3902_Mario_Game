@@ -64,3 +64,5 @@ C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Conten
 c:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.sourcelink.json
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\goomba-Final.xnb
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\green-koopa.xnb
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\mgcb.tool.restore
+c:\Users\bjhob\OneDrive\Documents\VSCode\Monogame Intro\MonogameTest\obj\Debug\net8.0\MonogameTest.sourcelink.json

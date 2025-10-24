@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\MonogameTest.csproj": {}
+    "c:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\MonogameTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\MonogameTest.csproj": {
+    "c:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\MonogameTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\MonogameTest.csproj",
+        "projectUniqueName": "c:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\MonogameTest.csproj",
         "projectName": "MonogameTest",
-        "projectPath": "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\MonogameTest.csproj",
-        "packagesPath": "C:\\Users\\olson\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\obj\\",
+        "projectPath": "c:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\MonogameTest.csproj",
+        "packagesPath": "C:\\Users\\bjhob\\.nuget\\packages\\",
+        "outputPath": "c:\\Users\\bjhob\\OneDrive\\Documents\\VSCode\\Monogame Intro\\MonogameTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\olson\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\bjhob\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"

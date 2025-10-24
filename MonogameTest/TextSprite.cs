@@ -1,17 +1,19 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonogameTest;
+// Deprecated in favor of SpriteFont
 
-public class TextSprite : ISprite
-{
-    public void Draw(SpriteBatch spriteBatch, Vector2 position)
-    {
-        
-    }
+// namespace MonogameTest;
 
-    public void Update(GameTime gameTime)
-    {
+// public class TextSprite : ISprite
+// {
+//     public void Draw(SpriteBatch spriteBatch, Vector2 position)
+//     {
         
-    }
-}
+//     }
+
+//     public void Update(GameTime gameTime)
+//     {
+        
+//     }
+// }

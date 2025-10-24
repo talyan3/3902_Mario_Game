@@ -14,29 +14,19 @@ public struct StaticCollisionResult
 public static class StaticCollisionHandler
 {
     // Handle a single ground/wall rectangle
-    public static bool Handle(StaticSprite marioAny, Rectangle tileRect, out StaticCollisionResult result)
+    public static bool Handle(ISprite marioAny, Rectangle tileRect, out StaticCollisionResult result)
     {
         result = default;
 
         
-        Vector2 pos, scale;
-        if (marioAny is SmallMarioSprite sm)
-        {
-            pos = sm.Position;
-            scale = sm.Scale;
-        }
-        else if (marioAny is BigMarioSprite bm)
-        {
-            pos = bm.Position;
-            scale = bm.Scale;
-        }
-        else
-        {
-            return false; 
-        }
+        Vector2 pos = marioAny.Position, scale = marioAny.Position;
 
-
-        var region = marioAny.Region; // current frame
+        if (marioAny is StaticSprite )
+        {
+            var region = marioAny.Region; // current frame
+        } else if (marioAny is AnimatedSprite aS) {
+            var region = aS.currentFrame();
+        }
         int w = (int)(region.Width  * scale.X);
         int h = (int)(region.Height * scale.Y);
         int left = (int)(pos.X - w / 2f);
@@ -49,21 +39,19 @@ public static class StaticCollisionHandler
         if (side == typeCollision.None) return false;
 
     
-        var newPos = pos + mtv.ToVector2();
-        if (marioAny is SmallMarioSprite smW) smW.Position = newPos;
-        else if (marioAny is BigMarioSprite bmW) bmW.Position = newPos;
+        marioAny.Position = pos + mtv.ToVector2();
 
     
         result.Side = side;
         result.MTV = mtv;
-        result.Landed    = (side == typeCollision.Top);
-        result.BonkedHead= (side == typeCollision.Bottom);
-        result.HitWall   = (side == typeCollision.Left || side == typeCollision.Right);
+        result.Landed    = side == typeCollision.Top;
+        result.BonkedHead= side == typeCollision.Bottom;
+        result.HitWall   = side == typeCollision.Left || side == typeCollision.Right;
         return true;
     }
 
     // iterate many tiles; stop on first collision handled
-    public static bool HandleMany(StaticSprite marioAny, IEnumerable<Rectangle> solidTiles, out StaticCollisionResult result)
+    public static bool HandleMany(ISprite marioAny, IEnumerable<Rectangle> solidTiles, out StaticCollisionResult result)
     {
         foreach (var rect in solidTiles)
             if (Handle(marioAny, rect, out result))
