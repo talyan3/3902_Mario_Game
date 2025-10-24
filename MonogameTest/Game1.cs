@@ -26,6 +26,12 @@ public class Game1 : Game
 
     KeyboardState previousState; // ********
 
+
+    private MarioPhysiscsTest Mar; // **$$$
+    Texture2D Hollow; // **$$$
+
+    Texture2D platformTexture; // **$$$
+    Rectangle platformRect; // **$$$
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -43,15 +49,15 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        Texture2D blocksTexture = Texture2D.FromFile(GraphicsDevice, "blocks-Final.png"); // *******
-        blockManager = new BlockManager(blocksTexture); // **********
-        Texture2D powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png"); // *******
-        powerupManager = new PowerupManager(powerupTexture); // **********
+        //Texture2D blocksTexture = Texture2D.FromFile(GraphicsDevice, "blocks-Final.png"); // *******
+        //blockManager = new BlockManager(blocksTexture); // **********
+        //Texture2D powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png"); // *******
+        //powerupManager = new PowerupManager(powerupTexture); // **********
 
-        goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
-        koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
-        goom = new moveGoom(goombaSprite, _spriteBatch);
-        koop = new moveKoop(koopaSprite, _spriteBatch);
+        //goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
+        //koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
+        //goom = new moveGoom(goombaSprite, _spriteBatch);
+        //koop = new moveKoop(koopaSprite, _spriteBatch);
 
         // TODO: use this.Content to load your game content here
         new SpriteCommand(GraphicsDevice, MarioManager).Execute();
@@ -65,8 +71,15 @@ public class Game1 : Game
 		_smallMario.Position = pos;
 		_bigMario.Position = pos;
 
-		// start the game with small mario active
-		_currentMario = _smallMario;
+        // start the game with small mario active
+        _currentMario = _smallMario;
+        
+        //physics test $$$
+        Hollow = Content.Load<Texture2D>("Sprites/hollow"); // **$$$
+        Mar = new MarioPhysiscsTest(Hollow); // **$$$
+        platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
+        platformTexture.SetData(new[] { Color.MediumOrchid }); // **$$$
+        platformRect = new Rectangle(0, 400, 800, 50); // **$$$
     }
 
     protected override void Update(GameTime gameTime) // TODO - seperate class for keyboard input: Anika
@@ -104,8 +117,10 @@ public class Game1 : Game
         if (MarioManager.ActiveSprite != null)
 			MarioManager.ActiveSprite.Update(gameTime);
 
-        goom.Update(gameTime);
-        koop.Update(gameTime);
+        //goom.Update(gameTime);
+        //koop.Update(gameTime);
+
+        Mar.Update(gameTime, state, platformRect); // ***$$$
         //_smallMario.Update(gameTime); // Added
         base.Update(gameTime);
     }
@@ -140,10 +155,13 @@ public class Game1 : Game
             int w = GraphicsDevice.Viewport.Width;
             MarioManager.ActiveSprite.Draw(_spriteBatch, new Vector2(w / 2, h / 2));
         }
-        blockManager.Draw(_spriteBatch, new Vector2(500, 100)); // ********
-        powerupManager.Draw(_spriteBatch, new Vector2(575, 100)); // ********
-        goom.Draw(_spriteBatch, pos);
-        koop.Draw(_spriteBatch, pos);
+        //blockManager.Draw(_spriteBatch, new Vector2(500, 100)); // ********
+        //powerupManager.Draw(_spriteBatch, new Vector2(575, 100)); // ********
+        //goom.Draw(_spriteBatch, pos);
+        //koop.Draw(_spriteBatch, pos);
+
+        _spriteBatch.Draw(platformTexture, platformRect, Color.Azure);// **$$$
+        Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
 
         _spriteBatch.End();
 

@@ -32,17 +32,17 @@ public class SmallMarioSprite : StaticSprite
 
     public SmallMarioSprite(GraphicsDevice graphicsDevice)
     {
-        Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario.png");
+        // //Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario.png");
 
-        _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
-        _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
-        _runFrames.Add(new TextureRegion(texture, 30 * 5, 0, FrameW, FrameH));
+        // _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
+        // _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
+        // _runFrames.Add(new TextureRegion(texture, 30 * 5, 0, FrameW, FrameH));
 
-        _idleFrame = new TextureRegion(texture, 30 * 6, 0, FrameW, FrameH);
-        _jumpFrame = new TextureRegion(texture, 30 * 2, 0, FrameW, FrameH); 
+        // _idleFrame = new TextureRegion(texture, 30 * 6, 0, FrameW, FrameH);
+        // _jumpFrame = new TextureRegion(texture, 30 * 2, 0, FrameW, FrameH); 
 
-        _current = _idleFrame;
-        Region = _current;
+        // _current = _idleFrame;
+        // Region = _current;
     }
 
     public override void Update(GameTime gameTime)

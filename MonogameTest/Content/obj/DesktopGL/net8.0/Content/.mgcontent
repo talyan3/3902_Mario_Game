@@ -6,8 +6,10 @@
   <SourceFiles>
     <File>C:/Users/beck-king.1/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/goomba-Final.png</File>
     <File>C:/Users/beck-king.1/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/green-koopa.png</File>
+    <File>C:/Users/beck-king.1/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/hollow.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>

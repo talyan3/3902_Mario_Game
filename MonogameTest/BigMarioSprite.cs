@@ -31,19 +31,19 @@ public class BigMarioSprite : StaticSprite
 
 	public BigMarioSprite(GraphicsDevice graphicsDevice)
 	{
-		// using the big mario texture instead of the small one
-		Texture2D texture = Texture2D.FromFile(graphicsDevice, "big-mario-final.png");
+		// // using the big mario texture instead of the small one
+		// Texture2D texture = Texture2D.FromFile(graphicsDevice, "big-mario-final.png");
 
-		// same frame setup as small mario for now
-		_runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
-		_runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
-		_runFrames.Add(new TextureRegion(texture, 30 * 5, 0, FrameW, FrameH));
+		// // same frame setup as small mario for now
+		// _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
+		// _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
+		// _runFrames.Add(new TextureRegion(texture, 30 * 5, 0, FrameW, FrameH));
 
-		_idleFrame = new TextureRegion(texture, 30 * 6, 0, FrameW, FrameH);
-		_jumpFrame = new TextureRegion(texture, 30 * 2, 0, FrameW, FrameH);
+		// _idleFrame = new TextureRegion(texture, 30 * 6, 0, FrameW, FrameH);
+		// _jumpFrame = new TextureRegion(texture, 30 * 2, 0, FrameW, FrameH);
 
-		_current = _idleFrame;
-		Region = _current;
+		// _current = _idleFrame;
+		// Region = _current;
 	}
 
 	public override void Update(GameTime gameTime)
