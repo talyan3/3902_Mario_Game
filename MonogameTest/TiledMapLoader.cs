@@ -9,9 +9,10 @@ namespace MonogameTest
 {
     public static class TiledMapLoader
     {
-        private const int MapWidth = 208;  // Level width in tiles
-        private const int MapHeight = 15;  // Level height in tiles
+        private const int MapWidth = 208;  // Number of tiles horizontally
+        private const int MapHeight = 30;  // Number of tiles vertically
 
+        // Represents the basic structure of a Tiled map
         private class TiledMap
         {
             public int tilewidth { get; set; }
@@ -19,6 +20,7 @@ namespace MonogameTest
             public List<TiledLayer> layers { get; set; }
         }
 
+        // Represents a single Tiled layer
         private class TiledLayer
         {
             public string name { get; set; }
@@ -26,42 +28,52 @@ namespace MonogameTest
             public List<int> data { get; set; }
         }
 
-        public static List<Tile> Load(string jsonPath, Texture2D tileset, int tilesPerRow)
+        public static List<Tile> Load(string jsonPath, Texture2D tileset)
         {
-            if (!File.Exists(jsonPath))
-                throw new FileNotFoundException($"Could not find level file: {jsonPath}");
-
+            // Read and parse the map JSON exported from Tiled
             string json = File.ReadAllText(jsonPath);
             var map = JsonSerializer.Deserialize<TiledMap>(json);
 
-            if (map == null)
-                throw new Exception("Failed to parse Tiled map JSON.");
-
+            // Create the final tile list to return
             var tiles = new List<Tile>();
             int tileW = map.tilewidth;
             int tileH = map.tileheight;
 
+            // Loop through each layer in the map
             foreach (var layer in map.layers)
             {
+                // Only process visible tile layers
                 if (layer.type != "tilelayer" || layer.data == null)
                     continue;
 
+                // Loop through every tile coordinate
                 for (int y = 0; y < MapHeight; y++)
                 {
                     for (int x = 0; x < MapWidth; x++)
                     {
+                        // Compute the flat array index (row-major order)
                         int index = y * MapWidth + x;
-                        int tileId = layer.data[index] - 1; // Tiled uses 1-based indexing
 
+                        // Tiled uses 1-based indexing for tile IDs
+                        int tileId = layer.data[index] - 1;
+
+                        // Skip blank tiles (0 in Tiled)
                         if (tileId < 0)
-                            continue; // skip empty
+                            continue;
 
-                        int srcX = (tileId % tilesPerRow) * tileW;
-                        int srcY = (tileId / tilesPerRow) * tileH;
+                        // Because the spritesheet is a single row,
+                        // the source X offset is simply (tileId * tile width)
+                        Rectangle srcRect = new Rectangle(
+                            tileId * tileW, // srcX
+                            0,              // srcY always 0 since one row
+                            tileW,
+                            tileH
+                        );
 
-                        Rectangle srcRect = new Rectangle(srcX, srcY, tileW, tileH);
+                        // Destination position in world space
                         Vector2 pos = new Vector2(x * tileW, y * tileH);
 
+                        // Add a new Tile using this source rectangle and position
                         tiles.Add(new Tile(tileset, srcRect, pos));
                     }
                 }
@@ -71,4 +83,5 @@ namespace MonogameTest
         }
     }
 }
+
 
