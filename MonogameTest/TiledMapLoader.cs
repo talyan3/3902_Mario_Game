@@ -28,47 +28,60 @@ namespace MonogameTest
 
         public static List<Tile> Load(string jsonPath, Texture2D tileset, int tilesPerRow)
         {
-            if (!File.Exists(jsonPath))
-                throw new FileNotFoundException($"Could not find level file: {jsonPath}");
+              if (!File.Exists(jsonPath))
+        throw new FileNotFoundException($"Could not find level file: {jsonPath}");
 
-            string json = File.ReadAllText(jsonPath);
-            var map = JsonSerializer.Deserialize<TiledMap>(json);
+    string json = File.ReadAllText(jsonPath);
+    var map = JsonSerializer.Deserialize<TiledMap>(json);
+    if (map == null)
+        throw new Exception("Failed to parse Tiled map JSON.");
 
-            if (map == null)
-                throw new Exception("Failed to parse Tiled map JSON.");
+    var tiles = new List<Tile>();
+    int tileW = map.tilewidth;
+    int tileH = map.tileheight;
 
-            var tiles = new List<Tile>();
-            int tileW = map.tilewidth;
-            int tileH = map.tileheight;
+    // Local helper to label known gids
+    static string NameForGid(int gid) => gid switch
+    {
+        1  => "Ground",
+        2  => "Brick",
+        5  => "Question",
+        7  => "Question",
+        8  => "PipeTopLeft",
+        9  => "PipeTopRight",
+        10 => "PipeBodyLeft",
+        11 => "PipeBodyRight",
+        _  => $"gid={gid}"
+    };
 
-            foreach (var layer in map.layers)
+    foreach (var layer in map.layers)
+    {
+        if (layer.type != "tilelayer" || layer.data == null)
+            continue;
+
+        for (int y = 0; y < MapHeight; y++)
+        {
+            for (int x = 0; x < MapWidth; x++)
             {
-                if (layer.type != "tilelayer" || layer.data == null)
-                    continue;
+                int index = y * MapWidth + x;
+                int tileId0 = layer.data[index] - 1;   // 0-based; -1 means empty
+                if (tileId0 < 0) continue;
 
-                for (int y = 0; y < MapHeight; y++)
-                {
-                    for (int x = 0; x < MapWidth; x++)
-                    {
-                        int index = y * MapWidth + x;
-                        int tileId = layer.data[index] - 1; // Tiled uses 1-based indexing
+                int srcX = (tileId0 % tilesPerRow) * tileW;
+                int srcY = (tileId0 / tilesPerRow) * tileH;
 
-                        if (tileId < 0)
-                            continue; // skip empty
+                Rectangle srcRect = new Rectangle(srcX, srcY, tileW, tileH);
+                Vector2 pos = new Vector2(x * tileW, y * tileH);
 
-                        int srcX = (tileId % tilesPerRow) * tileW;
-                        int srcY = (tileId / tilesPerRow) * tileH;
+                int gid = tileId0 + 1;               // back to 1-based (matches JSON)
+                string name = NameForGid(gid);
 
-                        Rectangle srcRect = new Rectangle(srcX, srcY, tileW, tileH);
-                        Vector2 pos = new Vector2(x * tileW, y * tileH);
-
-                        tiles.Add(new Tile(tileset, srcRect, pos));
-                    }
-                }
+                tiles.Add(new Tile(tileset, srcRect, pos, gid, name));
             }
+        }
+    }
 
-            return tiles;
+    return tiles;
         }
     }
 }
-
