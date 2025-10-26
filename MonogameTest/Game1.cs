@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace MonogameTest;
 
@@ -28,8 +29,11 @@ public class Game1 : Game
     private Texture2D _tileset;
     private List<Tile> _mapTiles;
     const int TilesVisibleX = 16;
-    const int TileSize = 16;
+    const int TileSize = 16;// can create level class
     KeyboardState previousState;
+    const int ViewWidth = TilesVisibleX * TileSize; // 256
+    private ICamera camera;
+    const int scale = 4;
 
 
     private MarioPhysiscsTest Mar; // **$$$
@@ -46,7 +50,9 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        CommandManager = new CommandManager(this, MarioManager);
+         CommandManager = new CommandManager(this, MarioManager);
+        _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
+        _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
         _graphics.ApplyChanges();
         base.Initialize();
     }
@@ -71,11 +77,11 @@ public class Game1 : Game
         _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
         _bigMario = new BigMarioSprite(GraphicsDevice);
         
-        var vp = GraphicsDevice.Viewport;//Added
-        var pos = new Vector2(vp.Width * 0.5f, vp.Height * 0.85f);
+        // Start Mario somewhere reasonable in world coordinates (e.g., ground level)
+        var pos = new Vector2(16 * 5, 16 * 13); // y = 13 tiles down instead of 20
 
-		_smallMario.Position = pos;
-		_bigMario.Position = pos;
+        _smallMario.Position = pos;
+        _bigMario.Position = pos;
 
         // start the game with small mario active
         _currentMario = _smallMario;
@@ -90,6 +96,11 @@ public class Game1 : Game
 
         // Load map tiles
         _mapTiles = TiledMapLoader.Load(mapPath, _tileset);
+
+        //loads the camera on mario
+        camera = new CameraManager(GraphicsDevice.Viewport);
+        camera.Reset(_currentMario.Position); // start centered on Mario
+        camera.LookAt(_currentMario.Position); // immediately focus on him
 
 
 
@@ -131,6 +142,10 @@ public class Game1 : Game
 		_bHeldLast = bDown;
 
         _currentMario.Update(gameTime);
+        Vector2 marioPos = _currentMario is SmallMarioSprite sm ? sm.Position :
+                   _currentMario is BigMarioSprite bm ? bm.Position :
+                   Vector2.Zero;
+        camera.LookAt(marioPos);
 
         if (MarioManager.ActiveSprite != null)
 			MarioManager.ActiveSprite.Update(gameTime);
@@ -162,8 +177,8 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
-        _spriteBatch.Begin();
-        _currentMario.Draw(_spriteBatch, Vector2.Zero);
+        _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
+        _currentMario.Draw(_spriteBatch, _currentMario.Position);
 
         // For each tile, draw it
         foreach (var tile in _mapTiles)
@@ -177,7 +192,8 @@ public class Game1 : Game
 
         _spriteBatch.Draw(platformTexture, platformRect, Color.Azure);// **$$$
         Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
-
+        //_spriteBatch.DrawRectangle(new Rectangle(0, 0, 256, 240), Color.Red);
+        
         _spriteBatch.End();
 
         base.Draw(gameTime);
