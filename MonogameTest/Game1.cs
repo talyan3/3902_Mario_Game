@@ -95,12 +95,12 @@ public class Game1 : Game
         // tilesPerRow = (tilesetWidth / tileWidth)
         _mapTiles = TiledMapLoader.Load(mapPath, _tileset, tilesPerRow: 11);
 
-        /**** Added  ****/
+        /**** JAdded  ****/
         // After loading your map tiles:
     _solidRects = new List<Rectangle>(_mapTiles.Count);
     foreach (var tile in _mapTiles)
-        _solidRects.Add(tile.Bounds); // Tile.cs already has a Bounds property
-    /****  End Added  ****/
+        _solidRects.Add(tile.Bounds); 
+    /****  JEnd Added  ****/
 
         camera = new Camera2D(GraphicsDevice.Viewport);
         camera.LookAt(Vector2.Zero);
@@ -137,21 +137,10 @@ public class Game1 : Game
 
         _currentMario.Update(gameTime);
 
-        //Static ground/wall collision handling 
-if (StaticCollisionHandler.HandleMany(_currentMario, _solidRects, out var res))
+        // JAdded === Static ground/wall collision handling ===
+       if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
 {
-    if (res.Landed)
-    {
-        // Mario landed on ground 
-    }
-    if (res.BonkedHead)
-    {
-        // Mario hit a ceiling
-    }
-    if (res.HitWall)
-    {
-        // Mario ran into a wall
-    }
+    Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
 }
 
         if (MarioManager.ActiveSprite != null)
@@ -159,6 +148,34 @@ if (StaticCollisionHandler.HandleMany(_currentMario, _solidRects, out var res))
 
         goom.Update(gameTime);
         koop.Update(gameTime);
+
+// Added this
+        if (goom is moveGoom g)
+        {
+            if (EnemyCollisionHandler.HandleMany(g, _mapTiles, out var gRes, out var gTile))
+            {
+                if (gRes.HitWall)   Console.WriteLine($"Goomba hit wall at {gRes.TileRect.Location}");
+                if (gRes.Grounded)  Console.WriteLine("Goomba grounded");
+                if (gRes.BonkedHead)Console.WriteLine("Goomba bonked head");
+
+                Console.WriteLine(
+                    $"[Collision] Enemy=Goomba  Side={gRes.Side}  MTV={gRes.MTV}  TilePixel={gRes.TileRect.Location}");
+
+            }
+        }
+
+    if (koop is moveKoop k)
+    {
+        if (EnemyCollisionHandler.HandleMany(k, _mapTiles, out var kRes, out var kTile))
+        {
+            if (kRes.HitWall)   Console.WriteLine($"Goomba hit wall at {kRes.TileRect.Location}");
+            if (kRes.Grounded)  Console.WriteLine("Goomba grounded");
+            if (kRes.BonkedHead)Console.WriteLine("Goomba bonked head");
+            Console.WriteLine(
+                $"[Collision] Enemy=Koopa   Side={kRes.Side}  MTV={kRes.MTV}  TilePixel={kRes.TileRect.Location}");
+            
+        }
+    }
 
         base.Update(gameTime);
     }
