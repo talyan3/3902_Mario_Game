@@ -1,5 +1,6 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
+using System; 
 
 namespace MonogameTest
 {
@@ -9,9 +10,10 @@ namespace MonogameTest
         public Point MTV;            
         public Rectangle TileRect;
         public object TileRef;   
-         public bool Grounded;       
-        public bool BonkedHead;      
+        public bool Grounded;       
+        public bool BonkedHead;
         public bool HitWall;    
+        
         
     }
 
@@ -20,7 +22,6 @@ namespace MonogameTest
         public static bool Handle(object enemyAny, Rectangle tileRect, out EnemyCollisionResult result)
         {
             result = default;
-
 
             Vector2 pos;
             Rectangle enemyRect;
@@ -48,12 +49,13 @@ namespace MonogameTest
             if (enemyAny is moveGoom goomW) goomW.Position = newPos;
             else if (enemyAny is moveKoop koopW) koopW.Position = newPos;
 
-            result.Side     = side;
-            result.MTV      = mtv;
+
+            result.Side = side;
+            result.MTV = mtv;
             result.TileRect = tileRect;
-            result.Grounded   = (side == typeCollision.Top    && mtv.Y < 0);
+            result.Grounded = (side == typeCollision.Top && mtv.Y < 0);
             result.BonkedHead = (side == typeCollision.Bottom && mtv.Y > 0);
-            result.HitWall    = (side == typeCollision.Left || side == typeCollision.Right);
+            result.HitWall = (side == typeCollision.Left || side == typeCollision.Right);
             return true;
         }
 
@@ -78,18 +80,92 @@ namespace MonogameTest
             {
                 if (Handle(enemyAny, t.Bounds, out var tmp))
                 {
-                    tmp.TileRef  = t;
+                    tmp.TileRef = t;
                     tmp.TileRect = t.Bounds;
-                    result  = tmp;
+                    result = tmp;
                     hitTile = t;
                     return true;
                 }
             }
-            result  = default;
+            result = default;
             hitTile = default!;
             return false;
         }
 
+  
+        private static Rectangle FeetRect(Rectangle r, int h = 4)           
+            => new Rectangle(r.X, r.Bottom - h, r.Width, h);                 
 
+        private static void HandleMarioVsEnemiesCore(                       
+            Rectangle marioBounds,                                         
+            Action bounce,                                                   
+            Action onHit,                                                    
+            IList<object> enemies)                                          
+        {
+            var feet = FeetRect(marioBounds, 4);
+
+            for (int i = enemies.Count - 1; i >= 0; i--)
+            {
+                var enemy = enemies[i];
+
+                Rectangle enemyRect;
+                bool alive;
+
+                if (enemy is moveGoom goom)
+                {
+                    enemyRect = goom.Bounds;
+                    alive = goom.IsAlive;
+                }
+                else if (enemy is moveKoop koop)
+                {
+                    enemyRect = koop.Bounds;
+                    alive = koop.IsAlive;
+                }
+                else continue;
+
+                if (!alive) continue;
+                if (enemyRect == Rectangle.Empty) continue;
+                if (!marioBounds.Intersects(enemyRect)) continue;
+
+                
+                bool stomp = feet.Intersects(enemyRect) &&
+                             (marioBounds.Bottom <= enemyRect.Top + 8);
+
+                if (stomp)
+                {
+                    if (enemy is moveGoom g) g.IsAlive = false;
+                    else if (enemy is moveKoop k) k.IsAlive = false;
+
+                    bounce?.Invoke();
+                    continue;
+                }
+
+                onHit?.Invoke();
+            }
+        }
+
+        
+        public static void HandleMarioEnemyCollision(                       
+            SmallMarioSprite mario, IList<object> enemies, Action restart)   
+        {
+            HandleMarioVsEnemiesCore(
+                marioBounds: mario.Bounds,
+                bounce: () => mario.Bounce(20f),
+                onHit: restart,
+                enemies: enemies
+            );
+        }
+
+      
+        public static void HandleMarioEnemyCollision(                       
+            BigMarioSprite mario, IList<object> enemies, Action onBigHit)    
+        {
+            HandleMarioVsEnemiesCore(
+                marioBounds: mario.Bounds,
+                bounce: () => mario.Bounce(24f),
+                onHit: onBigHit,   
+                enemies: enemies
+            );
+        }
     }
 }
