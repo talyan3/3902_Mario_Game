@@ -24,6 +24,9 @@ class moveGoom : ISprite
     //64 is neuatral frame
     //96 is walk right frame
 
+    public Vector2 Velocity { get; set; } = Vector2.Zero;   
+    public bool IsAlive { get; set; } = true;
+
     public moveGoom(Texture2D texture, SpriteBatch spriteBatch)
     {
         sprite = texture;
@@ -40,18 +43,20 @@ class moveGoom : ISprite
         get => new Vector2(dRect.X, dRect.Y);
         set => dRect = new Rectangle((int)value.X, (int)value.Y, dRect.Width == 0 ? 32 : dRect.Width, dRect.Height == 0 ? 32 : dRect.Height);
     }
-    public Rectangle Bounds => dRect;
+    public Rectangle Bounds => IsAlive ? dRect : Rectangle.Empty;
     public Rectangle Region => sRect;             
     public Vector2 Scale => Vector2.One; 
     
     public void Draw(SpriteBatch spriteBatch, Vector2 position)
     {
+        if (!IsAlive) return;
         _spriteBatch.Draw(sprite,dRect,sRect,Color.White);//
     }
 
 
     public void Update(GameTime gameTime)
     {
+        if (!IsAlive) return;
         elasped += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
         if (elasped >= delay)
         {
