@@ -38,6 +38,8 @@ public class Game1 : Game
 
     KeyboardState previousState; // ********
 
+    private Vector2 _spawnPoint; //Added
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -78,7 +80,9 @@ public class Game1 : Game
         var pos = new Vector2(vp.Width * 0.5f, vp.Height * 0.35f);
 
 		_smallMario.Position = pos;
-		_bigMario.Position = pos;
+        _bigMario.Position = pos;
+        
+        _spawnPoint = pos; //JAdded
 
         // start the game with small mario active
         _currentMario = _smallMario;
@@ -164,18 +168,55 @@ public class Game1 : Game
             }
         }
 
-    if (koop is moveKoop k)
-    {
-        if (EnemyCollisionHandler.HandleMany(k, _mapTiles, out var kRes, out var kTile))
+        if (koop is moveKoop k)
         {
-            if (kRes.HitWall)   Console.WriteLine($"Goomba hit wall at {kRes.TileRect.Location}");
-            if (kRes.Grounded)  Console.WriteLine("Goomba grounded");
-            if (kRes.BonkedHead)Console.WriteLine("Goomba bonked head");
-            Console.WriteLine(
-                $"[Collision] Enemy=Koopa   Side={kRes.Side}  MTV={kRes.MTV}  TilePixel={kRes.TileRect.Location}");
-            
+            if (EnemyCollisionHandler.HandleMany(k, _mapTiles, out var kRes, out var kTile))
+            {
+                if (kRes.HitWall) Console.WriteLine($"Koopa hit wall at {kRes.TileRect.Location}");
+                if (kRes.Grounded) Console.WriteLine("Koopa grounded");
+                if (kRes.BonkedHead) Console.WriteLine("Koopabonked head");
+                Console.WriteLine(
+                    $"[Collision] Enemy=Koopa   Side={kRes.Side}  MTV={kRes.MTV}  TilePixel={kRes.TileRect.Location}");
+
+            }
         }
+    
+
+    
+    var enemies = new List<object>();
+    if (goom is moveGoom g2 && g2.IsAlive) enemies.Add(g2);
+    if (koop is moveKoop k2 && k2.IsAlive) enemies.Add(k2);
+
+    if (_isBig)
+    {
+        EnemyCollisionHandler.HandleMarioEnemyCollision(
+            _bigMario,
+            enemies,
+            onBigHit: () =>
+            {
+                _isBig = false;
+                _smallMario.Position = _bigMario.Position;
+                var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
+                _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
+                _currentMario = _smallMario;
+            });
     }
+    else
+    {
+        EnemyCollisionHandler.HandleMarioEnemyCollision(
+            _smallMario,
+            enemies,
+            restart: () =>
+            {
+                _currentMario = _smallMario;
+                _smallMario.Position = _spawnPoint;
+
+                if (goom is moveGoom gg) gg.IsAlive = true;
+                if (koop is moveKoop kk) kk.IsAlive = true;
+            });
+    
+}
+    
 
         base.Update(gameTime);
     }
@@ -225,3 +266,4 @@ public class Game1 : Game
         base.Draw(gameTime);
     }
 }
+
