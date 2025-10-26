@@ -9,8 +9,8 @@ namespace MonogameTest
 {
     public static class TiledMapLoader
     {
-        private const int MapWidth = 208;  // Number of tiles horizontally
-        private const int MapHeight = 30;  // Number of tiles vertically
+        public const int MapWidth = 208;  // Number of tiles horizontally
+        public const int MapHeight = 30;  // Number of tiles vertically
 
         // Represents the basic structure of a Tiled map
         private class TiledMap

@@ -40,9 +40,6 @@ C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtim
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\android-arm64\native\libopenal.so
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\android-x64\native\libopenal.so
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\android-x86\native\libopenal.so
-C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\ios-arm64\native\libopenal.dylib
-C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\iossimulator-arm64\native\libopenal.dylib
-C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\iossimulator-x64\native\libopenal.dylib
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\linux-x64\native\libopenal.so
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\osx\native\libopenal.dylib
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\win-x64\native\openal.dll
@@ -64,3 +61,9 @@ C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Conten
 c:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\MonogameTest.sourcelink.json
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\goomba-Final.xnb
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\green-koopa.xnb
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\MonoGame.Extended.dll
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\ios-arm64\native\libopenal.a
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\iossimulator-arm64\native\libopenal.a
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\iossimulator-x64\native\libopenal.a
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\linux-arm64\native\libopenal.so
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\mgcb.tool.restore
