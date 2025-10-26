@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -22,9 +24,12 @@ public class Game1 : Game
     private BigMarioSprite _bigMario;
 	private StaticSprite _currentMario;
 	private bool _isBig = false;
-	private bool _bHeldLast = false;
-
-    KeyboardState previousState; // ********
+    private bool _bHeldLast = false;
+    private Texture2D _tileset;
+    private List<Tile> _mapTiles;
+    const int TilesVisibleX = 16;
+    const int TileSize = 16;
+    KeyboardState previousState;
 
 
     private MarioPhysiscsTest Mar; // **$$$
@@ -42,6 +47,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
         CommandManager = new CommandManager(this, MarioManager);
+        _graphics.ApplyChanges();
         base.Initialize();
     }
 
@@ -73,7 +79,20 @@ public class Game1 : Game
 
         // start the game with small mario active
         _currentMario = _smallMario;
-        
+        // Load the tileset image directly
+        using (FileStream fs = new FileStream("blocksV10.png", FileMode.Open))
+        {
+            _tileset = Texture2D.FromStream(GraphicsDevice, fs);
+        }
+
+        // Load the map JSON
+        string mapPath = Path.Combine(Directory.GetCurrentDirectory(), "level1.json");
+
+        // Load map tiles
+        _mapTiles = TiledMapLoader.Load(mapPath, _tileset);
+
+
+
         //physics test $$$
         Hollow = Content.Load<Texture2D>("Sprites/hollow"); // **$$$
         Mar = new MarioPhysiscsTest(Hollow); // **$$$
@@ -91,11 +110,10 @@ public class Game1 : Game
         CommandManager.checkKeys();
         CommandManager.checkClicks();
         if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
-        //Draw(gameTime);
 
-        KeyboardState state = Keyboard.GetState(); // ********
+        KeyboardState state = Keyboard.GetState(); 
 
-        if (state.IsKeyDown(Keys.P) && !previousState.IsKeyDown(Keys.P)) // *******
+        if (state.IsKeyDown(Keys.P) && !previousState.IsKeyDown(Keys.P)) 
         {
             blockManager.NextBlock();
             powerupManager.NextPowerup();
@@ -105,7 +123,7 @@ public class Game1 : Game
             blockManager.PreviousBlock();
             powerupManager.PreviousPowerup();
         }
-        previousState = state; // *************
+        previousState = state; 
 
         bool bDown = state.IsKeyDown(Keys.B);
 		if (bDown && !_bHeldLast)
@@ -121,7 +139,7 @@ public class Game1 : Game
         //koop.Update(gameTime);
 
         Mar.Update(gameTime, state, platformRect); // ***$$$
-        //_smallMario.Update(gameTime); // Added
+
         base.Update(gameTime);
     }
     
@@ -139,21 +157,18 @@ public class Game1 : Game
 		if (_currentMario is BigMarioSprite bm2) bm2.Position = pos;
 	}
 
-    protected override void Draw(GameTime gameTime) // Think about how to introduce several blocks beyond 1 to prevent drawing to game every time.
-    // Get grid system class that loops over block calls from external file using enum to decide what is drawn on each tile.
-    // Think about ways to make 'shortcuts' in code, grouping and simplifiying things where you can, especially for collision which is expensive
+    protected override void Draw(GameTime gameTime) 
     {
         GraphicsDevice.Clear(Color.CornflowerBlue);
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin();
         _currentMario.Draw(_spriteBatch, Vector2.Zero);
-        
-        if (MarioManager.ActiveSprite != null)
+
+        // For each tile, draw it
+        foreach (var tile in _mapTiles)
         {
-            int h = GraphicsDevice.Viewport.Height;
-            int w = GraphicsDevice.Viewport.Width;
-            MarioManager.ActiveSprite.Draw(_spriteBatch, new Vector2(w / 2, h / 2));
+            tile.Draw(_spriteBatch);
         }
         //blockManager.Draw(_spriteBatch, new Vector2(500, 100)); // ********
         //powerupManager.Draw(_spriteBatch, new Vector2(575, 100)); // ********
