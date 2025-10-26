@@ -3,11 +3,11 @@ using System.Collections.Generic;
 namespace MonogameTest;
 public struct StaticCollisionResult
 {
-    public typeCollision Side; 
-    public Point MTV;           
-    public bool Landed;         
-    public bool BonkedHead;    
-    public bool HitWall;       
+    public typeCollision Side;
+    public Point MTV;
+    public object TileRef;   
+     public Rectangle TileRect;     
+      
 }
 
 
@@ -56,9 +56,8 @@ public static class StaticCollisionHandler
     
         result.Side = side;
         result.MTV = mtv;
-        result.Landed    = (side == typeCollision.Top);
-        result.BonkedHead= (side == typeCollision.Bottom);
-        result.HitWall   = (side == typeCollision.Left || side == typeCollision.Right);
+        result.TileRect = tileRect;
+        
         return true;
     }
 
@@ -72,4 +71,28 @@ public static class StaticCollisionHandler
         result = default;
         return false;
     }
+
+    public static bool HandleMany(
+    StaticSprite marioAny,
+    IEnumerable<Tile> tiles,
+    out StaticCollisionResult result,
+    out Tile hitTile)
+{
+    foreach (var tile in tiles)
+    {
+        if (Handle(marioAny, tile.Bounds, out var tmp))
+        {
+            tmp.TileRef  = tile;
+            tmp.TileRect = tile.Bounds;
+
+            result  = tmp;
+            hitTile = tile;
+            return true;
+        }
+    }
+
+    result  = default;
+    hitTile = default!;
+    return false;
+}
 }
