@@ -26,9 +26,28 @@ public class SmallMarioSprite : StaticSprite
     private float _frameTime = 0.12f;
 
     private bool _isJumping = false;
-    private float _jumpOffset = 100f; // how far up he moves
+    private float _jumpOffset = 10f; // how far up he moves
 
     private Vector2 _groundPos;
+
+    public Rectangle Bounds                                       
+    {
+        get
+        {
+            if (Region == null) return Rectangle.Empty;
+            int w = (int)(Region.Width  * Scale.X);
+            int h = (int)(Region.Height * Scale.Y);
+            int left = (int)(Position.X - w / 2f);
+            int top  = (int)(Position.Y - h); 
+            return new Rectangle(left, top, w, h);
+        }
+    }
+
+  
+    public void Bounce(float pixels = 20f)                        
+    {
+        Position = new Vector2(Position.X, Position.Y - pixels);
+    }
 
     public SmallMarioSprite(GraphicsDevice graphicsDevice)
     {
@@ -79,7 +98,7 @@ public class SmallMarioSprite : StaticSprite
             if (_isJumping)
             {
                
-                Position = new Vector2(Position.X, _groundPos.Y);
+                
                 _isJumping = false;
             }
             _current = _idleFrame;
