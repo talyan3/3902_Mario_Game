@@ -8,6 +8,7 @@ public class AnimatedMarioSprite : AnimatedSprite
     // See StaticMarioSprite for in-depth comments
     public Color Color { get; set; } = Color.White;
     public float Rotation { get; set; } = 0.0f;
+    public Vector2 Scale { get; set; } = new Vector2(5,5);
     public Vector2 Origin { get; set; } = Vector2.Zero;
     SpriteEffects Effects { get; set; } = SpriteEffects.None;
     public float LayerDepth { get; set; } = 0.0f;
@@ -19,7 +20,6 @@ public class AnimatedMarioSprite : AnimatedSprite
     {
         Region = region;
         Animation = animation;
-        Scale = new Vector2(5,5);
     }
 
 

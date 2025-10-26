@@ -7,6 +7,9 @@ namespace MonogameTest;
 
 public class BigMarioSprite : StaticSprite
 {
+	public Vector2 Position { get; set; } = Vector2.Zero;
+	public Vector2 Scale { get; set; } = new Vector2(3.8f, 3.8f); // slightly larger to match big mario size
+
 	public float MoveSpeed = 100f;
 	private SpriteEffects _effects = SpriteEffects.None;
 
@@ -28,9 +31,8 @@ public class BigMarioSprite : StaticSprite
 
 	public BigMarioSprite(GraphicsDevice graphicsDevice)
 	{
-		// using the big mario texture instead of the small one
-		Texture2D texture = Texture2D.FromFile(graphicsDevice, "big-mario-final.png");
-		Scale = new Vector2(3.8f, 3.8f);  // slightly larger to match big mario size
+		// // using the big mario texture instead of the small one
+		// Texture2D texture = Texture2D.FromFile(graphicsDevice, "big-mario-final.png");
 
 		// // same frame setup as small mario for now
 		// _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));

@@ -8,6 +8,7 @@ public class StaticMovingMarioSprite : StaticSprite
     // See StaticMarioSprite for in-depth comments
     public Color Color { get; set; } = Color.White;
     public float Rotation { get; set; } = 0.0f;
+    public Vector2 Scale { get; set; } = new Vector2(5,5);
     SpriteEffects Effects { get; set; } = SpriteEffects.None;
     public float LayerDepth { get; set; } = 0.0f;
     public Vector2 Origin { get; set; } = Vector2.Zero;
@@ -22,7 +23,6 @@ public class StaticMovingMarioSprite : StaticSprite
     {
         Texture2D texture = Texture2D.FromFile(graphicsDevice, "mario.png");
         Region = new TextureRegion(texture, 120, 0, 28, 28);
-        Scale = new Vector2(5,5);
         CenterOrigin();
     }
 

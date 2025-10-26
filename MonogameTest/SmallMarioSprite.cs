@@ -7,6 +7,8 @@ namespace MonogameTest;
 
 public class SmallMarioSprite : StaticSprite
 {
+    public Vector2 Position { get; set; } = Vector2.Zero;
+    public Vector2 Scale { get; set; } = new Vector2(3f, 3f);
 
     public float MoveSpeed = 100f; // px/sec
     private SpriteEffects _effects = SpriteEffects.None;
@@ -30,8 +32,7 @@ public class SmallMarioSprite : StaticSprite
 
     public SmallMarioSprite(GraphicsDevice graphicsDevice)
     {
-        Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario.png");
-        Scale = new Vector2(3f, 3f);
+        // //Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario.png");
 
         // _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
         // _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));

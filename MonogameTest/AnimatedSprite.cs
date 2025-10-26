@@ -12,8 +12,6 @@ public abstract class AnimatedSprite : ISprite
     protected TimeSpan _elapsed;
     protected Animation _animation;
     public TextureRegion Region { get; set; }
-    public Vector2 Position { get; set; } = Vector2.Zero;
-    public Vector2 Scale { get; set; } = Vector2.One;
     public Animation Animation
     {
         get => _animation;
@@ -27,9 +25,4 @@ public abstract class AnimatedSprite : ISprite
     public abstract void Draw(SpriteBatch spriteBatch, Vector2 position);
 
     public abstract void Update(GameTime gameTime);
-
-    public TextureRegion currentFrame()
-    {
-        return _animation.Frames[_currentFrame];
-    }
 }
