@@ -5,6 +5,7 @@ namespace MonogameTest;
 
 class moveGoom : ISprite
 {
+    
     private SpriteBatch _spriteBatch;
     private Texture2D sprite;
 
@@ -27,7 +28,22 @@ class moveGoom : ISprite
     {
         sprite = texture;
         _spriteBatch = spriteBatch;
+
+        if (dRect.Width == 0 || dRect.Height == 0)
+            dRect = new Rectangle(100, 300, 32, 32);
+        if (sRect.Width == 0 || sRect.Height == 0)
+            sRect = new Rectangle(0, 0, 32, 20);
     }
+
+      public Vector2 Position
+    {
+        get => new Vector2(dRect.X, dRect.Y);
+        set => dRect = new Rectangle((int)value.X, (int)value.Y, dRect.Width == 0 ? 32 : dRect.Width, dRect.Height == 0 ? 32 : dRect.Height);
+    }
+    public Rectangle Bounds => dRect;
+    public Rectangle Region => sRect;             
+    public Vector2 Scale => Vector2.One; 
+    
     public void Draw(SpriteBatch spriteBatch, Vector2 position)
     {
         _spriteBatch.Draw(sprite,dRect,sRect,Color.White);//
