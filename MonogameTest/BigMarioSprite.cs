@@ -29,6 +29,25 @@ public class BigMarioSprite : StaticSprite
 	private float _jumpOffset = 100f;
 	private Vector2 _groundPos;
 
+	public Rectangle Bounds                                        
+    {
+        get
+        {
+            if (Region == null) return Rectangle.Empty;
+            int w = (int)(Region.Width  * Scale.X);
+            int h = (int)(Region.Height * Scale.Y);
+            int left = (int)(Position.X - w / 2f);
+            int top  = (int)(Position.Y - h); 
+            return new Rectangle(left, top, w, h);
+        }
+    }
+
+   
+    public void Bounce(float pixels = 24f)                        
+    {
+        Position = new Vector2(Position.X, Position.Y - pixels);
+    }
+
 	public BigMarioSprite(GraphicsDevice graphicsDevice)
 	{
 		// using the big mario texture instead of the small one
@@ -80,7 +99,7 @@ public class BigMarioSprite : StaticSprite
 			if (_isJumping)
 			{
 				// drop back down to ground
-				Position = new Vector2(Position.X, _groundPos.Y);
+				
 				_isJumping = false;
 			}
 
