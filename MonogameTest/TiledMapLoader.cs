@@ -39,6 +39,20 @@ namespace MonogameTest
             int tileW = map.tilewidth;
             int tileH = map.tileheight;
 
+            // Local helper to label known gids
+            static string NameForGid(int gid) => gid switch
+            {
+                1  => "Ground",
+                2  => "Brick",
+                5  => "Question",
+                7  => "Question",
+                8  => "PipeTopLeft",
+                9  => "PipeTopRight",
+                10 => "PipeBodyLeft",
+                11 => "PipeBodyRight",
+                _  => $"gid={gid}"
+            };
+
             // Loop through each layer in the map
             foreach (var layer in map.layers)
             {
@@ -72,6 +86,9 @@ namespace MonogameTest
 
                         // Destination position in world space
                         Vector2 pos = new Vector2(x * tileW, y * tileH);
+
+                        int gid = tileId + 1;               // back to 1-based (matches JSON)
+                        string name = NameForGid(gid);
 
                         // Add a new Tile using this source rectangle and position
                         tiles.Add(new Tile(tileset, srcRect, pos));

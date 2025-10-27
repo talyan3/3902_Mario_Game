@@ -35,6 +35,14 @@ public class Game1 : Game
     private ICamera camera;
     const int scale = 4;
 
+    //private MarioPhysiscsTest Mar; // **$$$
+    //Texture2D Hollow; // **$$$
+
+    //Texture2D platformTexture; // **$$$
+    //Rectangle platformRect; // **$$$
+    private List<Rectangle> _solidRects; //Added
+    private Vector2 _spawnPoint; //Added
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -55,10 +63,10 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-        Texture2D blocksTexture = Texture2D.FromFile(GraphicsDevice, "blocks-Final.png"); // *******
-        blockManager = new BlockManager(blocksTexture); // **********
-        Texture2D powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png"); // *******
-        powerupManager = new PowerupManager(powerupTexture); // **********
+        //Texture2D blocksTexture = Texture2D.FromFile(GraphicsDevice, "blocks-Final.png"); // *******
+        //blockManager = new BlockManager(blocksTexture); // **********
+        //Texture2D powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png"); // *******
+        //powerupManager = new PowerupManager(powerupTexture); // **********
 
         goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
         koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
@@ -77,6 +85,8 @@ public class Game1 : Game
         _smallMario.Position = pos;
         _bigMario.Position = pos;
 
+        _spawnPoint = pos; //JAdded
+
         // start the game with small mario active
         _currentMario = _smallMario;
         
@@ -92,11 +102,23 @@ public class Game1 : Game
         // Load map tiles
         _mapTiles = TiledMapLoader.Load(mapPath, _tileset);
 
+        /**** JAdded  ****/
+        // After loading your map tiles:
+        _solidRects = new List<Rectangle>(_mapTiles.Count);
+        foreach (var tile in _mapTiles)
+            _solidRects.Add(tile.Bounds); 
+        /****  JEnd Added  ****/
+
         //loads the camera on mario
         camera = new CameraManager(GraphicsDevice.Viewport);
         camera.Reset(_currentMario.Position); // start centered on Mario
         camera.LookAt(_currentMario.Position); // immediately focus on him
 
+        //physics test $$$
+        //Hollow = Content.Load<Texture2D>("Sprites/goomba-Final"); // **$$$
+        //Mar = new MarioPhysiscsTest(Hollow); // **$$$
+        //platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
+        //platformRect = new Rectangle(0,209, 2000, 50); // **$$$
     }
 
     protected override void Update(GameTime gameTime)
@@ -133,12 +155,79 @@ public class Game1 : Game
                    _currentMario is BigMarioSprite bm ? bm.Position :
                    Vector2.Zero;
         camera.LookAt(marioPos);
+        if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
+        {
+            Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
+        }
 
         if (MarioManager.ActiveSprite != null)
-			MarioManager.ActiveSprite.Update(gameTime);
+            MarioManager.ActiveSprite.Update(gameTime);
+        
+        //Mar.Update(gameTime, state, platformRect); // ***$$$
 
         goom.Update(gameTime);
         koop.Update(gameTime);
+
+        if (goom is moveGoom g)
+        {
+            if (EnemyCollisionHandler.HandleMany(g, _mapTiles, out var gRes, out var gTile))
+            {
+                if (gRes.HitWall)   Console.WriteLine($"Goomba hit wall at {gRes.TileRect.Location}");
+                if (gRes.Grounded)  Console.WriteLine("Goomba grounded");
+                if (gRes.BonkedHead)Console.WriteLine("Goomba bonked head");
+
+                Console.WriteLine(
+                    $"[Collision] Enemy=Goomba  Side={gRes.Side}  MTV={gRes.MTV}  TilePixel={gRes.TileRect.Location}");
+
+            }
+        }
+
+        if (koop is moveKoop k)
+        {
+            if (EnemyCollisionHandler.HandleMany(k, _mapTiles, out var kRes, out var kTile))
+            {
+                if (kRes.HitWall) Console.WriteLine($"Koopa hit wall at {kRes.TileRect.Location}");
+                if (kRes.Grounded) Console.WriteLine("Koopa grounded");
+                if (kRes.BonkedHead) Console.WriteLine("Koopabonked head");
+                Console.WriteLine(
+                    $"[Collision] Enemy=Koopa   Side={kRes.Side}  MTV={kRes.MTV}  TilePixel={kRes.TileRect.Location}");
+
+            }
+        }
+    
+    var enemies = new List<object>();
+    if (goom is moveGoom g2 && g2.IsAlive) enemies.Add(g2);
+    if (koop is moveKoop k2 && k2.IsAlive) enemies.Add(k2);
+
+    if (_isBig)
+    {
+        EnemyCollisionHandler.HandleMarioEnemyCollision(
+            _bigMario,
+            enemies,
+            onBigHit: () =>
+            {
+                _isBig = false;
+                _smallMario.Position = _bigMario.Position;
+                var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
+                _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
+                _currentMario = _smallMario;
+            });
+    }
+    else
+    {
+        EnemyCollisionHandler.HandleMarioEnemyCollision(
+            _smallMario,
+            enemies,
+            restart: () =>
+            {
+                _currentMario = _smallMario;
+                _smallMario.Position = _spawnPoint;
+
+                if (goom is moveGoom gg) gg.IsAlive = true;
+                if (koop is moveKoop kk) kk.IsAlive = true;
+            });
+    
+    }
 
         base.Update(gameTime);
     }
@@ -171,7 +260,8 @@ public class Game1 : Game
             tile.Draw(_spriteBatch);
         }
         //_spriteBatch.DrawRectangle(new Rectangle(0, 0, 256, 240), Color.Red);
-        
+        //Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
+
         _spriteBatch.End();
 
         base.Draw(gameTime);

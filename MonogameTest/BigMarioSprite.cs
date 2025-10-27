@@ -8,7 +8,7 @@ namespace MonogameTest;
 public class BigMarioSprite : StaticSprite
 {
 	public Vector2 Position { get; set; } = Vector2.Zero;
-	public Vector2 Scale { get; set; } = new Vector2(3.8f, 3.8f); // slightly larger to match big mario size
+	public Vector2 Scale { get; set; } = new Vector2(1f, 1f); // slightly larger to match big mario size
 
 	public float MoveSpeed = 100f;
 	private SpriteEffects _effects = SpriteEffects.None;
@@ -29,6 +29,24 @@ public class BigMarioSprite : StaticSprite
 	private float _jumpOffset = 100f;
 	private Vector2 _groundPos;
 
+    public Rectangle Bounds                                        
+    {
+        get
+        {
+            if (Region == null) return Rectangle.Empty;
+            int w = (int)(Region.Width  * Scale.X);
+            int h = (int)(Region.Height * Scale.Y);
+            int left = (int)(Position.X - w / 2f);
+            int top  = (int)(Position.Y - h); 
+            return new Rectangle(left, top, w, h);
+        }
+    }
+
+	public void Bounce(float pixels = 24f)
+	{
+		Position = new Vector2(Position.X, Position.Y - pixels);
+	}
+	
 	public BigMarioSprite(GraphicsDevice graphicsDevice)
 	{
 		// using the big mario texture instead of the small one

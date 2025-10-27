@@ -30,9 +30,28 @@ public class SmallMarioSprite : StaticSprite
 
     private Vector2 _groundPos;
 
+    public Rectangle Bounds                                       
+    {
+        get
+        {
+            if (Region == null) return Rectangle.Empty;
+            int w = (int)(Region.Width  * Scale.X);
+            int h = (int)(Region.Height * Scale.Y);
+            int left = (int)(Position.X - w / 2f);
+            int top  = (int)(Position.Y - h); 
+            return new Rectangle(left, top, w, h);
+        }
+    }
+
+  
+    public void Bounce(float pixels = 20f)                        
+    {
+        Position = new Vector2(Position.X, Position.Y - pixels);
+    }
+
     public SmallMarioSprite(GraphicsDevice graphicsDevice)
     {
-        Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario.png");
+        Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario-final.png");
 
         _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
         _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
