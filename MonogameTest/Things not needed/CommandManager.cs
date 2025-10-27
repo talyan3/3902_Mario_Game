@@ -102,12 +102,12 @@ public class CommandManager
 
     public void checkKeys()
     {
-        KeyboardController.checkKeys();
+        //KeyboardController.checkKeys();
     }
 
     public void checkClicks()
     {
-        MouseController.checkClicks();
+        //MouseController.checkClicks();
     }
 
 }

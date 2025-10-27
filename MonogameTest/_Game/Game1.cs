@@ -103,13 +103,12 @@ public class Game1 : Game
         camera.LookAt(_currentMario.Position); // immediately focus on him
 
 
-
         //physics test $$$
         Hollow = Content.Load<Texture2D>("Sprites/hollow"); // **$$$
         Mar = new MarioPhysiscsTest(Hollow); // **$$$
         platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
-        platformTexture.SetData(new[] { Color.MediumOrchid }); // **$$$
-        platformRect = new Rectangle(0, 400, 800, 50); // **$$$
+        platformTexture.SetData(new[] { Color.Transparent }); // **$$$
+        platformRect = new Rectangle(128, 209, 2000, 300); // **$$$
     }
 
     protected override void Update(GameTime gameTime) // TODO - seperate class for keyboard input: Anika
@@ -145,7 +144,7 @@ public class Game1 : Game
         Vector2 marioPos = _currentMario is SmallMarioSprite sm ? sm.Position :
                    _currentMario is BigMarioSprite bm ? bm.Position :
                    Vector2.Zero;
-        camera.LookAt(marioPos);
+        camera.LookAt(Mar.Physics.position);
 
         if (MarioManager.ActiveSprite != null)
 			MarioManager.ActiveSprite.Update(gameTime);

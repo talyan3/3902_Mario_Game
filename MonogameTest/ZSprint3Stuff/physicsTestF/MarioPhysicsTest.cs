@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonogameTest;
 
-public class MarioPhysiscsTest
+public class MarioPhysiscsTest : ICamera
 {
     public PhysicsTest Physics;
     private Texture2D texture;
-    private float scale = 0.2f; 
+    private float scale = 0.15f; 
 
     //movement variables
     //# changed as neededdddd
@@ -21,7 +21,7 @@ public class MarioPhysiscsTest
     {
         texture = tex;
         Physics = new PhysicsTest();
-        Physics.position = new Vector2(100, 100); 
+        Physics.position = new Vector2(128, 80); 
     }
 
     public void Update(GameTime gameTime, KeyboardState keyboard, Rectangle platformRect)
@@ -100,5 +100,20 @@ public class MarioPhysiscsTest
     public void Draw(SpriteBatch spriteBatch)
     {
         spriteBatch.Draw(texture, Physics.position,null,Color.White,0f,Vector2.Zero,scale,SpriteEffects.None,0f);//so long just to scale down the joke. It worth it tho lol
+    }
+
+    public Matrix GetViewMatrix()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public void LookAt(Vector2 target)
+    {
+        target = Physics.position;
+    }
+
+    public void Reset(Vector2 startPosition)
+    {
+        startPosition = Physics.position;
     }
 }
