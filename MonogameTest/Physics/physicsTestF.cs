@@ -7,7 +7,7 @@ public class MarioPhysiscsTest
 {
     public PhysicsTest Physics;
     private Texture2D texture;
-    private float scale = 0.2f; 
+    private float scale = 1f; 
 
     //movement variables
     //# changed as neededdddd

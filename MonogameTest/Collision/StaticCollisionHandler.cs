@@ -6,10 +6,9 @@ public struct StaticCollisionResult
     public typeCollision Side;
     public Point MTV;
     public object TileRef;   
-     public Rectangle TileRect;     
+    public Rectangle TileRect;     
       
 }
-
 
 public static class StaticCollisionHandler
 {
@@ -35,7 +34,6 @@ public static class StaticCollisionHandler
             return false; 
         }
 
-
         var region = marioAny.Region; // current frame
         int w = (int)(region.Width  * scale.X);
         int h = (int)(region.Height * scale.Y);
@@ -43,17 +41,14 @@ public static class StaticCollisionHandler
         int top  = (int)(pos.Y - h);
         var marioRect = new Rectangle(left, top, w, h);
 
-        
         var detector = new DetectCollisions();
         var side = detector.GetCollision(marioRect, tileRect, out Point mtv);
         if (side == typeCollision.None) return false;
 
-    
         var newPos = pos + mtv.ToVector2();
         if (marioAny is SmallMarioSprite smW) smW.Position = newPos;
         else if (marioAny is BigMarioSprite bmW) bmW.Position = newPos;
 
-    
         result.Side = side;
         result.MTV = mtv;
         result.TileRect = tileRect;

@@ -45,7 +45,6 @@ public class BoundingBox
         return false;
 
     }
-
     public override int GetHashCode()
     {
         int res = 3;

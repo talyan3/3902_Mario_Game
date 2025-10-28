@@ -34,12 +34,10 @@ public class Game1 : Game
     const int ViewWidth = TilesVisibleX * TileSize; // 256
     private ICamera camera;
     const int scale = 4;
-
-    //private MarioPhysiscsTest Mar; // **$$$
-    //Texture2D Hollow; // **$$$
-
-    //Texture2D platformTexture; // **$$$
-    //Rectangle platformRect; // **$$$
+    private MarioPhysiscsTest Mar; // **$$$
+    Texture2D Hollow; // **$$$
+    Texture2D platformTexture; // **$$$
+    Rectangle platformRect; // **$$$
     private List<Rectangle> _solidRects; //Added
     private Vector2 _spawnPoint; //Added
 
@@ -115,10 +113,10 @@ public class Game1 : Game
         camera.LookAt(_currentMario.Position); // immediately focus on him
 
         //physics test $$$
-        //Hollow = Content.Load<Texture2D>("Sprites/goomba-Final"); // **$$$
-        //Mar = new MarioPhysiscsTest(Hollow); // **$$$
-        //platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
-        //platformRect = new Rectangle(0,209, 2000, 50); // **$$$
+        Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
+        Mar = new MarioPhysiscsTest(Hollow); // **$$$
+        platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
+        platformRect = new Rectangle(0,209, 2000, 50); // **$$$
     }
 
     protected override void Update(GameTime gameTime)
@@ -163,7 +161,7 @@ public class Game1 : Game
         if (MarioManager.ActiveSprite != null)
             MarioManager.ActiveSprite.Update(gameTime);
         
-        //Mar.Update(gameTime, state, platformRect); // ***$$$
+        Mar.Update(gameTime, state, platformRect); // ***$$$
 
         goom.Update(gameTime);
         koop.Update(gameTime);
@@ -260,7 +258,7 @@ public class Game1 : Game
             tile.Draw(_spriteBatch);
         }
         //_spriteBatch.DrawRectangle(new Rectangle(0, 0, 256, 240), Color.Red);
-        //Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
+        Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
 
         _spriteBatch.End();
 
