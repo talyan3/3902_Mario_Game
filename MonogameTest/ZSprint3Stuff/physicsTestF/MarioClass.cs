@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -5,27 +6,43 @@ using MonogameTest;
 
 public class MarioPhysiscsTest : ICamera
 {
+    private Dictionary<string, Animation> _animations;
+    private AnimationPlayer _animationPlayer;
+    public Vector2 Position;
     public PhysicsTest Physics;
     private Texture2D texture;
-    private float scale = 0.15f; 
+    private float scale = 0.15f;
 
     //movement variables
     //# changed as neededdddd
+    private IPlayerState playerState;
      private float moveAcceleration = 1000f;
     private float maxMoveSpeed = 400f;
     private float groundFriction = 800f;
     private float airFriction = 100f;
     private float jump = -500f;
     private float movement = 0f;
-    public MarioPhysiscsTest(Texture2D tex)
+    public MarioPhysiscsTest(Texture2D tex, Dictionary<string, Animation> animations)
     {
         texture = tex;
         Physics = new PhysicsTest();
-        Physics.position = new Vector2(128, 80); 
+        Physics.position = new Vector2(128, 80);
+        _animations = animations;
+        _animationPlayer = new AnimationPlayer();
+        _animationPlayer.Play(_animations["Idle"]);
+        //ChangeState(new PlayerIdleState());
+    }
+    public void SetAnimation(string name)
+    {
+        if (_animations.ContainsKey(name))
+        {
+            _animationPlayer.Play(_animations[name]);
+        }
     }
 
     public void Update(GameTime gameTime, KeyboardState keyboard, Rectangle platformRect)
     {
+        _animationPlayer.Update(gameTime);
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;//delta time
 
 
@@ -99,6 +116,7 @@ public class MarioPhysiscsTest : ICamera
 
     public void Draw(SpriteBatch spriteBatch)
     {
+        _animationPlayer.Draw(spriteBatch, Position);
         spriteBatch.Draw(texture, Physics.position,null,Color.White,0f,Vector2.Zero,scale,SpriteEffects.None,0f);//so long just to scale down the joke. It worth it tho lol
     }
 
