@@ -68,3 +68,5 @@ C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtim
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\runtimes\linux-arm64\native\libopenal.so
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\obj\Debug\net8.0\mgcb.tool.restore
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\marioFont.xnb
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\01-main-theme-overworld.ogg
+C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\01-main-theme-overworld.xnb

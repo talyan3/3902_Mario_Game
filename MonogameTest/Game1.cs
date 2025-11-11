@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
 
 namespace MonogameTest;
@@ -50,6 +51,10 @@ public class Game1 : Game
     private List<object> _enemies = new List<object>();
 
     private SpriteFont myFont;
+    private string coins = "00";
+    
+    private Song backgroundMusic;
+    
 
     public Game1()
     {
@@ -135,6 +140,11 @@ public class Game1 : Game
         platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
 
         myFont = Content.Load<SpriteFont>("marioFont");
+
+        backgroundMusic = Content.Load<Song>("01-main-theme-overworld");
+        MediaPlayer.IsRepeating = true;   // loop the song
+        MediaPlayer.Volume = 0.5f;        // volume (0.0 - 1.0)
+        MediaPlayer.Play(backgroundMusic);
     }
 
     protected override void Update(GameTime gameTime)
@@ -315,7 +325,19 @@ public class Game1 : Game
         if (mushroom != null && (mushroom as movePower).IsAlive)
         {
             mushroom.Draw(_spriteBatch, (mushroom as movePower).Position);
-        }        
+        }
+
+        _spriteBatch.End();
+
+        _spriteBatch.Begin();
+
+        _spriteBatch.DrawString(myFont, "MARIO", new Vector2(90, 15), Color.White);
+        _spriteBatch.DrawString(myFont, "000000", new Vector2(90, 55), Color.White);
+        _spriteBatch.DrawString(myFont, "x" + coins, new Vector2(375, 55), Color.White);
+        _spriteBatch.DrawString(myFont, "WORLD", new Vector2(550, 15), Color.White);
+        _spriteBatch.DrawString(myFont, "1-1", new Vector2(580, 55), Color.White);
+        _spriteBatch.DrawString(myFont, "TIME", new Vector2(800, 15), Color.White);
+        _spriteBatch.DrawString(myFont, "360", new Vector2(825, 55), Color.White);
 
         _spriteBatch.End();
 
