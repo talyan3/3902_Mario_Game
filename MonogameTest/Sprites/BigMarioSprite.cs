@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace MonogameTest;
 
@@ -28,6 +29,7 @@ public class BigMarioSprite : StaticSprite
 	private bool _isJumping = false;
 	private float _jumpOffset = 100f;
 	private Vector2 _groundPos;
+	private SoundEffect jumpSound;
 
     public Rectangle Bounds                                        
     {
@@ -62,6 +64,7 @@ public class BigMarioSprite : StaticSprite
 
 		_current = _idleFrame;
 		Region = _current;
+		jumpSound = SoundEffect.FromFile("smb_jump-super.wav");
 	}
 
 	public override void Update(GameTime gameTime)
@@ -90,6 +93,7 @@ public class BigMarioSprite : StaticSprite
 			{
 				_isJumping = true;
 				Position = new Vector2(Position.X, Position.Y - _jumpOffset);
+				jumpSound.Play();
 			}
 			_current = _jumpFrame;
 		}

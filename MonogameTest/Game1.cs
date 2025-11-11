@@ -52,9 +52,11 @@ public class Game1 : Game
 
     private SpriteFont myFont;
     private string coins = "00";
-    
+
     private Song backgroundMusic;
-    
+    private double time = 360;
+
+    private Texture2D coin;
 
     public Game1()
     {
@@ -145,6 +147,8 @@ public class Game1 : Game
         MediaPlayer.IsRepeating = true;   // loop the song
         MediaPlayer.Volume = 0.5f;        // volume (0.0 - 1.0)
         MediaPlayer.Play(backgroundMusic);
+
+        coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
     }
 
     protected override void Update(GameTime gameTime)
@@ -243,37 +247,38 @@ public class Game1 : Game
     if (goom is moveGoom g2 && g2.IsAlive) enemies.Add(g2);
     if (koop is moveKoop k2 && k2.IsAlive) enemies.Add(k2);
 
-    if (_isBig)
-    {
-        EnemyCollisionHandler.HandleMarioEnemyCollision(
-            _bigMario,
-            enemies,
-            onBigHit: () =>
-            {
-                _isBig = false;
-                _smallMario.Position = _bigMario.Position;
-                var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
-                _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
-                _currentMario = _smallMario;
-            });
-    }
-    else
-    {
-        EnemyCollisionHandler.HandleMarioEnemyCollision(
-            _smallMario,
-            enemies,
-            restart: () =>
-            {
-                _currentMario = _smallMario;
-                _smallMario.Position = _spawnPoint;
+        if (_isBig)
+        {
+            EnemyCollisionHandler.HandleMarioEnemyCollision(
+                _bigMario,
+                enemies,
+                onBigHit: () =>
+                {
+                    _isBig = false;
+                    _smallMario.Position = _bigMario.Position;
+                    var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
+                    _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
+                    _currentMario = _smallMario;
+                });
+        }
+        else
+        {
+            EnemyCollisionHandler.HandleMarioEnemyCollision(
+                _smallMario,
+                enemies,
+                restart: () =>
+                {
+                    _currentMario = _smallMario;
+                    _smallMario.Position = _spawnPoint;
 
-                if (goom is moveGoom gg) gg.IsAlive = true;
-                if (koop is moveKoop kk) kk.IsAlive = true;
-                camera.Reset(_spawnPoint);
-                camera.LookAt(_spawnPoint);
-            });
-    
-    }
+                    if (goom is moveGoom gg) gg.IsAlive = true;
+                    if (koop is moveKoop kk) kk.IsAlive = true;
+                    camera.Reset(_spawnPoint);
+                    camera.LookAt(_spawnPoint);
+                });
+
+        }
+        time -= 0.02;
 
         base.Update(gameTime);
     }
@@ -337,7 +342,18 @@ public class Game1 : Game
         _spriteBatch.DrawString(myFont, "WORLD", new Vector2(550, 15), Color.White);
         _spriteBatch.DrawString(myFont, "1-1", new Vector2(580, 55), Color.White);
         _spriteBatch.DrawString(myFont, "TIME", new Vector2(800, 15), Color.White);
-        _spriteBatch.DrawString(myFont, "360", new Vector2(825, 55), Color.White);
+        _spriteBatch.DrawString(myFont, ((int)time).ToString(), new Vector2(825, 55), Color.White);
+        _spriteBatch.Draw(
+            coin,                  // Texture2D
+            new Vector2(330, 45),  // Position (top-left)
+            null,                  // Source rectangle (null = full texture)
+            Color.White,           // Tint
+            0f,                    // Rotation (none)
+            Vector2.Zero,          // Origin (top-left corner)
+            3f,                    // Scale (3x larger)
+            SpriteEffects.None,    // No flipping
+            0f                     // Layer depth
+        );
 
         _spriteBatch.End();
 
