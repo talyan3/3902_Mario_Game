@@ -30,7 +30,7 @@ namespace MonogameTest
 
     public void LookAt(Vector2 target)
     {
-        float desiredX = target.X - (_viewport.Width / Zoom * _horizontalOffsetRatio);
+        float desiredX = target.X - (_viewport.Width / (Zoom * 100f));
         _position = Vector2.Lerp(_position, new Vector2(desiredX, 0), _smoothSpeed);
         _position.X = MathHelper.Clamp(_position.X, 128, _levelWidth - (_viewport.Width / Zoom));
         

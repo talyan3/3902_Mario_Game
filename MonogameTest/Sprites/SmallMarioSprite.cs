@@ -7,7 +7,7 @@ namespace MonogameTest;
 
 public class SmallMarioSprite : StaticSprite
 {
-    public Vector2 Position { get; set; } = Vector2.Zero;
+    override public Vector2 Position { get; set; } = Vector2.Zero;
     public Vector2 Scale { get; set; } = new Vector2(1f, 1f);
 
     public float MoveSpeed = 100f; // px/sec

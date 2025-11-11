@@ -13,6 +13,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin marioFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:marioFont.spritefont
+
 #begin Sprites/goomba-Final.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -36,3 +43,4 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Sprites/green-koopa.png
+

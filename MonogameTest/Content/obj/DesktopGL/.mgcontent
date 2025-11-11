@@ -4,9 +4,9 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/marioFont.spritefont</File>
-    <File>C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/goomba-Final.png</File>
-    <File>C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/green-koopa.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/marioFont.spritefont</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/goomba-Final.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/green-koopa.png</File>
   </SourceFiles>
   <DestFiles>
     <File xsi:nil="true" />

@@ -40,6 +40,16 @@ public class Game1 : Game
     Rectangle platformRect; // **$$$
     private List<Rectangle> _solidRects; //Added
     private Vector2 _spawnPoint; //Added
+    private BackgroundManager _backgroundManager;
+
+    //ANIKA POWERUP COLLISION VARIABLES
+    public Texture2D powerupTexture;
+    public ISprite mushroom;
+
+    //ANIKA ENEMIES COLLISION VARIABLES
+    private List<object> _enemies = new List<object>();
+
+    private SpriteFont myFont;
 
     public Game1()
     {
@@ -60,16 +70,22 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-        //Texture2D blocksTexture = Texture2D.FromFile(GraphicsDevice, "blocks-Final.png"); // *******
-        //blockManager = new BlockManager(blocksTexture); // **********
-        //Texture2D powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png"); // *******
-        //powerupManager = new PowerupManager(powerupTexture); // **********
+        _backgroundManager = new BackgroundManager(GraphicsDevice);
+        _backgroundManager.LoadContent();
 
         goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
         koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
         goom = new moveGoom(goombaSprite, _spriteBatch);
         koop = new moveKoop(koopaSprite, _spriteBatch);
+
+        // Set initial positions for enemies (in world coordinates, same scale as tiles)
+        (goom as moveGoom).Position = new Vector2(16 * 20, 16 * 12); // 20 tiles over, ground level
+        (koop as moveKoop).Position = new Vector2(16 * 25, 16 * 12); // 35 tiles over, ground level
+
+        //load powerups
+        powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png");
+        mushroom = new movePower(powerupTexture, _spriteBatch);
+        (mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
 
         // TODO: use this.Content to load your game content here
         new SpriteCommand(GraphicsDevice, MarioManager).Execute();
@@ -116,7 +132,9 @@ public class Game1 : Game
         Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
         Mar = new MarioPhysiscsTest(Hollow); // **$$$
         platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
-        platformRect = new Rectangle(0,209, 2000, 50); // **$$$
+        platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
+
+        myFont = Content.Load<SpriteFont>("marioFont");
     }
 
     protected override void Update(GameTime gameTime)
@@ -129,18 +147,7 @@ public class Game1 : Game
         CommandManager.checkClicks();
         if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
 
-        KeyboardState state = Keyboard.GetState(); 
-
-        if (state.IsKeyDown(Keys.P) && !previousState.IsKeyDown(Keys.P)) 
-        {
-            blockManager.NextBlock();
-            powerupManager.NextPowerup();
-        }
-        if (state.IsKeyDown(Keys.O) && !previousState.IsKeyDown(Keys.O))
-        {
-            blockManager.PreviousBlock();
-            powerupManager.PreviousPowerup();
-        }
+        KeyboardState state = Keyboard.GetState();
         previousState = state; 
 
         bool bDown = state.IsKeyDown(Keys.B);
@@ -148,11 +155,29 @@ public class Game1 : Game
 			ToggleMarioSize();
 		_bHeldLast = bDown;
 
+        if (state.IsKeyDown(Keys.R))
+        {
+            // Reset Mario’s position to the original spawn point
+            if (_currentMario is SmallMarioSprite)
+                _currentMario.Position = _spawnPoint;
+            else if (_currentMario is BigMarioSprite)
+                _currentMario.Position = _spawnPoint;
+
+            // Also reset both sprite forms so future switches start from same place
+            _smallMario.Position = _spawnPoint;
+            _bigMario.Position = _spawnPoint;
+
+            // Reset the camera to follow Mario at that point
+            camera.Reset(_spawnPoint);
+            camera.LookAt(_spawnPoint);
+        }
+
         _currentMario.Update(gameTime);
         Vector2 marioPos = _currentMario is SmallMarioSprite sm ? sm.Position :
                    _currentMario is BigMarioSprite bm ? bm.Position :
                    Vector2.Zero;
         camera.LookAt(marioPos);
+
         if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
         {
             Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
@@ -166,11 +191,18 @@ public class Game1 : Game
         goom.Update(gameTime);
         koop.Update(gameTime);
 
+        //update mushroom
+        mushroom.Update(gameTime);
+
         if (goom is moveGoom g)
         {
             if (EnemyCollisionHandler.HandleMany(g, _mapTiles, out var gRes, out var gTile))
             {
-                if (gRes.HitWall)   Console.WriteLine($"Goomba hit wall at {gRes.TileRect.Location}");
+                if (gRes.HitWall)
+                {
+                    Console.WriteLine($"Goomba hit wall at {gRes.TileRect.Location}");
+                    g.ReverseDirection();
+                }
                 if (gRes.Grounded)  Console.WriteLine("Goomba grounded");
                 if (gRes.BonkedHead)Console.WriteLine("Goomba bonked head");
 
@@ -184,9 +216,13 @@ public class Game1 : Game
         {
             if (EnemyCollisionHandler.HandleMany(k, _mapTiles, out var kRes, out var kTile))
             {
-                if (kRes.HitWall) Console.WriteLine($"Koopa hit wall at {kRes.TileRect.Location}");
+                if (kRes.HitWall)
+                {
+                    Console.WriteLine($"Koopa hit wall at {kRes.TileRect.Location}");
+                    k.ReverseDirection();
+                }
                 if (kRes.Grounded) Console.WriteLine("Koopa grounded");
-                if (kRes.BonkedHead) Console.WriteLine("Koopabonked head");
+                if (kRes.BonkedHead) Console.WriteLine("Koopa bonked head");
                 Console.WriteLine(
                     $"[Collision] Enemy=Koopa   Side={kRes.Side}  MTV={kRes.MTV}  TilePixel={kRes.TileRect.Location}");
 
@@ -223,6 +259,8 @@ public class Game1 : Game
 
                 if (goom is moveGoom gg) gg.IsAlive = true;
                 if (koop is moveKoop kk) kk.IsAlive = true;
+                camera.Reset(_spawnPoint);
+                camera.LookAt(_spawnPoint);
             });
     
     }
@@ -246,10 +284,13 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime) 
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(new Color(92, 148, 252));
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
+
+        _backgroundManager.Draw(_spriteBatch, cameraX: 0f); // or your camera’s X
+
         _currentMario.Draw(_spriteBatch, _currentMario.Position);
 
         // For each tile, draw it
@@ -259,6 +300,22 @@ public class Game1 : Game
         }
         //_spriteBatch.DrawRectangle(new Rectangle(0, 0, 256, 240), Color.Red);
         Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
+        //draw enemies (koop and goom)
+        if (goom is moveGoom g && g.IsAlive)
+        {
+            g.Draw(_spriteBatch, g.Position);
+        }
+
+        if(koop is moveKoop k && k.IsAlive)
+        {
+            k.Draw(_spriteBatch, k.Position);
+        }
+
+        //draw mushroom
+        if (mushroom != null && (mushroom as movePower).IsAlive)
+        {
+            mushroom.Draw(_spriteBatch, (mushroom as movePower).Position);
+        }        
 
         _spriteBatch.End();
 

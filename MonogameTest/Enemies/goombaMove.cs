@@ -1,3 +1,4 @@
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -11,19 +12,15 @@ class moveGoom : ISprite
     Rectangle sRect;
     Rectangle dRect;
     float elasped;
-    //change the delay for different feels
-    //looks kinda choppy atm
-    //later plan to give every sprite that moves a pos value
     float delay = 150f;
+    private const float Speed = 30f;
     int frames;
     int walkLeft = 1;
     int walkRight = 1;
-    //int currPosGoomX = 100;
-    //32 is first walk right frame 
-    //64 is neuatral frame
-    //96 is walk right frame
-    public Vector2 Velocity { get; set; } = Vector2.Zero;   
+    public Vector2 Velocity { get; set; } = Vector2.Zero;
     public bool IsAlive { get; set; } = true;
+    public double direction = -1; // -1 = left, +1 = right
+    float deltaTime;
 
     public moveGoom(Texture2D texture, SpriteBatch spriteBatch)
     {
@@ -31,10 +28,11 @@ class moveGoom : ISprite
         _spriteBatch = spriteBatch;
 
         if (dRect.Width == 0 || dRect.Height == 0)
-            dRect = new Rectangle(100, 300, 32, 32);
+            dRect = new Rectangle(0, 0, 32, 16);
         if (sRect.Width == 0 || sRect.Height == 0)
-            sRect = new Rectangle(0, 0, 32, 20);
+            sRect = new Rectangle(0, 0, 32, 16);
     }
+    
 
     public Vector2 Position
     {
@@ -43,50 +41,40 @@ class moveGoom : ISprite
     }
     public Rectangle Bounds => IsAlive ? dRect : Rectangle.Empty;
     public Rectangle Region => sRect;             
-    public Vector2 Scale => Vector2.One; 
+    public Vector2 Scale => Vector2.One;
     public void Draw(SpriteBatch spriteBatch, Vector2 position)
     {
         if (!IsAlive) return;
-        _spriteBatch.Draw(sprite,dRect,sRect,Color.White);//
+        _spriteBatch.Draw(sprite, dRect, sRect, Color.White);//
     }
 
+    // Public method to be called by the collision handler in Game1.Update
+    public void ReverseDirection()
+    {
+        direction *= -2;
+    }
 
     public void Update(GameTime gameTime)
     {
         if (!IsAlive) return;
+
+        deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+        // 1. Apply Movement: Goomba moves continuously based on its current 'direction'
+        Position += new Vector2(Math.Clamp((float)direction, -2f, 2f) * Speed * deltaTime, 0);
+
+        // NOTE: Direction is now only reversed externally when collision with a tile occurs.
+
+        // 2. Animation Logic (Time-delayed)
         elasped += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
         if (elasped >= delay)
         {
-            //walking
-            if (frames >= 1)
-            {
-                frames = 0;
-            }
-            else
-            {
-                frames++;
-            }
-            elasped = 0;
-        
-        if (walkRight < 10)
-        {
-            walkRight++;
-            dRect = new Rectangle(100 + (10 * walkRight), 300, 32, 32);
-        }
-        else if (walkLeft < 10 && walkRight >= 10)
-        {
-            walkLeft++;
-            dRect = new Rectangle(200 - (10 * walkLeft), 300, 32, 32);
-        }
-        else
-        {
-            walkLeft = 1;
-            walkRight = 1;
-        }
-        }
+            // Alternate between animation frames (0 and 1)
+            frames = (frames + 1) % 2;
+            elasped = 0f;
 
-   
-    sRect = new Rectangle(frames * 32, 0, 32, 20);
-       
+            // Update the source rectangle based on the current animation frame
+            sRect = new Rectangle(frames * 32, 0, 32, 16);
+        }
     }
 }

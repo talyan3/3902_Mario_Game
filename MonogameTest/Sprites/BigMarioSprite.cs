@@ -7,7 +7,7 @@ namespace MonogameTest;
 
 public class BigMarioSprite : StaticSprite
 {
-	public Vector2 Position { get; set; } = Vector2.Zero;
+	override public Vector2 Position { get; set; } = Vector2.Zero;
 	public Vector2 Scale { get; set; } = new Vector2(1f, 1f); // slightly larger to match big mario size
 
 	public float MoveSpeed = 100f;
