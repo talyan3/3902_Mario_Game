@@ -1,9 +1,9 @@
-using System.Runtime.CompilerServices;
-using Microsoft.Xna.Framework;
+// using System.Runtime.CompilerServices;
+// using Microsoft.Xna.Framework;
 
-namespace MonogameTest;
+// namespace MonogameTest;
 
-public interface ICommand
-{
-    public void Execute();
-}
+// public interface ICommand
+// {
+//     public void Execute();
+// }

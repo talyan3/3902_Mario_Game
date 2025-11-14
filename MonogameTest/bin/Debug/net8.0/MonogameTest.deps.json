@@ -9,8 +9,8 @@
       "MonogameTest/1.0.0": {
         "dependencies": {
           "MonoGame.Content.Builder.Task": "3.8.4.1",
-          "MonoGame.Framework.DesktopGL": "3.8.4.1",
-          "MonoGame.Extended": "5.1.1"
+          "MonoGame.Extended": "5.1.1",
+          "MonoGame.Framework.DesktopGL": "3.8.4.1"
         },
         "runtime": {
           "MonogameTest.dll": {}

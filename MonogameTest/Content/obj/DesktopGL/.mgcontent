@@ -4,14 +4,25 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/Entity/big-mario-final.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/Entity/small-mario-final.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/BigHill.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/Bush1.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/Bush2.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/Bush3.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/Cloud1.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/Cloud2.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/Cloud3.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/SmallHill.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/goomba-Final.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/green-koopa.png</File>
+    <File>c:/Users/donny/OneDrive/Documents/GitHub/3902_Mario_Game/MonogameTest/Content/Sprites/ItemSprite/powerups.png</File>
     <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/01-main-theme-overworld.mp3</File>
     <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/marioFont.spritefont</File>
     <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/goomba-Final.png</File>
     <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/green-koopa.png</File>
   </SourceFiles>
   <DestFiles>
-    <File xsi:nil="true" />
-    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>

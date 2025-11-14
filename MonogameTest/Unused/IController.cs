@@ -1,6 +1,6 @@
-namespace MonogameTest;
+// namespace MonogameTest;
 
-public interface IController
-{
+// public interface IController
+// {
     
-}
+// }

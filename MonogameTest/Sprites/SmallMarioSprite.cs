@@ -3,11 +3,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Content;
 
 namespace MonogameTest;
 
 public class SmallMarioSprite : StaticSprite
 {
+    ContentManager _content;
     override public Vector2 Position { get; set; } = Vector2.Zero;
     public Vector2 Scale { get; set; } = new Vector2(1f, 1f);
 
@@ -51,9 +53,10 @@ public class SmallMarioSprite : StaticSprite
         Position = new Vector2(Position.X, Position.Y - pixels);
     }
 
-    public SmallMarioSprite(GraphicsDevice graphicsDevice)
+    public SmallMarioSprite(GraphicsDevice graphicsDevice, ContentManager _content)
     {
-        Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario-final.png");
+        Texture2D texture = _content.Load<Texture2D>("Sprites/Entity/small-mario-final");
+        //Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario-final.png");
 
         _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
         _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
@@ -64,7 +67,8 @@ public class SmallMarioSprite : StaticSprite
 
         _current = _idleFrame;
         Region = _current;
-        jumpSound = SoundEffect.FromFile("smb_jump-super.wav");
+        jumpSound = _content.Load<SoundEffect>("smb_jump-super");
+        //jumpSound = SoundEffect.FromFile("smb_jump-super.wav");
     }
 
     public override void Update(GameTime gameTime)

@@ -13,10 +13,7 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    public MarioManager MarioManager { get; set; } = new MarioManager();
-    public CommandManager CommandManager { get; set; }
-    private BlockManager blockManager; // ********
-    private PowerupManager powerupManager; // ********
+   
     public Texture2D goombaSprite;
     public Texture2D koopaSprite;
     public ISprite goom;
@@ -67,7 +64,6 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-         CommandManager = new CommandManager(this, MarioManager);
         _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
         _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
         _graphics.ApplyChanges();
@@ -77,7 +73,7 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _backgroundManager = new BackgroundManager(GraphicsDevice);
+        _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
         _backgroundManager.LoadContent();
 
         goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
@@ -90,15 +86,14 @@ public class Game1 : Game
         (koop as moveKoop).Position = new Vector2(16 * 25, 16 * 12); // 35 tiles over, ground level
 
         //load powerups
-        powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png");
+        powerupTexture = Content.Load<Texture2D>("Sprites/ItemSprite/powerups");
+        //powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png");
         mushroom = new movePower(powerupTexture, _spriteBatch);
         (mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
 
-        // TODO: use this.Content to load your game content here
-        new SpriteCommand(GraphicsDevice, MarioManager).Execute();
         
-        _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
-        _bigMario = new BigMarioSprite(GraphicsDevice);
+        _smallMario = new SmallMarioSprite(GraphicsDevice, Content); 
+        _bigMario = new BigMarioSprite(GraphicsDevice, Content);
         
         // Start Mario somewhere reasonable in world coordinates (e.g., ground level)
         var pos = new Vector2(16 * 5, 16 * 13); // y = 13 tiles down instead of 20
@@ -136,7 +131,8 @@ public class Game1 : Game
         camera.LookAt(_currentMario.Position); // immediately focus on him
 
         //physics test $$$
-        Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
+        Hollow = Content.Load<Texture2D>("Sprites/Entity/marioStatic");
+        //Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
         Mar = new MarioPhysiscsTest(Hollow); // **$$$
         platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
         platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
@@ -147,8 +143,8 @@ public class Game1 : Game
         MediaPlayer.IsRepeating = true;   // loop the song
         MediaPlayer.Volume = 0.5f;        // volume (0.0 - 1.0)
         MediaPlayer.Play(backgroundMusic);
-
-        coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
+        coin = Content.Load<Texture2D>("Sprites/ItemSprite/coin2");
+        //coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
     }
 
     protected override void Update(GameTime gameTime)
@@ -156,10 +152,7 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
-        CommandManager.checkKeys();
-        CommandManager.checkClicks();
-        if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
+
 
         KeyboardState state = Keyboard.GetState();
         previousState = state; 
@@ -197,9 +190,7 @@ public class Game1 : Game
             Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
         }
 
-        if (MarioManager.ActiveSprite != null)
-            MarioManager.ActiveSprite.Update(gameTime);
-        
+       
         Mar.Update(gameTime, state, platformRect); // ***$$$
 
         goom.Update(gameTime);

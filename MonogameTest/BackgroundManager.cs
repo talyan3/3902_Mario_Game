@@ -1,6 +1,8 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
+using System.Net.Mime;
 
 namespace MonogameTest;
 
@@ -13,23 +15,33 @@ public class BackgroundManager
     private Texture2D cloud1, cloud2, cloud3;
     private Texture2D bush1, bush2, bush3;
     private Texture2D hillSmall, hillBig;
+    private ContentManager _content;
 
-    public BackgroundManager(GraphicsDevice graphicsDevice)
+    public BackgroundManager(GraphicsDevice graphicsDevice, ContentManager content)
     {
         _graphicsDevice = graphicsDevice;
+        _content = content;
     }
 
     public void LoadContent()
     {
         // Load textures once
-        cloud1 = Texture2D.FromFile(_graphicsDevice, "Cloud1.png");
-        cloud2 = Texture2D.FromFile(_graphicsDevice, "Cloud2.png");
-        cloud3 = Texture2D.FromFile(_graphicsDevice, "Cloud3.png");
-        bush1 = Texture2D.FromFile(_graphicsDevice, "Bush1.png");
-        bush2 = Texture2D.FromFile(_graphicsDevice, "Bush2.png");
-        bush3 = Texture2D.FromFile(_graphicsDevice, "Bush3.png");
-        hillSmall = Texture2D.FromFile(_graphicsDevice, "SmallHill.png");
-        hillBig = Texture2D.FromFile(_graphicsDevice, "BigHill.png");
+        cloud1 = _content.Load<Texture2D>("Sprites/BGSprites/Cloud1");
+        cloud2 = _content.Load<Texture2D>("Sprites/BGSprites/Cloud2");
+        cloud3 = _content.Load<Texture2D>("Sprites/BGSprites/Cloud3");
+        bush1 = _content.Load<Texture2D>("Sprites/BGSprites/Bush1");
+        bush2 = _content.Load<Texture2D>("Sprites/BGSprites/Bush2");
+        bush3 = _content.Load<Texture2D>("Sprites/BGSprites/Bush3");
+        hillSmall = _content.Load<Texture2D>("Sprites/BGSprites/SmallHill");
+        hillBig = _content.Load<Texture2D>("Sprites/BGSprites/BigHill");
+        //cloud1 = Texture2D.FromFile(_graphicsDevice, "Cloud1.png");
+        //cloud2 = Texture2D.FromFile(_graphicsDevice, "Cloud2.png");
+        //cloud3 = Texture2D.FromFile(_graphicsDevice, "Cloud3.png");
+        //bush1 = Texture2D.FromFile(_graphicsDevice, "Bush1.png");
+        //bush2 = Texture2D.FromFile(_graphicsDevice, "Bush2.png");
+        //bush3 = Texture2D.FromFile(_graphicsDevice, "Bush3.png");
+        //hillSmall = Texture2D.FromFile(_graphicsDevice, "SmallHill.png");
+        //hillBig = Texture2D.FromFile(_graphicsDevice, "BigHill.png");
 
         // Add decorative elements to the list
         _elements.AddRange(new[]
