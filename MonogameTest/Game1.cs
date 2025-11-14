@@ -6,6 +6,9 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
+using MonoGame.Extended.Animations;
+using System.Net;
+using System.Runtime.Intrinsics.X86;
 
 namespace MonogameTest;
 
@@ -13,7 +16,8 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-   
+   private InputController _input = new InputController();/////
+
     public Texture2D goombaSprite;
     public Texture2D koopaSprite;
     public ISprite goom;
@@ -32,7 +36,8 @@ public class Game1 : Game
     const int ViewWidth = TilesVisibleX * TileSize; // 256
     private ICamera camera;
     const int scale = 4;
-    private MarioPhysiscsTest Mar; // **$$$
+    const float SpriteScale = 0.30f;
+    //private MarioPhysiscsTest Mar; // **$$$
     Texture2D Hollow; // **$$$
     Texture2D platformTexture; // **$$$
     Rectangle platformRect; // **$$$
@@ -55,6 +60,16 @@ public class Game1 : Game
 
     private Texture2D coin;
 
+    //THE EVER PROMISED STATE MACHINE 
+    //... Testy
+    Animation idleAnim;
+    Animation runAnim;
+    Animation jumpAnim;
+    AnimationPlayer animPlayer;
+    PhysicsTest Phys;
+    PlayerMario Mar; ///////
+
+    SoundManager soundManager;/////
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -75,7 +90,19 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
         _backgroundManager.LoadContent();
-
+        /////
+        Assets.Load(Content);
+        idleAnim = new Animation(Assets.PlayerIdle, 30, 16, 1, 0.1f, 8);
+        runAnim  = new Animation(Assets.PlayerRun,  30, 16, 3, 0.1f, 9);
+        animPlayer = new AnimationPlayer();
+        //jumpAnim = new Animation(Assets.PlayerJump, 16, 16, 2, 0.15f, 0);
+        animPlayer.Play(idleAnim);
+        Mar = new PlayerMario();
+        Mar.LoadContent(Content, soundManager);
+        soundManager = new SoundManager(Content);
+        soundManager.LoadContent();
+        ///////
+        
         goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
         koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
         goom = new moveGoom(goombaSprite, _spriteBatch);
@@ -133,7 +160,7 @@ public class Game1 : Game
         //physics test $$$
         Hollow = Content.Load<Texture2D>("Sprites/Entity/marioStatic");
         //Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
-        Mar = new MarioPhysiscsTest(Hollow); // **$$$
+        //Mar = new MarioPhysiscsTest(Hollow); // **$$$
         platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
         platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
 
@@ -155,13 +182,15 @@ public class Game1 : Game
 
 
         KeyboardState state = Keyboard.GetState();
+        animPlayer.Update(gameTime);////////
         previousState = state; 
-
+        _input.Update();/////
         bool bDown = state.IsKeyDown(Keys.B);
+        Mar.Update(gameTime, platformRect);
 		if (bDown && !_bHeldLast)
 			ToggleMarioSize();
 		_bHeldLast = bDown;
-
+        //Phys.Update(gameTime); ///////
         if (state.IsKeyDown(Keys.R))
         {
             // Reset Mario’s position to the original spawn point
@@ -191,7 +220,7 @@ public class Game1 : Game
         }
 
        
-        Mar.Update(gameTime, state, platformRect); // ***$$$
+        //Mar.Update(gameTime, state, platformRect); // ***$$$
 
         goom.Update(gameTime);
         koop.Update(gameTime);
@@ -292,13 +321,13 @@ public class Game1 : Game
     {
         GraphicsDevice.Clear(new Color(92, 148, 252));
 
-        // TODO: Add your drawing code here
         _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
 
         _backgroundManager.Draw(_spriteBatch, cameraX: 0f); // or your camera’s X
 
         _currentMario.Draw(_spriteBatch, _currentMario.Position);
 
+        animPlayer.Draw(_spriteBatch, Mar.Physics.position, Mar.FacingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally, SpriteScale);// TODO: change mar stuff here
         // For each tile, draw it
         foreach (var tile in _mapTiles)
         {

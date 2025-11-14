@@ -7,6 +7,8 @@ public class PhysicsTest
     public Vector2 acceleration;
     public bool isGrounded;
 
+    public bool isFacingRight = true;
+
     public void Update(GameTime gameTime)
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
