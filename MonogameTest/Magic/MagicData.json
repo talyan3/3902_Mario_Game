@@ -162,7 +162,24 @@
 
     "ColorFirst": 92,
     "ColorSecond": 148,
-    "ColorThird": 252
+    "ColorThird": 252,
+
+    "TopLeftPosX": 330,
+    "TopLeftPosY": 45,
+
+    "StartMarioX": 5,
+    "StartMarioY": 13,
+
+    "MushroomPosX": 10,
+    "MushroomPosY": 11,
+
+    "KoopaPosX": 106,
+    "KoopaPosY": 12,
+
+    "SpriteScale": 3,
+
+    "TimeStart": 360
+
 }
 
 

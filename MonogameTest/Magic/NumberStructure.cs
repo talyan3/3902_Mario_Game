@@ -177,7 +177,20 @@ public class GameNumbers
     public int ColorFirst { get; set; }
     public int ColorSecond { get; set; }
     public int ColorThird { get; set; }
+    public int TopLeftPosX { get; set; }
+    public int TopLeftPosY { get; set; }
 
-    
+    public int StartMarioX { get; set; }
+    public int StartMarioY { get; set; }
+
+    public int MushroomPosX { get; set; }
+    public int MushroomPosY { get; set; }
+
+    public int KoopaPosX { get; set; }
+    public int KoopaPosY { get; set; }
+    public float SpriteScale { get; set; }
+
+    public double TimeStart {get; set;}
+
 }
 
