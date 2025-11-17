@@ -23,6 +23,7 @@ public class Game1 : Game
     public Texture2D koopaSprite;
     public ISprite goom;
     public ISprite koop;
+    private List<moveGoom> goombas = new List<moveGoom>();
     public Vector2 pos;
     private SmallMarioSprite _smallMario;
     private BigMarioSprite _bigMario;
@@ -50,6 +51,7 @@ public class Game1 : Game
     private List<object> _enemies = new List<object>();
 
     private SpriteFont myFont;
+    public string score = "000000";
     private string coins = "00";
     private double time = 360;
     private Texture2D coin;
@@ -110,8 +112,34 @@ public class Game1 : Game
         koop = new moveKoop(koopaSprite, _spriteBatch);
 
         // Set initial positions for enemies (in world coordinates, same scale as tiles)
-        (goom as moveGoom).Position = new Vector2(16 * 20, 16 * 12); // 20 tiles over, ground level
-        (koop as moveKoop).Position = new Vector2(16 * 25, 16 * 12); // 35 tiles over, ground level
+        Vector2[] goombaPositions = new Vector2[]
+        {
+            new Vector2(16 * 22, 16 * 12),
+            new Vector2(16 * 39, 16 * 12),
+            new Vector2(16 * 50, 16 * 12),
+            new Vector2(16 * 52, 16 * 12),
+            new Vector2(16 * 79, 16 * 4),
+            new Vector2(16 * 81, 16 * 4),
+            new Vector2(16 * 96, 16 * 12),
+            new Vector2(16 * 98, 16 * 12),
+            new Vector2(16 * 113, 16 * 12),
+            new Vector2(16 * 115, 16 * 12),
+            new Vector2(16 * 124, 16 * 12),
+            new Vector2(16 * 126, 16 * 12),
+            new Vector2(16 * 128, 16 * 12),
+            new Vector2(16 * 130, 16 * 12),
+            new Vector2(16 * 173, 16 * 12),
+            new Vector2(16 * 175, 16 * 12)
+        };
+        // Load goombas
+        foreach (var posG in goombaPositions)
+        {
+            var g = new moveGoom(goombaSprite, _spriteBatch);
+            g.Position = posG;
+            goombas.Add(g);
+        }
+
+        (koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 35 tiles over, ground level
 
         //load powerups
         powerupTexture = Content.Load<Texture2D>("Sprites/powerups");
@@ -209,14 +237,17 @@ public class Game1 : Game
         }
 
         //if (MarioManager.ActiveSprite != null)
-            //MarioManager.ActiveSprite.Update(gameTime);
-        
+        //MarioManager.ActiveSprite.Update(gameTime);
+
         //Mar.Update(gameTime, state, platformRect); 
-        goom.Update(gameTime);
+        foreach (var gg in goombas)
+            if (gg.IsAlive)
+                gg.Update(gameTime);
+            
         koop.Update(gameTime);
         mushroom.Update(gameTime);
 
-        if (goom is moveGoom g)
+        foreach (var g in goombas)
         {
             if (EnemyCollisionHandler.HandleMany(g, _mapTiles, out var gRes, out var gTile))
             {
@@ -225,13 +256,13 @@ public class Game1 : Game
                     Console.WriteLine($"Goomba hit wall at {gRes.TileRect.Location}");
                     g.ReverseDirection();
                 }
-                if (gRes.Grounded)  Console.WriteLine("Goomba grounded");
-                if (gRes.BonkedHead)Console.WriteLine("Goomba bonked head");
+                if (gRes.Grounded) Console.WriteLine("Goomba grounded");
+                if (gRes.BonkedHead) Console.WriteLine("Goomba bonked head");
 
                 Console.WriteLine(
                     $"[Collision] Enemy=Goomba  Side={gRes.Side}  MTV={gRes.MTV}  TilePixel={gRes.TileRect.Location}");
-
             }
+            
         }
 
         if (koop is moveKoop k)
@@ -252,7 +283,10 @@ public class Game1 : Game
         }
     
     var enemies = new List<object>();
-    if (goom is moveGoom g2 && g2.IsAlive) enemies.Add(g2);
+        foreach (var g in goombas)
+            if (g.IsAlive)
+                enemies.Add(g);
+        
     if (koop is moveKoop k2 && k2.IsAlive) enemies.Add(k2);
 
         if (_isBig)
@@ -323,10 +357,9 @@ public class Game1 : Game
         }
         Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
         //draw enemies (koop and goom)
-        if (goom is moveGoom g && g.IsAlive)
-        {
-            g.Draw(_spriteBatch, g.Position);
-        }
+        foreach (var g in goombas)
+            if (g.IsAlive)
+                g.Draw(_spriteBatch, g.Position);
 
         if(koop is moveKoop k && k.IsAlive)
         {
@@ -344,7 +377,7 @@ public class Game1 : Game
         _spriteBatch.Begin();
 
         _spriteBatch.DrawString(myFont, "MARIO", new Vector2(90, 15), Color.White);
-        _spriteBatch.DrawString(myFont, "000000", new Vector2(90, 55), Color.White);
+        _spriteBatch.DrawString(myFont, score, new Vector2(90, 55), Color.White);
         _spriteBatch.DrawString(myFont, "x" + coins, new Vector2(375, 55), Color.White);
         _spriteBatch.DrawString(myFont, "WORLD", new Vector2(550, 15), Color.White);
         _spriteBatch.DrawString(myFont, "1-1", new Vector2(580, 55), Color.White);

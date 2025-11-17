@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System; 
+using System;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MonogameTest
 {
@@ -12,9 +13,8 @@ namespace MonogameTest
         public object TileRef;   
         public bool Grounded;       
         public bool BonkedHead;
-        public bool HitWall;    
-        
-        
+        public bool HitWall;
+            
     }
 
     public static class EnemyCollisionHandler
@@ -30,11 +30,13 @@ namespace MonogameTest
             {
                 pos = goom.Position;
                 enemyRect = goom.Bounds;
+                enemyRect.Inflate(-5, 0);   // Shrinks width by 8 total, height unchanged
             }
             else if (enemyAny is moveKoop koop)
             {
                 pos = koop.Position;
                 enemyRect = koop.Bounds;
+                enemyRect.Inflate(-5, 0);   // Shrinks width by 8 total, height unchanged
             }
             else
             {
@@ -115,11 +117,13 @@ namespace MonogameTest
                 {
                     enemyRect = goom.Bounds;
                     alive = goom.IsAlive;
+                    enemyRect.Inflate(-6, 0); 
                 }
                 else if (enemy is moveKoop koop)
                 {
                     enemyRect = koop.Bounds;
                     alive = koop.IsAlive;
+                    enemyRect.Inflate(-6, 0); 
                 }
                 else continue;
 
@@ -129,11 +133,14 @@ namespace MonogameTest
 
                 
                 bool stomp = feet.Intersects(enemyRect) &&
-                             (marioBounds.Bottom <= enemyRect.Top + 8);
+                             (marioBounds.Bottom <= enemyRect.Top + 4);
 
                 if (stomp)
                 {
-                    if (enemy is moveGoom g) g.IsAlive = false;
+                    if (enemy is moveGoom g)
+                    {
+                        g.IsAlive = false;
+                    }
                     else if (enemy is moveKoop k) k.IsAlive = false;
 
                     bounce?.Invoke();

@@ -62,7 +62,6 @@ else // vertical collision
         return typeCollision.Bottom;
     }
 }
-
         }
 
         return typeCollision.None; //no collision

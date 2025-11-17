@@ -31,7 +31,7 @@ public class PlayerMario
     public PlayerMario()
     {
         Physics = new Physics();
-        Physics.position = new Vector2(100, 100);
+        Physics.position = new Vector2(-100, 100);
         PhysicsP = new PlayerPhysics();
         animPlayer = new AnimationPlayer();
         Input = new InputController();
