@@ -10,6 +10,7 @@ using MonoGame.Extended.Animations;
 using System.Net;
 using System.Runtime.Intrinsics.X86;
 using MonogameTest.Sounds;
+using MonogameTest.Screens;
 
 namespace MonogameTest;
 
@@ -67,6 +68,15 @@ public class Game1 : Game
 
     public SoundManager SoundManager { get; private set; }
 
+    // Screen + HUD
+    private ScreenManager _screenManager;
+    private HUDScreen _hud;
+
+    private TitleScreen _titleScreen;
+    private LevelIntroScreen _introScreen;
+    private TimeUpScreen _timeUpScreen;
+    private GameOverScreen _gameOverScreen;
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -79,13 +89,14 @@ public class Game1 : Game
         _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
         _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
         _graphics.ApplyChanges();
+        _screenManager = new ScreenManager();
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        SoundManager = new SoundManager();
+        SoundManager = SoundManager.Instance;
 
         SoundLoader.LoadAllSounds(this, SoundManager);
         SoundManager.PlaySong("mainTheme"); // auto start overworld theme
@@ -102,9 +113,6 @@ public class Game1 : Game
         animPlayer.Play(idleAnim);
         Mar = new PlayerMario();
         Mar.LoadContent(Content, SoundManager, GraphicsDevice);
-        //soundManager = new SoundManager(Content);
-        //soundManager.LoadContent();
-        ///////
 
         goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
         koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
@@ -194,14 +202,47 @@ public class Game1 : Game
         //platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
 
         myFont = Content.Load<SpriteFont>("marioFont");
-
         coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
+        var titleTex = Texture2D.FromFile(GraphicsDevice, "titlescreen.png");
+
+        _hud = new HUDScreen(myFont, coin, _screenManager);
+
+        // Load screens
+        _titleScreen = new TitleScreen(this, _screenManager, titleTex, myFont, coin);
+        _introScreen = new LevelIntroScreen(this, _screenManager, myFont, coin);
+        _timeUpScreen = new TimeUpScreen(this, _screenManager, myFont, coin);
+        _gameOverScreen = new GameOverScreen(this, _screenManager, myFont, coin);
     }
 
     protected override void Update(GameTime gameTime)
     {
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
+
+            _screenManager.Update(gameTime);
+
+        // Screen state handling
+        switch (_screenManager.CurrentState)
+        {
+            case GameState.Title:
+                _titleScreen.Update(gameTime);
+                return;
+
+            case GameState.LevelIntro:
+                _introScreen.Update(gameTime);
+                return;
+
+            case GameState.TimeUp:
+                _timeUpScreen.Update(gameTime);
+                return;
+
+            case GameState.GameOver:
+                _gameOverScreen.Update(gameTime);
+                return;
+
+            case GameState.Playing:
+                break;
+        }
 
         //if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
 
@@ -246,6 +287,11 @@ public class Game1 : Game
             
         koop.Update(gameTime);
         mushroom.Update(gameTime);
+
+        if (Keyboard.GetState().IsKeyDown(Keys.M))
+        {
+            SoundManager.Instance.ToggleMute();
+        }
 
         foreach (var g in goombas)
         {
@@ -317,16 +363,40 @@ public class Game1 : Game
                     if (koop is moveKoop kk) kk.IsAlive = true;
                     camera.Reset(_spawnPoint);
                     camera.LookAt(_spawnPoint);
+                    _screenManager.Lives--;
+                    if (_screenManager.Lives <= 0)
+                        _screenManager.ChangeState(GameState.GameOver);
+                    else
+                    {
+                        _screenManager.ChangeState(GameState.LevelIntro);
+                    }
                 });
 
         }
-        time -= 0.016;
+        time -= 0.02;
 
         base.Update(gameTime);
+    }
+
+    private void ResetLevel()
+    {
+        _currentMario.Position = _spawnPoint;
+        _smallMario.Position = _spawnPoint;
+        _bigMario.Position = _spawnPoint;
+        camera.Reset(_spawnPoint);
+        camera.LookAt(_spawnPoint);
+        _screenManager.ResetLevel();
     }
     
     private void ToggleMarioSize()
 	{
+        if (_currentMario == _smallMario)
+        {
+            SoundManager.Instance.PlayEffect("powerUp");
+        } 
+        else { 
+            SoundManager.Instance.PlayEffect("warning");
+            }
 		_isBig = !_isBig;
 
 		// keep mario in the same spot when switching forms
@@ -344,8 +414,36 @@ public class Game1 : Game
         GraphicsDevice.Clear(new Color(92, 148, 252));
 
         // TODO: Add your drawing code here
-        _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
+        _spriteBatch.Begin();
+        switch (_screenManager.CurrentState)
+            {
+                case GameState.Title:
+                    _titleScreen.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    return;
 
+                case GameState.LevelIntro:
+                    _introScreen.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    return;
+
+                case GameState.TimeUp:
+                    _timeUpScreen.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    return;
+
+                case GameState.GameOver:
+                    _gameOverScreen.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    return;
+
+                case GameState.Playing:
+                    break;
+            }
+
+        _spriteBatch.End();
+
+        _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
         _backgroundManager.Draw(_spriteBatch, cameraX: 0f); // or your camera’s X
 
         _currentMario.Draw(_spriteBatch, _currentMario.Position);
@@ -374,27 +472,9 @@ public class Game1 : Game
 
         _spriteBatch.End();
 
+        // HUD
         _spriteBatch.Begin();
-
-        _spriteBatch.DrawString(myFont, "MARIO", new Vector2(90, 15), Color.White);
-        _spriteBatch.DrawString(myFont, score, new Vector2(90, 55), Color.White);
-        _spriteBatch.DrawString(myFont, "x" + coins, new Vector2(375, 55), Color.White);
-        _spriteBatch.DrawString(myFont, "WORLD", new Vector2(550, 15), Color.White);
-        _spriteBatch.DrawString(myFont, "1-1", new Vector2(580, 55), Color.White);
-        _spriteBatch.DrawString(myFont, "TIME", new Vector2(800, 15), Color.White);
-        _spriteBatch.DrawString(myFont, ((int)time).ToString(), new Vector2(825, 55), Color.White);
-        _spriteBatch.Draw(
-            coin,                  // Texture2D
-            new Vector2(330, 45),  // Position (top-left)
-            null,                  // Source rectangle (null = full texture)
-            Color.White,           // Tint
-            0f,                    // Rotation (none)
-            Vector2.Zero,          // Origin (top-left corner)
-            3f,                    // Scale (3x larger)
-            SpriteEffects.None,    // No flipping
-            0f                     // Layer depth
-        );
-
+        _hud.Draw(_spriteBatch);
         _spriteBatch.End();
 
         base.Draw(gameTime);

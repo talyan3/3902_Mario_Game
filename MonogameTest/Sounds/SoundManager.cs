@@ -6,10 +6,22 @@ using System.Collections.Generic;
 
 namespace MonogameTest
 {
-    public class SoundManager
+    public sealed class SoundManager
     {
+        
+        private static readonly Lazy<SoundManager> _instance = new(() => new SoundManager());
+        public static SoundManager Instance => _instance.Value;
+
         private readonly Dictionary<string, Song> _songs = new();
         private readonly Dictionary<string, SoundEffect> _effects = new();
+
+        private bool _isMuted = false;
+        private float _previousMediaVolume = 1f;
+        private float _previousEffectVolume = 1f;
+
+
+
+        private SoundManager() { }
 
         public void LoadSong(Game game, string key, string path)
         {
@@ -19,7 +31,7 @@ namespace MonogameTest
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to load song {path}: {ex.Message}");
+                Console.WriteLine($"Failed to load song '{path}': {ex.Message}");
             }
         }
 
@@ -31,9 +43,36 @@ namespace MonogameTest
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to load sound effect {path}: {ex.Message}");
+                Console.WriteLine($"Failed to load sound effect '{path}': {ex.Message}");
             }
         }
+
+        public void ToggleMute()
+        {
+            _isMuted = !_isMuted;
+
+            if (_isMuted)
+            {
+                // Save volumes
+                _previousMediaVolume = MediaPlayer.Volume;
+                _previousEffectVolume = SoundEffect.MasterVolume;
+
+                // Mute everything
+                MediaPlayer.Volume = 0f;
+                SoundEffect.MasterVolume = 0f;
+
+                Console.WriteLine("Audio muted.");
+            }
+            else
+            {
+                // Restore previous volumes
+                MediaPlayer.Volume = _previousMediaVolume;
+                SoundEffect.MasterVolume = _previousEffectVolume;
+
+                Console.WriteLine("Audio unmuted.");
+            }
+        }
+
 
         public void PlaySong(string key, bool loop = true)
         {
@@ -43,6 +82,10 @@ namespace MonogameTest
                 MediaPlayer.Play(song);
                 MediaPlayer.IsRepeating = loop;
             }
+            else
+            {
+                Console.WriteLine($"Song with key '{key}' not found.");
+            }
         }
 
         public void PlayEffect(string key)
@@ -51,11 +94,31 @@ namespace MonogameTest
             {
                 effect.Play();
             }
+            else
+            {
+                Console.WriteLine($"Sound effect with key '{key}' not found.");
+            }
         }
 
         public void StopSong()
         {
             MediaPlayer.Stop();
+        }
+
+        public void PauseSong()
+        {
+            if (MediaPlayer.State == MediaState.Playing)
+            {
+                MediaPlayer.Pause();
+            }
+        }
+
+        public void ResumeSong()
+        {
+            if (MediaPlayer.State == MediaState.Paused)
+            {
+                MediaPlayer.Resume();
+            }
         }
     }
 }
