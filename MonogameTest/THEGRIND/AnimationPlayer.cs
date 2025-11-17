@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+namespace MonogameTest;
 public class AnimationPlayer
 {
     public Animation CurrentAnimation { get; private set; }
@@ -38,6 +38,6 @@ public class AnimationPlayer
     {
         var source = CurrentAnimation.GetFrameRect(CurrentFrame);
         spriteBatch.Draw(CurrentAnimation.Texture, position, source, Color.White, 
-            0f, Vector2.Zero, 1f, effects, 0f);
+            0f, Vector2.Zero, scale, effects, 0f);
     }
 }

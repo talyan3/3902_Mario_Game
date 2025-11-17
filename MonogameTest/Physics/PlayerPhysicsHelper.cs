@@ -1,5 +1,5 @@
 using Microsoft.Xna.Framework;
-
+namespace MonogameTest;
 public class PlayerPhysics
 {
     public Vector2 velocity;
@@ -8,17 +8,14 @@ public class PlayerPhysics
     private float maxMoveSpeed = 400f;
     private float groundFriction = 800f;
     private float airFriction = 100f;
-    public float jumpStrength = -300f;
+    public float jumpStrength = -100f;
     
     public void ApplyHorizontalInput(int moveDir, float dt)
     {
-        // Acceleration
         velocity.X += moveDir * moveAcceleration * dt;
 
-        // Clamp speed
         velocity.X = MathHelper.Clamp(velocity.X, -maxMoveSpeed, maxMoveSpeed);
 
-        // Friction
         float friction = isGrounded ? groundFriction : airFriction;
 
         if (moveDir == 0)
@@ -34,15 +31,18 @@ public class PlayerPhysics
                 if (velocity.X > 0) velocity.X = 0;
             }
         }
+        
     }
     public bool TryJump(bool jumpPressed)
     {
+        bool jumped = true;
         if (jumpPressed && isGrounded)
         {
-            velocity.Y = jumpStrength;
             isGrounded = false;
-            return true; // signal that a jump occurred
+        } else
+        {
+            jumped = false;
         }
-        return false;
+        return jumped;
     }
 }

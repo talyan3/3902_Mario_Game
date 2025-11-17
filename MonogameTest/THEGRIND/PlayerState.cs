@@ -1,8 +1,7 @@
 using Microsoft.Xna.Framework;
-
+namespace MonogameTest;
 public abstract class PlayerState
 {
-    //gotta change the name soon of marophysicstest
     protected PlayerMario player;
 
     public PlayerState(PlayerMario player)

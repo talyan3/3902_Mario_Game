@@ -1,6 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
-
+namespace MonogameTest;
 public class JumpState : PlayerState
 {
     public JumpState(PlayerMario player) : base(player) { }
@@ -8,7 +8,8 @@ public class JumpState : PlayerState
     public override void Enter()
     {
         player.animPlayer.Play(player.animJump);
-       // player.soundManager.JumpSfx.Play();
+        System.Console.WriteLine("Entered Jump State");
+        //player.SM.JumpSfx.Play();
         player.Physics.velocity.Y = -player.PhysicsP.jumpStrength;
     }
 

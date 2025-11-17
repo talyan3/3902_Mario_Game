@@ -13,7 +13,8 @@ public class SmallMarioSprite : StaticSprite
     override public Vector2 Position { get; set; } = Vector2.Zero;
     public Vector2 Scale { get; set; } = new Vector2(1f, 1f);
 
-    public float MoveSpeed = 100f; // px/sec
+    public float MoveSpeed = 100f; // movement speed
+
     private SpriteEffects _effects = SpriteEffects.None;
 
     private const int FrameW = 16;
@@ -24,94 +25,119 @@ public class SmallMarioSprite : StaticSprite
     private TextureRegion _jumpFrame;
     private TextureRegion _current;
 
-    private int _frameIndex = 0;
-    private float _frameTimer = 0f;
+    private int _frameIndex;
+    private float _frameTimer;
     private float _frameTime = 0.12f;
 
-    private bool _isJumping = false;
-    private float _jumpOffset = 100f; // how far up he moves
+    // physics
+    private float verticalVelocity = 0f;
+    private float gravity = 900f;
+    private float jumpStrength = -350f;
 
+    private bool _isJumping = false;
     private Vector2 _groundPos;
+
     private SoundEffect jumpSound;
 
-    public Rectangle Bounds                                       
+    public Rectangle Bounds
     {
         get
         {
             if (Region == null) return Rectangle.Empty;
-            int w = (int)(Region.Width  * Scale.X);
+            int w = (int)(Region.Width * Scale.X);
             int h = (int)(Region.Height * Scale.Y);
             int left = (int)(Position.X - w / 2f);
-            int top  = (int)(Position.Y - h); 
+            int top = (int)(Position.Y - h);
             return new Rectangle(left, top, w, h);
         }
     }
-
-  
     public void Bounce(float pixels = 20f)                        
     {
         Position = new Vector2(Position.X, Position.Y - pixels);
     }
 
+
     public SmallMarioSprite(GraphicsDevice graphicsDevice, ContentManager _content)
     {
         Texture2D texture = _content.Load<Texture2D>("Sprites/Entity/small-mario-final");
-        //Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario-final.png");
 
+        // RUN FRAMES
         _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
         _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
         _runFrames.Add(new TextureRegion(texture, 30 * 5, 0, FrameW, FrameH));
 
+        // IDLE + JUMP FRAMES
         _idleFrame = new TextureRegion(texture, 30 * 6, 0, FrameW, FrameH);
-        _jumpFrame = new TextureRegion(texture, 30 * 2, 0, FrameW, FrameH); 
+        _jumpFrame = new TextureRegion(texture, 30 * 2, 0, FrameW, FrameH);
 
         _current = _idleFrame;
         Region = _current;
+
         jumpSound = _content.Load<SoundEffect>("smb_jump-super");
-        //jumpSound = SoundEffect.FromFile("smb_jump-super.wav");
     }
 
     public override void Update(GameTime gameTime)
     {
-        var kb = Keyboard.GetState();
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        var kb = Keyboard.GetState();
 
+        // Save ground position the first frame
         if (_groundPos == Vector2.Zero)
-            _groundPos = Position; 
+            _groundPos = Position;
 
+        bool moving = false;
+
+        // ---- LEFT / RIGHT MOVEMENT ----
         if (kb.IsKeyDown(Keys.Left))
         {
             Position = new Vector2(Position.X - MoveSpeed * dt, Position.Y);
             _effects = SpriteEffects.None;
-            AdvanceRun(dt);
+            moving = true;
         }
         else if (kb.IsKeyDown(Keys.Right))
         {
             Position = new Vector2(Position.X + MoveSpeed * dt, Position.Y);
             _effects = SpriteEffects.FlipHorizontally;
-            AdvanceRun(dt);
+            moving = true;
         }
-        else if (kb.IsKeyDown(Keys.Up))
+
+        // ---- JUMP INPUT ----
+        if (kb.IsKeyDown(Keys.Up) && !_isJumping)
         {
-            if (!_isJumping)
-            {
-                _isJumping = true;
-                Position = new Vector2(Position.X, Position.Y - _jumpOffset);
-                jumpSound.Play();
-            }
+            _isJumping = true;
+            verticalVelocity = jumpStrength;
+            jumpSound.Play();
+        }
+
+        // ---- GRAVITY ----
+        verticalVelocity += gravity * dt;
+        Position = new Vector2(Position.X, Position.Y + verticalVelocity * dt);
+
+        // ---- LANDING ----
+        if (Position.Y >= _groundPos.Y)
+        {
+            Position = new Vector2(Position.X, _groundPos.Y);
+            verticalVelocity = 0;
+            _isJumping = false;
+        }
+
+        // ---- ANIMATIONS ----
+        if (_isJumping)
+        {
             _current = _jumpFrame;
+        }
+        else if (moving)
+        {
+            AdvanceRun(dt);
         }
         else
         {
-            if (_isJumping)
-            {
-                Position = new Vector2(Position.X, _groundPos.Y);
-                _isJumping = false;
-            }
             _current = _idleFrame;
             _frameIndex = 0;
             _frameTimer = 0f;
         }
+
+        Region = _current;
     }
 
     private void AdvanceRun(float dt)
@@ -123,7 +149,6 @@ public class SmallMarioSprite : StaticSprite
             _frameIndex = (_frameIndex + 1) % _runFrames.Count;
         }
         _current = _runFrames[_frameIndex];
-        Region = _current;
     }
 
     public override void Draw(SpriteBatch spriteBatch, Vector2 _)

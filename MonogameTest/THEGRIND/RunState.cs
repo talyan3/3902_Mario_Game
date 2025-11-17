@@ -1,6 +1,6 @@
 using System;
 using Microsoft.Xna.Framework;
-
+namespace MonogameTest;
 public class RunState : PlayerState
 {
     public RunState(PlayerMario player) : base(player) { }
@@ -8,12 +8,6 @@ public class RunState : PlayerState
     public override void Enter()
     {
         player.animPlayer.Play(player.animRun);
-
-        // if (player.soundManager.WalkSfxInstance == null)
-        //     player.soundManager.WalkSfxInstance = player.soundManager.WalkSfx.CreateInstance();
-
-        // player.soundManager.WalkSfxInstance.IsLooped = true;
-        // player.soundManager.WalkSfxInstance.Play();
     }
 
     public override void Update(GameTime gameTime)

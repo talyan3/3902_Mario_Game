@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-
+namespace MonogameTest;
 public class Animation
 {
     public Texture2D Texture { get; }

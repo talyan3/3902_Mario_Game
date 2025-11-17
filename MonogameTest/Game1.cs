@@ -66,7 +66,7 @@ public class Game1 : Game
     Animation runAnim;
     Animation jumpAnim;
     AnimationPlayer animPlayer;
-    PhysicsTest Phys;
+    Physics Phys;
     PlayerMario Mar; ///////
 
     SoundManager soundManager;/////
@@ -162,7 +162,7 @@ public class Game1 : Game
         //Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
         //Mar = new MarioPhysiscsTest(Hollow); // **$$$
         platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
-        platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
+        //platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
 
         myFont = Content.Load<SpriteFont>("marioFont");
 
@@ -186,7 +186,7 @@ public class Game1 : Game
         previousState = state; 
         _input.Update();/////
         bool bDown = state.IsKeyDown(Keys.B);
-        Mar.Update(gameTime, platformRect);
+        //Mar.Update(gameTime, platformRect);
 		if (bDown && !_bHeldLast)
 			ToggleMarioSize();
 		_bHeldLast = bDown;

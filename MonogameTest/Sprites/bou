@@ -1,0 +1,4 @@
+public void Bounce(float pixels = 20f)                        
+    {
+        Position = new Vector2(Position.X, Position.Y - pixels);
+    }

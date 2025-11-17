@@ -2,12 +2,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+namespace MonogameTest;
 public class PlayerMario
 {
-    public PhysicsTest Physics;
+    public Physics Physics;
     public AnimationPlayer animPlayer;
-    public PlayerPhysics PhysicsP = new PlayerPhysics();
+    public PlayerPhysics PhysicsP;
 
     public Animation animIdle;
     public Animation animRun;
@@ -18,21 +18,21 @@ public class PlayerMario
 
     public bool isFacingRight = true;
 
-    private float moveAcceleration = 1000f;
-    private float maxMoveSpeed = 400f;
-    private float groundFriction = 800f;
-    private float airFriction = 100f;
-    private float jumpStrength = -300f;
+    // private float moveAcceleration = 1000f;
+    // private float maxMoveSpeed = 400f;
+    // private float groundFriction = 800f;
+    // private float airFriction = 100f;
+    // private float jumpStrength = -300f;
 
-    private float scale = 0.03f;
+    private float scale = 1f;
 
     public bool FacingRight = true;
     public SoundManager SM;
     public PlayerMario()
     {
-        Physics = new PhysicsTest();
+        Physics = new Physics();
         Physics.position = new Vector2(100, 100);
-
+        PhysicsP = new PlayerPhysics();
         animPlayer = new AnimationPlayer();
         Input = new InputController();
     }
@@ -58,7 +58,6 @@ public class PlayerMario
     {
         float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        // ----- INPUT -----
         Input.Update();
         int moveDir = Input.GetMoveDirection();   // -1, 0, or +1
 
@@ -66,16 +65,17 @@ public class PlayerMario
         {
             FacingRight = moveDir > 0;
         }
-        // Horizontal movement (input only sets velocity)
         PhysicsP.ApplyHorizontalInput(moveDir, dt);
+        Physics.velocity.X = PhysicsP.velocity.X;;
 
-        if (PhysicsP.TryJump(Input.jumpPressed))
+        if (Input.jumpPressed && Physics.isGrounded)
         {
+            Physics.velocity.Y = PhysicsP.jumpStrength;
+            Physics.isGrounded = false;
             ChangeState(new JumpState(this));
         }
         // Physics update
         Physics.Update(gameTime);
-
         // PLATFORM COLLISION
         Rectangle rect = new Rectangle(
             (int)Physics.position.X,

@@ -1,10 +1,9 @@
 using System;
 using Microsoft.Xna.Framework;
-
+namespace MonogameTest;
 public class IdleState : PlayerState
 {
     public IdleState(PlayerMario player) : base(player) { }
-
     public override void Enter()
     {
         player.animPlayer.Play(player.animIdle);

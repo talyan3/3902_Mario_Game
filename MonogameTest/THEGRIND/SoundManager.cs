@@ -1,7 +1,7 @@
 using System.Reflection.PortableExecutable;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
-
+namespace MonogameTest;
 public class SoundManager
 {
     private readonly ContentManager _content;
@@ -18,7 +18,7 @@ public class SoundManager
     //here to update when we do the sound effects
     public void LoadContent()
     {
-        // JumpSfx = _content.Load<SoundEffect>("Audio/jump");
+        JumpSfx = _content.Load<SoundEffect>("smb_jump-super");
         // LandSfx = _content.Load<SoundEffect>("Audio/land");
         // WalkSfx = _content.Load<SoundEffect>("Audio/walk");
     }
