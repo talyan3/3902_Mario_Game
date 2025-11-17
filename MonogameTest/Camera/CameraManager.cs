@@ -7,13 +7,27 @@ namespace MonogameTest
 {
     private readonly Viewport _viewport;
     private Vector2 _position = Vector2.Zero;
-    public float Zoom { get; set; } = 1f;
+    public float Zoom { get; set; };
 
-    private float _smoothSpeed = 0.15f;
-    private float _levelWidth = TiledMapLoader.MapWidth * 16f;
-    private float _levelHeight = TiledMapLoader.MapHeight * 16f;
+    private float _smoothSpeed;
+    private float _levelWidth;
+    private float _levelHeight;
+    private float _tileSize;
     private float _furthestRight = 0f;
-    private float _horizontalOffsetRatio = 0.35f;
+    private float _horizontalOffsetRatio;
+
+    //Magic Numbers
+    private readonly CameraMan _set = Game1.Numbers.CameraMan;
+
+    public float TileSize
+        {
+            set
+            {
+                _tileSize = value;
+                _levelWidth = TiledMapLoader.MapWidth * _tileSize;
+                _levelHeight = TiledMapLoader.MapHeight * _tileSize;
+            }
+        }
 
     public CameraManager(Viewport viewport)
     {

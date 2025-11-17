@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Collections.Generic;
+using System.Text.Json;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -58,6 +59,9 @@ public class Game1 : Game
 
     private Texture2D coin;
 
+    //MAGIC NUMBERS
+    public static StructureNumbers Numbers {get; private set; }
+
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
@@ -76,6 +80,12 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
+
+        //Magic Numbers Load
+        string configPath = Path.Combine(Directory.GetCurrentDirectory(), "StructureNumbers.json");
+        string jsonString = File.ReadAllText(configPath);
+        Numbers = JsonSerializer.Deserialize<StructureNumbers>(jsonString);
+
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         _backgroundManager = new BackgroundManager(GraphicsDevice);
         _backgroundManager.LoadContent();
@@ -132,6 +142,8 @@ public class Game1 : Game
 
         //loads the camera on mario
         camera = new CameraManager(GraphicsDevice.Viewport);
+        LoadNumbers.ApplyCameraNumbers(camera, Numbers);
+
         camera.Reset(_currentMario.Position); // start centered on Mario
         camera.LookAt(_currentMario.Position); // immediately focus on him
 
