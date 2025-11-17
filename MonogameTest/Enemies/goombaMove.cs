@@ -15,8 +15,8 @@ class moveGoom : ISprite
     Rectangle sRect;
     Rectangle dRect;
     float elasped;
-    float delay = 150f;
-    private const float Speed = 30f;
+    float delay = NumberLoad.Numbers.GoombaM.AnimationDelay;
+    private float Speed = NumberLoad.Numbers.GoombaM.Speed;
     int frames;
     int walkLeft = 1;
     int walkRight = 1;
