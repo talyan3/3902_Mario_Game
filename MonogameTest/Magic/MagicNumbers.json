@@ -1,0 +1,51 @@
+
+{
+    // -------------- CAMERA ----------------
+
+//camera manager
+  "CameraMan": {
+    "SmoothSpeed": 0.15,
+    "HorizontalOffsetRatio": 0.35,
+    "NesViewWidth": 256,
+    "ZoomDivisor": 100,
+    "LeftClamp": 128,
+    "FixedCameraY": 120,
+    "TileSize": 16
+  },
+
+  
+    // -------------- ENEMIES ----------------
+
+// move goomba
+    "GoombaM": {
+        "SpriteWidth": 32,
+        "SpriteHeight": 16,
+        "Speed": 30,
+        "AnimationDelay": 150,
+        "ClampMin": -2,
+        "ClampMax": 2
+  },
+
+//move koopa
+  "Koopa": {
+    "DestWidth": 32,
+    "DestHeight": 24,
+    "SrcWidth": 30,
+    "SrcHeight": 24,
+    "Speed": 30,
+    "AnimationDelay": 150,
+    "ClampMin": -2,
+    "ClampMax": 2,
+    "LeftFrames": [2, 3],
+    "RightFrames": [4, 5]
+  }
+
+
+
+    }
+
+
+}
+
+
+
