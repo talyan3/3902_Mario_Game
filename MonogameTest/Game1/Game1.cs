@@ -10,6 +10,7 @@ using MonoGame.Extended.Animations;
 using System.Net;
 using System.Runtime.Intrinsics.X86;
 using MonogameTest.Sounds;
+using System.Net.Mime;
 
 namespace MonogameTest;
 
@@ -32,6 +33,10 @@ public class Game1 : Game
     private bool _bHeldLast = false;
     private Texture2D _tileset;
     private List<Tile> _mapTiles;
+
+    private FlagPole _flagpole;
+    private Texture2D _flagTexture;
+    private Rectangle _poleRect;
      
      //MAGIC:
     private static readonly GameNumbers GameNumbers = NumberLoad.Numbers.GameNum;
@@ -108,6 +113,11 @@ public class Game1 : Game
 
         _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
         _backgroundManager.LoadContent();
+
+        //FLAG LOADING!!!!!!!!!!!!!!!!
+        _flagTexture = Content.Load<Texture2D>("flag_mario.png");
+        _poleRect = new Rectangle(TileSize * 200, TileSize * 5, 8, 128); // guessing numbers for testing
+        _flagpole = new Flagpole(_spriteBatch, _flagTexture, _poleRect, _currentMario);
 
         /////
         Assets.Load(Content,GraphicsDevice);
@@ -354,6 +364,8 @@ public class Game1 : Game
         }
         time -= 0.016;
 
+        _flagpole.Update(gameTime);
+
         base.Update(gameTime);
     }
     
@@ -428,6 +440,7 @@ public class Game1 : Game
         );
 
         _spriteBatch.End();
+        _flagpole.Draw();
 
         base.Draw(gameTime);
     }

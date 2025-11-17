@@ -8,6 +8,7 @@ public class NumberStructure
     public GoombaNum GoombaM { get; set; }
     public KoopaNum KoopaM { get; set; }
     public MapSettings MapSettings { get; set; }
+    
     public Dictionary<int, string> TileGrid { get; set; }
     public PhysicsNum GPhysics { get; set; }
 
@@ -163,6 +164,8 @@ public class SmallMarioNumbers
     public float Gravity { get; set; }
 
     public float BounceHeight { get; set; }
+    public float Scale { get; set; }
+    public float JumpOffset { get; set; }
 }
 
 public class GameNumbers

@@ -136,6 +136,8 @@
   "MoveSpeed": 100,
   "SprintMultiplier": 1.5,
 
+  "Scale": 1,
+
   "FrameWidth": 16,
   "FrameHeight": 16,
   "SheetColumnWidth": 30,
@@ -150,7 +152,8 @@
   "JumpStrength": -350,
   "Gravity": 900,
 
-  "BounceHeight": 20
+  "BounceHeight": 20,
+  "JumpOffset": 100
 },
 
 "GameNum":
