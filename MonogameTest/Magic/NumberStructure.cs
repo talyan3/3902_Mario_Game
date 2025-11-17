@@ -160,5 +160,24 @@ public class SmallMarioNumbers
 public class GameNumbers
 {
     public int Scale { get; set; }
+    public int TitlePosX { get; set; }
+    public int TopPosY { get; set; }
+    public int ScorePosY { get; set; }
+    public int CoinsPosX { get; set; }
+    public int LowPosY { get; set; }
+    public int WorldPosX { get; set; }
+    public int LevelPosX { get; set; }
+    public int TimePosX { get; set; }
+    public int ElapsedTimeX { get; set; }
+
+    public int TilePosHighY { get; set; }
+    public int TilePosLowY { get; set; }
+    public int BackBufferHeight { get; set; }
+
+    public int ColorFirst { get; set; }
+    public int ColorSecond { get; set; }
+    public int ColorThird { get; set; }
+
+    
 }
 

@@ -70,6 +70,9 @@ public class Game1 : Game
     Physics Phys;
     PlayerMario Mar; ///////
 
+    //MAGIC:
+    private static readonly GameNumbers GameNumbers = NumberLoad.Numbers.GameNum;
+
     public SoundManager SoundManager { get; private set; }
 
     public Game1()
@@ -82,7 +85,7 @@ public class Game1 : Game
     protected override void Initialize()
     {
         _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
-        _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
+        _graphics.PreferredBackBufferHeight = GameNumbers.BackBufferHeight * scale;      // typical NES height
         _graphics.ApplyChanges();
         base.Initialize();
     }
@@ -126,22 +129,22 @@ public class Game1 : Game
         // Set initial positions for enemies (in world coordinates, same scale as tiles)
         Vector2[] goombaPositions = new Vector2[]
         {
-            new Vector2(tileS * 22, tileS * 12),
-            new Vector2(tileS * 39, tileS * 12),
-            new Vector2(tileS * 50, tileS * 12),
-            new Vector2(tileS * 52, tileS * 12),
-            new Vector2(tileS * 79, tileS * 4),
-            new Vector2(tileS * 81, tileS * 4),
-            new Vector2(tileS * 96, tileS * 12),
-            new Vector2(tileS * 98, tileS * 12),
-            new Vector2(tileS * 113, tileS * 12),
-            new Vector2(tileS * 115, tileS * 12),
-            new Vector2(tileS * 124, tileS * 12),
-            new Vector2(tileS * 126, tileS * 12),
-            new Vector2(tileS * 128, tileS * 12),
-            new Vector2(tileS * 130, tileS * 12),
-            new Vector2(tileS * 173, tileS * 12),
-            new Vector2(tileS * 175, tileS * 12)
+            new Vector2(TileSize * 22, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 39, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 50, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 52, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 79, TileSize * GameNumbers.TilePosLowY),
+            new Vector2(TileSize * 81, TileSize * GameNumbers.TilePosLowY),
+            new Vector2(TileSize * 96, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 98, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 113, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 115, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 124, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 126, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 128, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 130, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 173, TileSize * GameNumbers.TilePosHighY),
+            new Vector2(TileSize * 175, TileSize * GameNumbers.TilePosHighY)
         };
         // Load goombas
         foreach (var posG in goombaPositions)
@@ -151,12 +154,12 @@ public class Game1 : Game
             goombas.Add(g);
         }
 
-        (koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 35 tiles over, ground level
+        (koop as moveKoop).Position = new Vector2(TileSize * 106, TileSize * 12); // 35 tiles over, ground level
 
         //load powerups
         powerupTexture = Content.Load<Texture2D>("Sprites/powerups");
         mushroom = new movePower(powerupTexture, _spriteBatch);
-        (mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
+        (mushroom as movePower).Position = new Vector2(TileSize * 10, TileSize * 11);
         
         _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
         _bigMario = new BigMarioSprite(GraphicsDevice);
@@ -165,7 +168,7 @@ public class Game1 : Game
         _bigMario.SoundManager = SoundManager;   // use the game's SoundManager
         
         // Start Mario somewhere reasonable in world coordinates (e.g., ground level)
-        var pos = new Vector2(16 * 5, 16 * 13); // y = 13 tiles down instead of 20
+        var pos = new Vector2(TileSize * 5, TileSize * 13); // y = 13 tiles down instead of 20
 
         _smallMario.Position = pos;
         _bigMario.Position = pos;
@@ -353,7 +356,7 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime) 
     {
-        GraphicsDevice.Clear(new Color(92, 148, 252));
+        GraphicsDevice.Clear(new Color(GameNumbers.ColorFirst, GameNumbers.ColorSecond, GameNumbers.ColorThird));
 
         // TODO: Add your drawing code here
         _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
@@ -388,13 +391,13 @@ public class Game1 : Game
 
         _spriteBatch.Begin();
 
-        _spriteBatch.DrawString(myFont, "MARIO", new Vector2(90, 15), Color.White);
-        _spriteBatch.DrawString(myFont, score, new Vector2(90, 55), Color.White);
-        _spriteBatch.DrawString(myFont, "x" + coins, new Vector2(375, 55), Color.White);
-        _spriteBatch.DrawString(myFont, "WORLD", new Vector2(550, 15), Color.White);
-        _spriteBatch.DrawString(myFont, "1-1", new Vector2(580, 55), Color.White);
-        _spriteBatch.DrawString(myFont, "TIME", new Vector2(800, 15), Color.White);
-        _spriteBatch.DrawString(myFont, ((int)time).ToString(), new Vector2(825, 55), Color.White);
+        _spriteBatch.DrawString(myFont, "MARIO", new Vector2(GameNumbers.TitlePosX, GameNumbers.TopPosY), Color.White);
+        _spriteBatch.DrawString(myFont, score, new Vector2(GameNumbers.TitlePosX, NumberLoad.Numbers.GameNum.LowPosY), Color.White);
+        _spriteBatch.DrawString(myFont, "x" + coins, new Vector2(NumberLoad.Numbers.GameNum.CoinsPosX, NumberLoad.Numbers.GameNum.LowPosY), Color.White);
+        _spriteBatch.DrawString(myFont, "WORLD", new Vector2(WorldPosX, NumberLoad.Numbers.GameNum.TopPosY), Color.White);
+        _spriteBatch.DrawString(myFont, "1-1", new Vector2(NumberLoad.Numbers.GameNum.WorldPosX, NumberLoad.Numbers.GameNum.LowPosY), Color.White);
+        _spriteBatch.DrawString(myFont, "TIME", new Vector2(TimePosX, NumberLoad.Numbers.GameNum.TopPosY), Color.White);
+        _spriteBatch.DrawString(myFont, ((int)time).ToString(), new Vector2(NumberLoad.Numbers.GameNum.ElapsedTimeX, NumberLoad.Numbers.GameNum.LowPosY), Color.White);
         _spriteBatch.Draw(
             coin,                  // Texture2D
             new Vector2(330, 45),  // Position (top-left)

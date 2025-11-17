@@ -147,7 +147,22 @@
 "GameNum":
 {
     "Scale": 4,
-    "TilePos": 12
+    "TilePos": 12,
+    "TitlePosX": 90,
+    "TopPosY": 15,
+    "CoinsPosX": 375,
+    "LowPosY": 55,
+    "WorldPosX": 550,
+    "LevelPosX": 580,
+    "TimePosX": 800,
+    "ElapsedTimeX": 825,
+    "TilePosHighY": 12,
+    "TilePosLowY": 4,
+    "BackBufferHeight": 240,
+
+    "ColorFirst": 92,
+    "ColorSecond": 148,
+    "ColorThird": 252
 }
 
 
