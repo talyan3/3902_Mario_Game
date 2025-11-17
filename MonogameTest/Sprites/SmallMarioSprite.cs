@@ -8,15 +8,17 @@ namespace MonogameTest
 {
     public class SmallMarioSprite : StaticSprite
     {
+        public static readonly SmallMarioNumbers smallN = NumberLoad.Numbers.SmallMario;
         public override Vector2 Position { get; set; } = Vector2.Zero;
-        public Vector2 Scale { get; set; } = new Vector2(1f, 1f);
+        public Vector2 Scale { get; set; } = new Vector2(smallN.Scale, smallN.Scale);
 
-        private float _moveSpeed = 100f;
-        private float _sprintMultiplier = 1.5f;
+        private float _moveSpeed = smallN.MoveSpeed;
+        private float _sprintMultiplier = smallN.SprintMultiplier;
         private SpriteEffects _effects = SpriteEffects.None;
 
-        private const int FrameW = 16;
-        private const int FrameH = 16;
+        //CONST TAKEN AWAY
+        private int FrameW = smallN.FrameWidth;
+        private int FrameH = smallN.FrameHeight;
 
         private readonly List<TextureRegion> _runFrames = new();
         private TextureRegion _idleFrame;
@@ -26,18 +28,20 @@ namespace MonogameTest
 
         private int _frameIndex = 0;
         private float _frameTimer = 0f;
-        private float _frameTime = 0.12f;
+        private float _frameTime = smallN.FrameTime;
 
         private bool _isJumping = false;
         private bool _isCrouching = false;
-        private float _jumpOffset = 100f;
+        private float _jumpOffset = smallN.JumpOffset;
         private Vector2 _groundPos;
         public SoundManager SoundManager { get; set; }
 
+        public float pixels = smallN.BounceHeight;
+
         // physics
         private float verticalVelocity = 0f;
-        private float gravity = 900f;
-        private float jumpStrength = -350f;
+        private float gravity = smallN.Gravity;
+        private float jumpStrength = smallN.JumpStrength;
 
 
         public Rectangle Bounds
@@ -53,7 +57,7 @@ namespace MonogameTest
             }
         }
 
-        public void Bounce(float pixels = 20f)
+        public void Bounce(pixels)
         {
             Position = new Vector2(Position.X, Position.Y - pixels);
         }
@@ -62,13 +66,19 @@ namespace MonogameTest
         {
             Texture2D texture = Texture2D.FromFile(graphicsDevice, "small-mario-final.png");
 
-            _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
-            _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
-            _runFrames.Add(new TextureRegion(texture, 30 * 5, 0, FrameW, FrameH));
+            _runFrames.Add
+                (new TextureRegion
+                    (texture, smallN.SheetColumnWidth * smallN.RunFrames[0], 0, FrameW, FrameH));
+            _runFrames.Add
+                (new TextureRegion
+                    (texture, smallN.SheetColumnWidth * smallN.RunFrames[1], 0, FrameW, FrameH));
+            _runFrames.Add
+                (new TextureRegion
+                    (texture, smallN.SheetColumnWidth * smallN.RunFrames[2], 0, FrameW, FrameH));
 
             _crouchFrame = new TextureRegion(texture, 0, 0, FrameW, FrameH);
-            _jumpFrame = new TextureRegion(texture, 30 * 1, 0, FrameW, FrameH);
-            _idleFrame = new TextureRegion(texture, 30 * 6, 0, FrameW, FrameH);
+            _jumpFrame = new TextureRegion(texture, smallN.SheetColumnWidth * smallN.JumpFrame, 0, FrameW, FrameH);
+            _idleFrame = new TextureRegion(texture, smallN.SheetColumnWidth * smallN.IdleFrame, 0, FrameW, FrameH);
 
             _current = _idleFrame;
             Region = _current;
