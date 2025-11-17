@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
@@ -9,7 +9,6 @@ using MonoGame.Extended;
 using MonoGame.Extended.Animations;
 using System.Net;
 using System.Runtime.Intrinsics.X86;
-using MonogameTest.Sounds;
 
 namespace MonogameTest;
 
@@ -46,8 +45,8 @@ public class Game1 : Game
     private Vector2 _spawnPoint; //Added
     private BackgroundManager _backgroundManager;
 
-    public Texture2D powerupTexture;
-    public ISprite mushroom;
+   // public Texture2D powerupTexture;
+   // public ISprite mushroom;
     private List<object> _enemies = new List<object>();
 
     private SpriteFont myFont;
@@ -62,10 +61,14 @@ public class Game1 : Game
     Animation runAnim;
     Animation jumpAnim;
     AnimationPlayer animPlayer;
-    Physics Phys;
-    PlayerMario Mar; ///////
 
-    public SoundManager SoundManager { get; private set; }
+    //powerups
+    Texture2D powerupsSheet;
+    List<PowerupInstance> powerups = new List<PowerupInstance>();
+
+
+
+
 
     public Game1()
     {
@@ -85,10 +88,7 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        SoundManager = new SoundManager();
-
-        SoundLoader.LoadAllSounds(this, SoundManager);
-        SoundManager.PlaySong("mainTheme"); // auto start overworld theme
+        
 
         _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
         _backgroundManager.LoadContent();
@@ -100,8 +100,6 @@ public class Game1 : Game
         animPlayer = new AnimationPlayer();
         //jumpAnim = new Animation(Assets.PlayerJump, 16, 16, 2, 0.15f, 0);
         animPlayer.Play(idleAnim);
-        Mar = new PlayerMario();
-        Mar.LoadContent(Content, SoundManager, GraphicsDevice);
         //soundManager = new SoundManager(Content);
         //soundManager.LoadContent();
         ///////
@@ -142,15 +140,12 @@ public class Game1 : Game
         (koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 35 tiles over, ground level
 
         //load powerups
-        powerupTexture = Content.Load<Texture2D>("Sprites/powerups");
-        mushroom = new movePower(powerupTexture, _spriteBatch);
-        (mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
+       // mushroom = new movePower(powerupTexture, _spriteBatch);
+       // (mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
         
         _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
         _bigMario = new BigMarioSprite(GraphicsDevice);
 
-        _smallMario.SoundManager = SoundManager; // if SmallMario also needs sounds
-        _bigMario.SoundManager = SoundManager;   // use the game's SoundManager
         
         // Start Mario somewhere reasonable in world coordinates (e.g., ground level)
         var pos = new Vector2(16 * 5, 16 * 13); // y = 13 tiles down instead of 20
@@ -196,6 +191,16 @@ public class Game1 : Game
         myFont = Content.Load<SpriteFont>("marioFont");
 
         coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
+
+        //powerups
+
+        powerupsSheet = Texture2D.FromFile(GraphicsDevice, "powerups.png");
+
+
+        powerups.Add(PowerupFactory.Create(PowerupType.Mushroom, powerupsSheet, new Vector2(200, 200)));
+        powerups.Add(PowerupFactory.Create(PowerupType.Coin, powerupsSheet, new Vector2(300, 200)));
+        powerups.Add(PowerupFactory.Create(PowerupType.Star, powerupsSheet, new Vector2(400, 200)));
+
     }
 
     protected override void Update(GameTime gameTime)
@@ -245,7 +250,7 @@ public class Game1 : Game
                 gg.Update(gameTime);
             
         koop.Update(gameTime);
-        mushroom.Update(gameTime);
+        //mushroom.Update(gameTime);
 
         foreach (var g in goombas)
         {
@@ -322,8 +327,47 @@ public class Game1 : Game
         }
         time -= 0.016;
 
+        //powerups
+        foreach (var p in powerups)
+        {
+         p.Update(gameTime);
+
+        if (PowerupCollisionHandler.CheckMarioPowerupCollision(_currentMario, p))
+        {
+        HandlePowerupPickup(p);
+         }
+}
+
+
         base.Update(gameTime);
     }
+
+    //powerups
+    private void HandlePowerupPickup(PowerupInstance p)
+    {
+    p.IsAlive = false;
+
+    switch (p.Type)
+    {
+        case PowerupType.Mushroom:
+            _isBig = true;
+            ToggleMarioSize();
+            break;
+
+        case PowerupType.FireFlower:
+            // give fire ability
+            break;
+
+        case PowerupType.Star:
+            //invincibility
+            break;
+
+        case PowerupType.Coin:
+            coins = (int.Parse(coins) + 1).ToString("00");
+            break;
+    }
+}
+
     
     private void ToggleMarioSize()
 	{
@@ -355,7 +399,7 @@ public class Game1 : Game
         {
             tile.Draw(_spriteBatch);
         }
-        Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
+        //Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
         //draw enemies (koop and goom)
         foreach (var g in goombas)
             if (g.IsAlive)
@@ -367,10 +411,14 @@ public class Game1 : Game
         }
 
         //draw mushroom
-        if (mushroom != null && (mushroom as movePower).IsAlive)
-        {
-            mushroom.Draw(_spriteBatch, (mushroom as movePower).Position);
-        }
+        //if (mushroom != null && (mushroom as movePower).IsAlive)
+        //{
+           // mushroom.Draw(_spriteBatch, (mushroom as movePower).Position);
+        //}
+        
+        //powerups
+        foreach (var p in powerups)
+         p.Draw(_spriteBatch);
 
         _spriteBatch.End();
 
