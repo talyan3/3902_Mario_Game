@@ -73,8 +73,17 @@
   "JumpStrength": -300
 },
 
+"PlayerSmall":
+  {
+    "StartX": -100,
+    "StartY": 100,
+    "Scale": 1
+  },
+
 "PlayerAnimations": {
   "Texture": "small-mario-final.png",
+
+  
 
   "Idle": {
     "FrameWidth": 30,

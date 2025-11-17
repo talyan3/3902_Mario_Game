@@ -11,6 +11,7 @@ public class NumberStructure
     public Dictionary<int, string> TileGrid { get; set; }
     public PhysicsNum GPhysics { get; set; }
 
+    public PlayerSmall PlayerSmall { get; set; }
     public PlayerNumbers PlayerPhysics { get; set; }
     public PlayerAnimation PlayerAnimations { get; set; }
 
@@ -94,6 +95,13 @@ public class PlayerNumbers
     public float GroundFriction { get; set; }
     public float AirFriction { get; set; }
     public float JumpStrength { get; set; }
+}
+
+public class PlayerSmall
+{
+    public int StartX { get; set; }
+    public int StartY { get; set; }
+    public float Scale { get; set; }
 }
 
 public class AnimInfo
