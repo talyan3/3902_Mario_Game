@@ -2,10 +2,12 @@ using Microsoft.Xna.Framework;
 namespace MonogameTest;
 public class Physics
 {
+    private static readonly PhysicsNum physicsNum = NumberLoad.Numbers.GPhysics;
     public Vector2 position;
     public Vector2 velocity;
     public Vector2 acceleration;
     public bool isGrounded;
+
 
     public void Update(GameTime gameTime)
     {
@@ -13,7 +15,7 @@ public class Physics
 
         // Apply gravity
         if (!isGrounded)
-            acceleration.Y = 1000f;
+            acceleration.Y = physicsNum.Gravity;
         else
             acceleration.Y = 0f;
 
@@ -22,9 +24,9 @@ public class Physics
         position += velocity * dt;
 
         // Simple ground collision example
-        if (position.Y >= 400f) 
+        if (position.Y >= physicsNum.GroundY) 
         {
-            position.Y = 400f;
+            position.Y = physicsNum.GroundY;
             velocity.Y = 0f;
             isGrounded = true;
         }
