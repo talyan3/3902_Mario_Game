@@ -32,12 +32,17 @@ public class Game1 : Game
     private bool _bHeldLast = false;
     private Texture2D _tileset;
     private List<Tile> _mapTiles;
-    const int TilesVisibleX = 16;
-    const int TileSize = 16;// can create level class
+     
+     //TOOK AWAY
+     int TilesVisibleX = (int)(NumberLoad.Numbers.CameraMan.NesViewWidth / TileSize);
+    //TOOK AWAY CONSTANT
+    int TileSize = (int)NumberLoad.Numbers.CameraMan.TileSize;// can create level class
     KeyboardState previousState;
     const int ViewWidth = TilesVisibleX * TileSize; // 256
     private ICamera camera;
-    const int scale = 4;
+
+    //TOOK
+    int scale = NumberLoad.Numbers.GameNum.Scale;
     const float SpriteScale = 0.30f;
     Texture2D Hollow; // **$$$
     Texture2D platformTexture; // **$$$

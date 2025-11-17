@@ -13,8 +13,8 @@ namespace MonogameTest
         private static readonly MapSettings MapSettingsNumbers = NumberLoad.Numbers.MapSettings;
         private static readonly CameraMan CameraNumbers = NumberLoad.Numbers.CameraMan;
 
-        public const int MapWidth;  // Number of tiles horizontally
-        public const int MapHeight;  // Number of tiles vertically
+        public const int MapWidth = 208;  // Number of tiles horizontally
+        public const int MapHeight = 30;  // Number of tiles vertically
 
         // Represents the basic structure of a Tiled map
         private class TiledMap

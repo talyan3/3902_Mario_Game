@@ -142,6 +142,11 @@
   "Gravity": 900,
 
   "BounceHeight": 20
+},
+
+"GameNum":
+{
+    "Scale": 4
 }
 
 

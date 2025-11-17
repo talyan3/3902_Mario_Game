@@ -18,6 +18,8 @@ public class NumberStructure
 
     public SmallMarioNumbers SmallMario { get; set; }
 
+    public GameNumbers GameNum { get; set; }
+
 
 
 }
@@ -153,5 +155,10 @@ public class SmallMarioNumbers
     public float Gravity { get; set; }
 
     public float BounceHeight { get; set; }
+}
+
+public class GameNumbers
+{
+    public int Scale { get; set; }
 }
 
