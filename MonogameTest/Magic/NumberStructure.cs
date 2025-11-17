@@ -3,7 +3,7 @@ using MonogameTest;
 
 public class NumberStructure
 {
-    public CameraManager CameraManager { get; set; }
+    public CameraMan CameraMan { get; set; }
     public EnemyCollision EnemyCollision { get; set; }
     public GoombaNum GoombaM { get; set; }
     public KoopaNum KoopaM { get; set; }
@@ -22,7 +22,7 @@ public class NumberStructure
 
 }
 
-public class CameraManager
+public class CameraMan
 {
     public float SmoothSpeed { get; set; }
     public float HorizontalOffsetRatio { get; set; }

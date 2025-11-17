@@ -62,6 +62,7 @@ class moveKoop : ISprite
     {
         if (!IsAlive) return;
         delay = Numbers.AnimationDelay;
+        Speed = Numbers.Speed;
 
         deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
