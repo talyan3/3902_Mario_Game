@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/users/krist/OneDrive/Desktop/3902_Mario_Game/MonogameTest/Content/titlescreen.png</SourceFile>
-  <SourceTime>2025-11-17T10:29:11.821948-05:00</SourceTime>
-  <DestFile>C:/users/krist/OneDrive/Desktop/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/titlescreen.xnb</DestFile>
-  <DestTime>2025-11-17T10:30:16.3615721-05:00</DestTime>
+  <SourceFile>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/titlescreen.png</SourceFile>
+  <SourceTime>2025-11-17T11:38:40.0214769-05:00</SourceTime>
+  <DestFile>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/titlescreen.xnb</DestFile>
+  <DestTime>2025-11-17T11:39:03.8491135-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-06-02T06:31:02-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

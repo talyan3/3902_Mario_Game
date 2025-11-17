@@ -23,7 +23,9 @@ namespace MonogameTest.Screens
 
             if (timer <= 0)
             {
+                SoundManager.Instance.PlaySong("mainTheme");
                 Manager.ChangeState(GameState.Playing);
+                timer = 2.0;
             }
         }
 
@@ -50,14 +52,14 @@ namespace MonogameTest.Screens
             sb.DrawString(_font, time, new Vector2(825, 55), Color.White);
 
             sb.DrawString(_font, $"WORLD {Manager.World}-{Manager.Level}",
-                  new Vector2(350, 350), Color.White);
+                  new Vector2(360, 350), Color.White);
 
         
 
-            sb.DrawString(_font, "MARIO", new Vector2(350, 520), Color.White);
+            sb.DrawString(_font, "MARIO", new Vector2(360, 520), Color.White);
 
             sb.DrawString(_font, $"x0{Manager.Lives}",
-                  new Vector2(520, 520), Color.White);
+                  new Vector2(560, 520), Color.White);
         }
     }
 }

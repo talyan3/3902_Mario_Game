@@ -86,7 +86,7 @@ namespace MonogameTest
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             SoundLoader.LoadAllSounds(this);
-            SoundManager.Instance.PlaySong("mainTheme");
+            
 
             _backgroundManager = new BackgroundManager(GraphicsDevice);
             _backgroundManager.LoadContent();
@@ -216,6 +216,12 @@ namespace MonogameTest
 
             HandleEnemyCollisions();
 
+            if (Keyboard.GetState().IsKeyDown(Keys.M))
+            {
+                SoundManager.Instance.ToggleMute();
+            }
+
+
             //--------------------------------------------------------------------
             base.Update(gameTime);
         }
@@ -267,12 +273,24 @@ namespace MonogameTest
                         _screenManager.Lives--;
                         if (_screenManager.Lives <= 0)
                             _screenManager.ChangeState(GameState.GameOver);
+                        else
+                        {
+                            _screenManager.ChangeState(GameState.LevelIntro);
+                        }
                     });
             }
         }
 
         private void ToggleMarioSize()
         {
+            if (_currentMario == _smallMario)
+            {
+                SoundManager.Instance.PlayEffect("powerUp");
+            } 
+            else { 
+                SoundManager.Instance.PlayEffect("warning");
+                }
+                
             _isBig = !_isBig;
             Vector2 pos = _currentMario.Position;
             _currentMario = _isBig ? (StaticSprite)_bigMario : _smallMario;

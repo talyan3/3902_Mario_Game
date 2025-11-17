@@ -15,6 +15,11 @@ namespace MonogameTest
         private readonly Dictionary<string, Song> _songs = new();
         private readonly Dictionary<string, SoundEffect> _effects = new();
 
+        private bool _isMuted = false;
+        private float _previousMediaVolume = 1f;
+        private float _previousEffectVolume = 1f;
+
+
 
         private SoundManager() { }
 
@@ -41,6 +46,33 @@ namespace MonogameTest
                 Console.WriteLine($"Failed to load sound effect '{path}': {ex.Message}");
             }
         }
+
+        public void ToggleMute()
+        {
+            _isMuted = !_isMuted;
+
+            if (_isMuted)
+            {
+                // Save volumes
+                _previousMediaVolume = MediaPlayer.Volume;
+                _previousEffectVolume = SoundEffect.MasterVolume;
+
+                // Mute everything
+                MediaPlayer.Volume = 0f;
+                SoundEffect.MasterVolume = 0f;
+
+                Console.WriteLine("Audio muted.");
+            }
+            else
+            {
+                // Restore previous volumes
+                MediaPlayer.Volume = _previousMediaVolume;
+                SoundEffect.MasterVolume = _previousEffectVolume;
+
+                Console.WriteLine("Audio unmuted.");
+            }
+        }
+
 
         public void PlaySong(string key, bool loop = true)
         {

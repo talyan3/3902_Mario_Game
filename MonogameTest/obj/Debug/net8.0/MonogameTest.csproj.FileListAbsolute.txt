@@ -267,3 +267,6 @@ C:\users\krist\OneDrive\Desktop\3902_Mario_Game\MonogameTest\obj\Debug\net8.0\Mo
 C:\users\krist\OneDrive\Desktop\3902_Mario_Game\MonogameTest\obj\Debug\net8.0\MonogameTest.genruntimeconfig.cache
 C:\users\krist\OneDrive\Desktop\3902_Mario_Game\MonogameTest\obj\Debug\net8.0\ref\MonogameTest.dll
 C:\users\krist\OneDrive\Desktop\3902_Mario_Game\MonogameTest\bin\Debug\net8.0\Content\titlescreen.xnb
+C:\Users\krist\Downloads\3902_Mario_Game\MonogameTest\bin\Debug\net8.0\Content\Sprites\coin2.png
+C:\Users\krist\Downloads\3902_Mario_Game\MonogameTest\bin\Debug\net8.0\Content\Sprites\gameover-timeup.png
+C:\Users\krist\Downloads\3902_Mario_Game\MonogameTest\bin\Debug\net8.0\Content\titlescreen.xnb

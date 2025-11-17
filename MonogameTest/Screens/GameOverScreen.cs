@@ -8,7 +8,7 @@ namespace MonogameTest.Screens
     {
         private readonly SpriteFont _font;
         private readonly HUDScreen _hud;
-        private double _timer = 3.0; 
+        private double _timer = 4.0; 
 
         public GameOverScreen(Game1 game, ScreenManager manager, SpriteFont font, Texture2D coin)
             : base(game, manager)
@@ -23,9 +23,11 @@ namespace MonogameTest.Screens
 
             var k = Keyboard.GetState();
             bool skip = k.IsKeyDown(Keys.Enter);
+            
 
             if (_timer <= 0 || skip)
             {
+    
                 Manager.ResetLevel();
                 Manager.ChangeState(GameState.Title);
             }
@@ -40,7 +42,7 @@ namespace MonogameTest.Screens
 
             // "GAME OVER" 
             sb.DrawString(_font, "GAME OVER",
-                new Vector2(sb.GraphicsDevice.Viewport.Width / 2f - 100,
+                new Vector2(sb.GraphicsDevice.Viewport.Width / 2f - 120,
                             sb.GraphicsDevice.Viewport.Height / 2f),
                 Color.White);
         }

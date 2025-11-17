@@ -43,6 +43,8 @@ namespace MonogameTest.Screens
                 if (Time <= 0)
                 {
                     Time = 0;
+                    SoundManager.Instance.StopSong();
+                    SoundManager.Instance.PlaySong("gameOver");
                     CurrentState = GameState.TimeUp;
                 }
             }

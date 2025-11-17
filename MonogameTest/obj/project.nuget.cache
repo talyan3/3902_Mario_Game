@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "jtHqn28N6zk=",
+  "dgSpecHash": "JQnLnfvQUlE=",
   "success": true,
-  "projectFilePath": "C:\\users\\krist\\OneDrive\\Desktop\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj",
+  "projectFilePath": "C:\\Users\\krist\\Downloads\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\krist\\.nuget\\packages\\monogame.content.builder.task\\3.8.4.1\\monogame.content.builder.task.3.8.4.1.nupkg.sha512",
     "C:\\Users\\krist\\.nuget\\packages\\monogame.extended\\5.1.1\\monogame.extended.5.1.1.nupkg.sha512",
