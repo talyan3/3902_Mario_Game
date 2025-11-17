@@ -40,7 +40,7 @@ namespace MonogameTest
         private float jumpStrength = -350f;
 
 
-        public Rectangle Bounds
+        public override Rectangle Bounds
         {
             get
             {

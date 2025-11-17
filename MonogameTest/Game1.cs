@@ -76,6 +76,9 @@ public class Game1 : Game
     private LevelIntroScreen _introScreen;
     private TimeUpScreen _timeUpScreen;
     private GameOverScreen _gameOverScreen;
+    //powerups
+    Texture2D powerupsSheet;
+    List<PowerupInstance> powerups = new List<PowerupInstance>();
 
     public Game1()
     {
@@ -147,12 +150,17 @@ public class Game1 : Game
             goombas.Add(g);
         }
 
-        (koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 35 tiles over, ground level
+        (koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 106 tiles over, ground level
 
         //load powerups
-        powerupTexture = Content.Load<Texture2D>("Sprites/powerups");
-        mushroom = new movePower(powerupTexture, _spriteBatch);
-        (mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
+        //powerupTexture = Content.Load<Texture2D>("Sprites/powerups");
+        //mushroom = new movePower(powerupTexture, _spriteBatch);
+        //(mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
+        powerupsSheet = Content.Load<Texture2D>("Sprites/powerups");
+
+        powerups.Add(PowerupFactory.Create(PowerupType.Mushroom, powerupsSheet, new Vector2(16*8, 16*11)));
+        powerups.Add(PowerupFactory.Create(PowerupType.Coin, powerupsSheet, new Vector2(16*9, 16*11)));
+        powerups.Add(PowerupFactory.Create(PowerupType.Star, powerupsSheet, new Vector2(16*10, 16*11)));
         
         _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
         _bigMario = new BigMarioSprite(GraphicsDevice);
@@ -277,16 +285,12 @@ public class Game1 : Game
             Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
         }
 
-        //if (MarioManager.ActiveSprite != null)
-        //MarioManager.ActiveSprite.Update(gameTime);
-
         //Mar.Update(gameTime, state, platformRect); 
         foreach (var gg in goombas)
             if (gg.IsAlive)
                 gg.Update(gameTime);
             
         koop.Update(gameTime);
-        mushroom.Update(gameTime);
 
         if (Keyboard.GetState().IsKeyDown(Keys.M))
         {
@@ -374,8 +378,44 @@ public class Game1 : Game
 
         }
         time -= 0.02;
+        //powerups
+        foreach (var p in powerups)
+        {
+         p.Update(gameTime);
+
+        if (PowerupCollisionHandler.CheckMarioPowerupCollision(_currentMario, p))
+        {
+        HandlePowerupPickup(p);
+        }
+    }
 
         base.Update(gameTime);
+    }
+
+    //powerups
+    private void HandlePowerupPickup(PowerupInstance p)
+    {
+        p.IsAlive = false;
+
+        switch (p.Type)
+        {
+            case PowerupType.Mushroom:
+                if(_isBig == false)
+                    ToggleMarioSize();
+                break;
+
+            case PowerupType.FireFlower:
+                // give fire ability
+                break;
+
+            case PowerupType.Star:
+                //invincibility
+                break;
+
+            case PowerupType.Coin:
+                coins = (int.Parse(coins) + 1).ToString("00");
+                break;
+        }
     }
 
     private void ResetLevel()
@@ -464,17 +504,32 @@ public class Game1 : Game
             k.Draw(_spriteBatch, k.Position);
         }
 
-        //draw mushroom
-        if (mushroom != null && (mushroom as movePower).IsAlive)
-        {
-            mushroom.Draw(_spriteBatch, (mushroom as movePower).Position);
-        }
+        //powerups
+        foreach (var p in powerups)
+            p.Draw(_spriteBatch); 
 
         _spriteBatch.End();
 
         // HUD
         _spriteBatch.Begin();
-        _hud.Draw(_spriteBatch);
+        _spriteBatch.DrawString(myFont, "MARIO", new Vector2(90, 15), Color.White);
+        _spriteBatch.DrawString(myFont, score, new Vector2(90, 55), Color.White);
+        _spriteBatch.DrawString(myFont, "x" + coins, new Vector2(375, 55), Color.White);
+        _spriteBatch.DrawString(myFont, "WORLD", new Vector2(550, 15), Color.White);
+        _spriteBatch.DrawString(myFont, "1-1", new Vector2(580, 55), Color.White);
+        _spriteBatch.DrawString(myFont, "TIME", new Vector2(800, 15), Color.White);
+        _spriteBatch.DrawString(myFont, ((int)time).ToString(), new Vector2(825, 55), Color.White);
+        _spriteBatch.Draw(
+            coin,                  // Texture2D
+            new Vector2(330, 45),  // Position (top-left)
+            null,                  // Source rectangle (null = full texture)
+            Color.White,           // Tint
+            0f,                    // Rotation (none)
+            Vector2.Zero,          // Origin (top-left corner)
+            3f,                    // Scale (3x larger)
+            SpriteEffects.None,    // No flipping
+            0f                     // Layer depth
+        );
         _spriteBatch.End();
 
         base.Draw(gameTime);

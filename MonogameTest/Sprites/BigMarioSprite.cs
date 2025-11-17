@@ -36,7 +36,7 @@ namespace MonogameTest
 
         private const float CROUCH_DRAW_OFFSET = 6f; // how far lower the crouch sprite is drawn
 
-        public Rectangle Bounds
+        public override Rectangle Bounds
         {
             get
             {
