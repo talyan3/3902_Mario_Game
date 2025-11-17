@@ -19,6 +19,7 @@ namespace MonogameTest
 
     public static class EnemyCollisionHandler
     {
+        private static EnemyCollision NumberSt => NumberLoad.Numbers.EnemyCollision;
         public static bool Handle(object enemyAny, Rectangle tileRect, out EnemyCollisionResult result)
         {
             result = default;
@@ -30,13 +31,13 @@ namespace MonogameTest
             {
                 pos = goom.Position;
                 enemyRect = goom.Bounds;
-                enemyRect.Inflate(-5, 0);   // Shrinks width by 8 total, height unchanged
+                enemyRect.Inflate(NumberSt.EnemyInflateX, 0);   // Shrinks width by 8 total, height unchanged
             }
             else if (enemyAny is moveKoop koop)
             {
                 pos = koop.Position;
                 enemyRect = koop.Bounds;
-                enemyRect.Inflate(-5, 0);   // Shrinks width by 8 total, height unchanged
+                enemyRect.Inflate(NumberSt.EnemyInflateX, 0);   // Shrinks width by 8 total, height unchanged
             }
             else
             {
@@ -95,8 +96,8 @@ namespace MonogameTest
         }
 
   
-        private static Rectangle FeetRect(Rectangle r, int h = 4)           
-            => new Rectangle(r.X, r.Bottom - h, r.Width, h);                 
+        private static Rectangle FeetRect(Rectangle r)           
+            => new Rectangle(r.X, r.Bottom - NumberSt.FeetHeight, r.Width, NumberSt.FeetHeight);                 
 
         private static void HandleMarioVsEnemiesCore(                       
             Rectangle marioBounds,                                         
@@ -104,7 +105,7 @@ namespace MonogameTest
             Action onHit,                                                    
             IList<object> enemies)                                          
         {
-            var feet = FeetRect(marioBounds, 4);
+            var feet = FeetRect(marioBounds);
 
             for (int i = enemies.Count - 1; i >= 0; i--)
             {
@@ -117,13 +118,13 @@ namespace MonogameTest
                 {
                     enemyRect = goom.Bounds;
                     alive = goom.IsAlive;
-                    enemyRect.Inflate(-6, 0); 
+                    enemyRect.Inflate(NumberSt.StompInflateX, 0); 
                 }
                 else if (enemy is moveKoop koop)
                 {
                     enemyRect = koop.Bounds;
                     alive = koop.IsAlive;
-                    enemyRect.Inflate(-6, 0); 
+                    enemyRect.Inflate(NumberSt.StompInflateX, 0); 
                 }
                 else continue;
 
@@ -133,7 +134,7 @@ namespace MonogameTest
 
                 
                 bool stomp = feet.Intersects(enemyRect) &&
-                             (marioBounds.Bottom <= enemyRect.Top + 4);
+                             (marioBounds.Bottom <= enemyRect.Top + NumberSt.StompThreshold);
 
                 if (stomp)
                 {
@@ -157,7 +158,7 @@ namespace MonogameTest
         {
             HandleMarioVsEnemiesCore(
                 marioBounds: mario.Bounds,
-                bounce: () => mario.Bounce(20f),
+                bounce: () => mario.Bounce(NumberSt.SmallMarioBounce),
                 onHit: restart,
                 enemies: enemies
             );
@@ -169,7 +170,7 @@ namespace MonogameTest
         {
             HandleMarioVsEnemiesCore(
                 marioBounds: mario.Bounds,
-                bounce: () => mario.Bounce(24f),
+                bounce: () => mario.Bounce(NumberSt.BigMarioBounce),
                 onHit: onBigHit,   
                 enemies: enemies
             );
