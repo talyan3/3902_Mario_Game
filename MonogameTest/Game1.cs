@@ -120,25 +120,28 @@ public class Game1 : Game
         goom = new moveGoom(goombaSprite, _spriteBatch);
         koop = new moveKoop(koopaSprite, _spriteBatch);
 
+        int tileS = (int)NumberLoad.Numbers.CameraMan.TileSize;
+        
+
         // Set initial positions for enemies (in world coordinates, same scale as tiles)
         Vector2[] goombaPositions = new Vector2[]
         {
-            new Vector2(16 * 22, 16 * 12),
-            new Vector2(16 * 39, 16 * 12),
-            new Vector2(16 * 50, 16 * 12),
-            new Vector2(16 * 52, 16 * 12),
-            new Vector2(16 * 79, 16 * 4),
-            new Vector2(16 * 81, 16 * 4),
-            new Vector2(16 * 96, 16 * 12),
-            new Vector2(16 * 98, 16 * 12),
-            new Vector2(16 * 113, 16 * 12),
-            new Vector2(16 * 115, 16 * 12),
-            new Vector2(16 * 124, 16 * 12),
-            new Vector2(16 * 126, 16 * 12),
-            new Vector2(16 * 128, 16 * 12),
-            new Vector2(16 * 130, 16 * 12),
-            new Vector2(16 * 173, 16 * 12),
-            new Vector2(16 * 175, 16 * 12)
+            new Vector2(tileS * 22, tileS * 12),
+            new Vector2(tileS * 39, tileS * 12),
+            new Vector2(tileS * 50, tileS * 12),
+            new Vector2(tileS * 52, tileS * 12),
+            new Vector2(tileS * 79, tileS * 4),
+            new Vector2(tileS * 81, tileS * 4),
+            new Vector2(tileS * 96, tileS * 12),
+            new Vector2(tileS * 98, tileS * 12),
+            new Vector2(tileS * 113, tileS * 12),
+            new Vector2(tileS * 115, tileS * 12),
+            new Vector2(tileS * 124, tileS * 12),
+            new Vector2(tileS * 126, tileS * 12),
+            new Vector2(tileS * 128, tileS * 12),
+            new Vector2(tileS * 130, tileS * 12),
+            new Vector2(tileS * 173, tileS * 12),
+            new Vector2(tileS * 175, tileS * 12)
         };
         // Load goombas
         foreach (var posG in goombaPositions)

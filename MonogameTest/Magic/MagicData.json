@@ -146,7 +146,8 @@
 
 "GameNum":
 {
-    "Scale": 4
+    "Scale": 4,
+    "TilePos": 12
 }
 
 
