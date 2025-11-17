@@ -10,11 +10,11 @@ namespace MonogameTest
     public static class TiledMapLoader
     {
         //Magic Numbers
-        private static readonly MapSettings MapSettingsNumbers = NumberLoad.Numbers.MapSettings;
-        private static readonly CameraMan CameraNumbers = NumberLoad.Numbers.CameraMan;
+        private static readonly MapSettings MapNumbers = NumberLoad.Numbers.MapSettings;
+        private static readonly Dictionary<int, string> TileNames = NumberLoad.Numbers.TileGrid;
 
-        public const int MapWidth = 208;  // Number of tiles horizontally
-        public const int MapHeight = 30;  // Number of tiles vertically
+        public static int MapWidth => MapNumbers.MapWidth;  // Number of tiles horizontally
+        public static int MapHeight => MapNumbers.MapHeight;  // Number of tiles vertically
 
         // Represents the basic structure of a Tiled map
         private class TiledMap
@@ -43,18 +43,15 @@ namespace MonogameTest
             int tileW = map.tilewidth;
             int tileH = map.tileheight;
 
-            // Local helper to label known gids
-            static string NameForGid(int gid) => gid switch
+            // Local helper to label known gids -- CHANGED THIS ONE A BIT
+            static string NameForGid(int gid)
             {
-                1  => "Ground",
-                2  => "Brick",
-                5  => "Question",
-                7  => "Question",
-                8  => "PipeTopLeft",
-                9  => "PipeTopRight",
-                10 => "PipeBodyLeft",
-                11 => "PipeBodyRight",
-                _  => $"gid={gid}"
+
+                string key = gid.ToString();
+                if (TileNames.ContainsKey(gid))
+                    return TileNames[gid];
+                else
+                    return $"gid={gid}";
             };
 
             // Loop through each layer in the map
