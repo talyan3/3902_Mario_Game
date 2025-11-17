@@ -39,7 +39,9 @@
     "ClampMin": -2,
     "ClampMax": 2,
     "LeftFrames": [2, 3],
-    "RightFrames": [4, 5]
+    "RightFrames": [4, 5],
+    "Direction": -2,
+    "Flag": -1
   },
 
   "MapSettings": {
@@ -141,12 +143,6 @@
 
   "BounceHeight": 20
 }
-
-
-
-
-
-
 
 
 

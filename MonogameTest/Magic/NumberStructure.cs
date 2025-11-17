@@ -68,6 +68,9 @@ public class KoopaNum
     public float ClampMax { get; set; }
     public int[] LeftFrames { get; set; }
     public int[] RightFrames { get; set; }
+
+    public float Direction { get; set; }
+    public float Flag { get; set; }
 }
 
 public class MapSettings
