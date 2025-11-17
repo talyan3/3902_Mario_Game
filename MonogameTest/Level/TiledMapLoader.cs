@@ -13,6 +13,9 @@ namespace MonogameTest
         private static readonly MapSettings MapNumbers = NumberLoad.Numbers.MapSettings;
         private static readonly Dictionary<int, string> TileNames = NumberLoad.Numbers.TileGrid;
 
+        //MY WARNING IF IT DOESNT WORK!!!!!!!!!!!!!!!!
+        //I changed these below from constant to static and added the => because that was what made it work
+        //idk if that causes an issue, I really hope it does not
         public static int MapWidth => MapNumbers.MapWidth;  // Number of tiles horizontally
         public static int MapHeight => MapNumbers.MapHeight;  // Number of tiles vertically
 
