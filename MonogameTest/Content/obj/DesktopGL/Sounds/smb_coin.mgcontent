@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <SourceFile>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_coin.wav</SourceFile>
+  <SourceTime>2025-11-16T22:02:59.4786071-05:00</SourceTime>
+  <DestFile>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/bin/DesktopGL/Sounds/smb_coin.xnb</DestFile>
+  <DestTime>2025-11-17T00:39:10.2885546-05:00</DestTime>
+  <Importer>WavImporter</Importer>
+  <ImporterTime>2025-06-02T06:31:02-04:00</ImporterTime>
+  <Processor>SoundEffectProcessor</Processor>
+  <ProcessorTime>2025-06-02T06:31:02-04:00</ProcessorTime>
+  <Parameters>
+    <Key>Quality</Key>
+    <Value>Best</Value>
+  </Parameters>
+  <Dependencies />
+  <BuildAsset />
+  <BuildOutput />
+</PipelineBuildEvent>

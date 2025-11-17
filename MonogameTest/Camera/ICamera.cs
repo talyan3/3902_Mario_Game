@@ -7,5 +7,6 @@ namespace MonogameTest
         Matrix GetViewMatrix();
         void LookAt(Vector2 target);
         void Reset(Vector2 startPosition);
+        float LeftEdge { get; }
     }
 }

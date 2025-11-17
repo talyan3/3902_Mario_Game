@@ -4,12 +4,80 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/01-main-theme-overworld.mp3</File>
     <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/marioFont.spritefont</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/01-main-theme-overworld.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/02-underworld.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/05-starman.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/06-level-complete.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/08-you-re-dead.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/09-game-over.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/10-game-over-2.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/11-into-the-tunnel.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/13-hurry.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/14-hurry-underground-.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/17-hurry-starman-.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/18-hurry-overworld-.mp3</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_1-up.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_breakblock.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_bump.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_coin.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_fireball.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_flagpole.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_jump-super.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_jumpsmall.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_kick.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_pause.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_powerup_appears.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_powerup.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_stomp.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sounds/smb_warning.wav</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/BigHill.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/Bush1.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/Bush2.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/Bush3.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/Cloud1.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/Cloud2.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/Cloud3.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/SmallHill.png</File>
     <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/goomba-Final.png</File>
     <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/green-koopa.png</File>
+    <File>c:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/powerups.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />
     <File xsi:nil="true" />

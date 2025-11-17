@@ -8,6 +8,7 @@ namespace MonogameTest
     private readonly Viewport _viewport;
     private Vector2 _position = Vector2.Zero;
     public float Zoom { get; set; } = 1f;
+    public float LeftEdge => _position.X - (_viewport.Width / 2f) / Zoom;
 
     private float _smoothSpeed = 0.15f;
     private float _levelWidth = TiledMapLoader.MapWidth * 16f;
@@ -33,8 +34,6 @@ namespace MonogameTest
         float desiredX = target.X - (_viewport.Width / (Zoom * 100f));
         _position = Vector2.Lerp(_position, new Vector2(desiredX, 0), _smoothSpeed);
         _position.X = MathHelper.Clamp(_position.X, 128, _levelWidth - (_viewport.Width / Zoom));
-        
-        //float visibleWorldHeight = _viewport.Height / Zoom;
         _position.Y = 120;
 
         if (_position.X > _furthestRight)

@@ -6,6 +6,10 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using MonoGame.Extended;
+using MonoGame.Extended.Animations;
+using System.Net;
+using System.Runtime.Intrinsics.X86;
+using MonogameTest.Sounds;
 
 namespace MonogameTest;
 
@@ -13,10 +17,8 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
-    public MarioManager MarioManager { get; set; } = new MarioManager();
-    public CommandManager CommandManager { get; set; }
-    private BlockManager blockManager; // ********
-    private PowerupManager powerupManager; // ********
+    private InputController _input = new InputController();/////
+    //public CommandManager CommandManager { get; set; }
     public Texture2D goombaSprite;
     public Texture2D koopaSprite;
     public ISprite goom;
@@ -35,7 +37,7 @@ public class Game1 : Game
     const int ViewWidth = TilesVisibleX * TileSize; // 256
     private ICamera camera;
     const int scale = 4;
-    private MarioPhysiscsTest Mar; // **$$$
+    const float SpriteScale = 0.30f;
     Texture2D Hollow; // **$$$
     Texture2D platformTexture; // **$$$
     Rectangle platformRect; // **$$$
@@ -43,20 +45,25 @@ public class Game1 : Game
     private Vector2 _spawnPoint; //Added
     private BackgroundManager _backgroundManager;
 
-    //ANIKA POWERUP COLLISION VARIABLES
     public Texture2D powerupTexture;
     public ISprite mushroom;
-
-    //ANIKA ENEMIES COLLISION VARIABLES
     private List<object> _enemies = new List<object>();
 
     private SpriteFont myFont;
     private string coins = "00";
-
-    private Song backgroundMusic;
     private double time = 360;
-
     private Texture2D coin;
+
+    //THE EVER PROMISED STATE MACHINE 
+    //... Testy
+    Animation idleAnim;
+    Animation runAnim;
+    Animation jumpAnim;
+    AnimationPlayer animPlayer;
+    Physics Phys;
+    PlayerMario Mar; ///////
+
+    public SoundManager SoundManager { get; private set; }
 
     public Game1()
     {
@@ -67,7 +74,6 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-         CommandManager = new CommandManager(this, MarioManager);
         _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
         _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
         _graphics.ApplyChanges();
@@ -77,8 +83,26 @@ public class Game1 : Game
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
-        _backgroundManager = new BackgroundManager(GraphicsDevice);
+        SoundManager = new SoundManager();
+
+        SoundLoader.LoadAllSounds(this, SoundManager);
+        SoundManager.PlaySong("mainTheme"); // auto start overworld theme
+
+        _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
         _backgroundManager.LoadContent();
+
+        /////
+        Assets.Load(Content,GraphicsDevice);
+        idleAnim = new Animation(Assets.PlayerIdle, 30, 16, 1, 0.1f, 8);
+        runAnim  = new Animation(Assets.PlayerRun,  30, 16, 3, 0.1f, 9);
+        animPlayer = new AnimationPlayer();
+        //jumpAnim = new Animation(Assets.PlayerJump, 16, 16, 2, 0.15f, 0);
+        animPlayer.Play(idleAnim);
+        Mar = new PlayerMario();
+        Mar.LoadContent(Content, SoundManager, GraphicsDevice);
+        //soundManager = new SoundManager(Content);
+        //soundManager.LoadContent();
+        ///////
 
         goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
         koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
@@ -90,15 +114,15 @@ public class Game1 : Game
         (koop as moveKoop).Position = new Vector2(16 * 25, 16 * 12); // 35 tiles over, ground level
 
         //load powerups
-        powerupTexture = Texture2D.FromFile(GraphicsDevice, "powerups.png");
+        powerupTexture = Content.Load<Texture2D>("Sprites/powerups");
         mushroom = new movePower(powerupTexture, _spriteBatch);
         (mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
-
-        // TODO: use this.Content to load your game content here
-        new SpriteCommand(GraphicsDevice, MarioManager).Execute();
         
         _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
         _bigMario = new BigMarioSprite(GraphicsDevice);
+
+        _smallMario.SoundManager = SoundManager; // if SmallMario also needs sounds
+        _bigMario.SoundManager = SoundManager;   // use the game's SoundManager
         
         // Start Mario somewhere reasonable in world coordinates (e.g., ground level)
         var pos = new Vector2(16 * 5, 16 * 13); // y = 13 tiles down instead of 20
@@ -137,16 +161,11 @@ public class Game1 : Game
 
         //physics test $$$
         Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
-        Mar = new MarioPhysiscsTest(Hollow); // **$$$
+        //Mar = new MarioPhysiscsTest(Hollow); // **$$$
         platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
-        platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
+        //platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
 
         myFont = Content.Load<SpriteFont>("marioFont");
-
-        backgroundMusic = Content.Load<Song>("01-main-theme-overworld");
-        MediaPlayer.IsRepeating = true;   // loop the song
-        MediaPlayer.Volume = 0.5f;        // volume (0.0 - 1.0)
-        MediaPlayer.Play(backgroundMusic);
 
         coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
     }
@@ -156,13 +175,13 @@ public class Game1 : Game
         if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
             Exit();
 
-        // TODO: Add your update logic here
-        CommandManager.checkKeys();
-        CommandManager.checkClicks();
-        if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
+        //if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
 
         KeyboardState state = Keyboard.GetState();
+        animPlayer.Update(gameTime);////////
         previousState = state; 
+
+        _input.Update();/////
 
         bool bDown = state.IsKeyDown(Keys.B);
 		if (bDown && !_bHeldLast)
@@ -171,17 +190,9 @@ public class Game1 : Game
 
         if (state.IsKeyDown(Keys.R))
         {
-            // Reset Mario’s position to the original spawn point
-            if (_currentMario is SmallMarioSprite)
-                _currentMario.Position = _spawnPoint;
-            else if (_currentMario is BigMarioSprite)
-                _currentMario.Position = _spawnPoint;
-
-            // Also reset both sprite forms so future switches start from same place
+            _currentMario.Position = _spawnPoint;
             _smallMario.Position = _spawnPoint;
             _bigMario.Position = _spawnPoint;
-
-            // Reset the camera to follow Mario at that point
             camera.Reset(_spawnPoint);
             camera.LookAt(_spawnPoint);
         }
@@ -197,15 +208,12 @@ public class Game1 : Game
             Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
         }
 
-        if (MarioManager.ActiveSprite != null)
-            MarioManager.ActiveSprite.Update(gameTime);
+        //if (MarioManager.ActiveSprite != null)
+            //MarioManager.ActiveSprite.Update(gameTime);
         
-        Mar.Update(gameTime, state, platformRect); // ***$$$
-
+        //Mar.Update(gameTime, state, platformRect); 
         goom.Update(gameTime);
         koop.Update(gameTime);
-
-        //update mushroom
         mushroom.Update(gameTime);
 
         if (goom is moveGoom g)
@@ -278,7 +286,7 @@ public class Game1 : Game
                 });
 
         }
-        time -= 0.02;
+        time -= 0.016;
 
         base.Update(gameTime);
     }
@@ -313,7 +321,6 @@ public class Game1 : Game
         {
             tile.Draw(_spriteBatch);
         }
-        //_spriteBatch.DrawRectangle(new Rectangle(0, 0, 256, 240), Color.Red);
         Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
         //draw enemies (koop and goom)
         if (goom is moveGoom g && g.IsAlive)

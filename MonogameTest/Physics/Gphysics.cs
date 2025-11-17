@@ -1,6 +1,6 @@
 using Microsoft.Xna.Framework;
 namespace MonogameTest;
-public class PhysicsTest
+public class Physics
 {
     public Vector2 position;
     public Vector2 velocity;

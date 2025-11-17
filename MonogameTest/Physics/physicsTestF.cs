@@ -1,4 +1,4 @@
-using Microsoft.Xna.Framework;
+/*using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonogameTest;
@@ -101,4 +101,4 @@ public class MarioPhysiscsTest
     {
         spriteBatch.Draw(texture, Physics.position,null,Color.White,0f,Vector2.Zero,scale,SpriteEffects.None,0f);//so long just to scale down the joke. It worth it tho lol
     }
-}
+} */
