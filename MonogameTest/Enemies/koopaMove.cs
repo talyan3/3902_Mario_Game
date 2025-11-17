@@ -83,7 +83,7 @@ class moveKoop : ISprite
             if (flag == -1)
             {
                 // Alternate between animation frames (4 and 5) (moving right)
-                frames = ((frames + 1) % Numbers.RightFrames.Length) + Numbers.RightFrames[1];
+                frames = ((frames + 1) % Numbers.RightFrames.Length) + Numbers.RightFrames[0];
             }
             
             elasped = 0f;
