@@ -15,7 +15,9 @@
     "FeetHeight": 4,
     "StompThreshold": 4,
     "SmallMarioBounce": 20,
-    "BigMarioBounce": 24
+    "BigMarioBounce": 24,
+    "Direction": -2,
+    "Frames": 2
   },
 
     "GoombaM": {

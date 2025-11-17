@@ -52,6 +52,8 @@ public class GoombaNum
     public float AnimationDelay { get; set; }
     public float ClampMin { get; set; }
     public float ClampMax { get; set; }
+    public float Direction { get; set; }
+    public float Frames { get; set; }
 }
 
 public class KoopaNum
