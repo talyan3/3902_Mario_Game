@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/Sprites/green-koopa.png</SourceFile>
+  <SourceFile>C:/users/krist/OneDrive/Desktop/3902_Mario_Game/MonogameTest/Content/Sprites/green-koopa.png</SourceFile>
   <SourceTime>2025-11-12T13:45:29.1036743-05:00</SourceTime>
-  <DestFile>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/Sprites/green-koopa.xnb</DestFile>
-  <DestTime>2025-11-12T13:51:02.1227052-05:00</DestTime>
+  <DestFile>C:/users/krist/OneDrive/Desktop/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/Sprites/green-koopa.xnb</DestFile>
+  <DestTime>2025-11-16T23:05:05.3929691-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-06-02T06:31:02-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

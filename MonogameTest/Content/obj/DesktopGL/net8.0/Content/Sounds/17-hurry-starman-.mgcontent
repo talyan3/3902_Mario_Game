@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/Sounds/17-hurry-starman-.mp3</SourceFile>
+  <SourceFile>C:/users/krist/OneDrive/Desktop/3902_Mario_Game/MonogameTest/Content/Sounds/17-hurry-starman-.mp3</SourceFile>
   <SourceTime>2025-11-12T13:48:16.7510432-05:00</SourceTime>
-  <DestFile>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/Sounds/17-hurry-starman-.xnb</DestFile>
-  <DestTime>2025-11-12T14:55:38.1802241-05:00</DestTime>
+  <DestFile>C:/users/krist/OneDrive/Desktop/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/Sounds/17-hurry-starman-.xnb</DestFile>
+  <DestTime>2025-11-16T23:05:01.9221931-05:00</DestTime>
   <Importer>Mp3Importer</Importer>
   <ImporterTime>2025-06-02T06:31:02-04:00</ImporterTime>
   <Processor>SongProcessor</Processor>
@@ -15,6 +15,6 @@
   <Dependencies />
   <BuildAsset />
   <BuildOutput>
-    <string>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/Sounds/17-hurry-starman-.ogg</string>
+    <string>C:/users/krist/OneDrive/Desktop/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/Sounds/17-hurry-starman-.ogg</string>
   </BuildOutput>
 </PipelineBuildEvent>

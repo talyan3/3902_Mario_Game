@@ -5,7 +5,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using MonogameTest.Sounds; 
+using MonogameTest.Sounds;
+using MonogameTest.Screens;
 
 namespace MonogameTest
 {
@@ -13,32 +14,38 @@ namespace MonogameTest
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+
         public MarioManager MarioManager { get; set; } = new MarioManager();
         public CommandManager CommandManager { get; set; }
+
+        // Gameplay fields
         private BlockManager blockManager;
         private PowerupManager powerupManager;
         public Texture2D goombaSprite;
         public Texture2D koopaSprite;
         public ISprite goom;
         public ISprite koop;
-        public Vector2 pos;
+
         private SmallMarioSprite _smallMario;
         private BigMarioSprite _bigMario;
         private StaticSprite _currentMario;
         private bool _isBig = false;
         private bool _bHeldLast = false;
+
         private Texture2D _tileset;
         private List<Tile> _mapTiles;
+
         const int TilesVisibleX = 16;
         const int TileSize = 16;
-        KeyboardState previousState;
         const int ViewWidth = TilesVisibleX * TileSize;
-        private ICamera camera;
         const int scale = 4;
+
+        private ICamera camera;
         private MarioPhysiscsTest Mar;
-        Texture2D Hollow;
-        Texture2D platformTexture;
-        Rectangle platformRect;
+        private Texture2D Hollow;
+        private Texture2D platformTexture;
+        private Rectangle platformRect;
+
         private List<Rectangle> _solidRects;
         private Vector2 _spawnPoint;
         private BackgroundManager _backgroundManager;
@@ -46,13 +53,16 @@ namespace MonogameTest
         // Powerups and enemies
         public Texture2D powerupTexture;
         public ISprite mushroom;
-        private List<object> _enemies = new List<object>();
 
-        // UI
-        private SpriteFont myFont;
-        private string coins = "00";
-        private double time = 360;
-        private Texture2D coin;
+        // Screen + HUD
+        private ScreenManager _screenManager;
+        private HUDScreen _hud;
+
+        private TitleScreen _titleScreen;
+        private LevelIntroScreen _introScreen;
+        private TimeUpScreen _timeUpScreen;
+        private GameOverScreen _gameOverScreen;
+
 
         public Game1()
         {
@@ -67,21 +77,21 @@ namespace MonogameTest
             _graphics.PreferredBackBufferWidth = ViewWidth * scale;
             _graphics.PreferredBackBufferHeight = 240 * scale;
             _graphics.ApplyChanges();
+
+            _screenManager = new ScreenManager();
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            
             SoundLoader.LoadAllSounds(this);
-            SoundManager.Instance.PlaySong("mainTheme"); // auto start overworld theme
+            SoundManager.Instance.PlaySong("mainTheme");
 
             _backgroundManager = new BackgroundManager(GraphicsDevice);
             _backgroundManager.LoadContent();
 
-            // Enemies
+            // Enemy sprites
             goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
             koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
             goom = new moveGoom(goombaSprite, _spriteBatch);
@@ -105,7 +115,7 @@ namespace MonogameTest
             _spawnPoint = pos;
             _currentMario = _smallMario;
 
-            // Tileset + Map
+            // Tileset + map
             using (FileStream fs = new FileStream("blocksV10.png", FileMode.Open))
                 _tileset = Texture2D.FromStream(GraphicsDevice, fs);
 
@@ -120,75 +130,104 @@ namespace MonogameTest
             camera.Reset(_currentMario.Position);
             camera.LookAt(_currentMario.Position);
 
-            // Physics Test
+            // Physics test
             Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png");
             Mar = new MarioPhysiscsTest(Hollow);
             platformTexture = new Texture2D(GraphicsDevice, 1, 1);
             platformRect = new Rectangle(0, 209, 5000, 50);
 
-            // Fonts & UI
-            myFont = Content.Load<SpriteFont>("marioFont");
-            coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
+            // Load HUD assets
+            var font = Content.Load<SpriteFont>("marioFont");
+            var coinTex = Texture2D.FromFile(GraphicsDevice, "coin2.png");
+            var titleTex = Content.Load<Texture2D>("titlescreen");
+
+
+            _hud = new HUDScreen(font, coinTex, _screenManager);
+
+            // Load screens
+            _titleScreen = new TitleScreen(this, _screenManager, titleTex, font, coinTex);
+            _introScreen = new LevelIntroScreen(this, _screenManager, font, coinTex);
+            _timeUpScreen = new TimeUpScreen(this, _screenManager, font, coinTex);
+            _gameOverScreen = new GameOverScreen(this, _screenManager, font, coinTex);
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            _screenManager.Update(gameTime);
+
+            // Screen state handling
+            switch (_screenManager.CurrentState)
+            {
+                case GameState.Title:
+                    _titleScreen.Update(gameTime);
+                    return;
+
+                case GameState.LevelIntro:
+                    _introScreen.Update(gameTime);
+                    return;
+
+                case GameState.TimeUp:
+                    _timeUpScreen.Update(gameTime);
+                    return;
+
+                case GameState.GameOver:
+                    _gameOverScreen.Update(gameTime);
+                    return;
+
+                case GameState.Playing:
+                    break;
+            }
+
+            // ----------- GAMEPLAY UPDATE -----------
 
             CommandManager.checkKeys();
             CommandManager.checkClicks();
+
             if (MarioManager.ActiveSprite != null)
                 MarioManager.ActiveSprite.Update(gameTime);
 
             KeyboardState state = Keyboard.GetState();
-            previousState = state;
-
             bool bDown = state.IsKeyDown(Keys.B);
             if (bDown && !_bHeldLast)
                 ToggleMarioSize();
             _bHeldLast = bDown;
 
             if (state.IsKeyDown(Keys.R))
-            {
-                _currentMario.Position = _spawnPoint;
-                _smallMario.Position = _spawnPoint;
-                _bigMario.Position = _spawnPoint;
-                camera.Reset(_spawnPoint);
-                camera.LookAt(_spawnPoint);
-            }
+                ResetLevel();
 
             if (_currentMario is BigMarioSprite bigMario)
-            {
                 bigMario.Update(gameTime, camera.LeftEdge);
-            }
             else if (_currentMario is SmallMarioSprite smallMario)
-            {
                 smallMario.Update(gameTime, camera.LeftEdge);
-            }
             else
-            {
                 _currentMario.Update(gameTime);
-            }
 
-            Vector2 marioPos = _currentMario.Position;
-            camera.LookAt(marioPos);
+            camera.LookAt(_currentMario.Position);
 
-
-            if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
-                Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
+            StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out _, out _);
 
             Mar.Update(gameTime, state, platformRect);
             goom.Update(gameTime);
             koop.Update(gameTime);
             mushroom.Update(gameTime);
 
-            // Enemy collisions
             HandleEnemyCollisions();
 
-            time -= 0.02;
+            //--------------------------------------------------------------------
             base.Update(gameTime);
+        }
+
+        private void ResetLevel()
+        {
+            _currentMario.Position = _spawnPoint;
+            _smallMario.Position = _spawnPoint;
+            _bigMario.Position = _spawnPoint;
+            camera.Reset(_spawnPoint);
+            camera.LookAt(_spawnPoint);
+            _screenManager.ResetLevel();
         }
 
         private void HandleEnemyCollisions()
@@ -206,7 +245,8 @@ namespace MonogameTest
                         _isBig = false;
                         _smallMario.Position = _bigMario.Position;
                         var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
-                        _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
+                        _smallMario.Position = new Vector2(_smallMario.Position.X,
+                                                           _smallMario.Position.Y + deltaFeet);
                         _currentMario = _smallMario;
                     });
             }
@@ -220,8 +260,13 @@ namespace MonogameTest
                         _smallMario.Position = _spawnPoint;
                         if (goom is moveGoom gg) gg.IsAlive = true;
                         if (koop is moveKoop kk) kk.IsAlive = true;
+
                         camera.Reset(_spawnPoint);
                         camera.LookAt(_spawnPoint);
+
+                        _screenManager.Lives--;
+                        if (_screenManager.Lives <= 0)
+                            _screenManager.ChangeState(GameState.GameOver);
                     });
             }
         }
@@ -229,16 +274,46 @@ namespace MonogameTest
         private void ToggleMarioSize()
         {
             _isBig = !_isBig;
-            Vector2 pos = (_currentMario is SmallMarioSprite sm ? sm.Position :
-                           (_currentMario is BigMarioSprite bm ? bm.Position : Vector2.Zero));
+            Vector2 pos = _currentMario.Position;
             _currentMario = _isBig ? (StaticSprite)_bigMario : _smallMario;
-            if (_currentMario is SmallMarioSprite sm2) sm2.Position = pos;
-            if (_currentMario is BigMarioSprite bm2) bm2.Position = pos;
+            _currentMario.Position = pos;
         }
 
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(new Color(92, 148, 252));
+
+            _spriteBatch.Begin();
+
+            switch (_screenManager.CurrentState)
+            {
+                case GameState.Title:
+                    _titleScreen.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    return;
+
+                case GameState.LevelIntro:
+                    _introScreen.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    return;
+
+                case GameState.TimeUp:
+                    _timeUpScreen.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    return;
+
+                case GameState.GameOver:
+                    _gameOverScreen.Draw(_spriteBatch);
+                    _spriteBatch.End();
+                    return;
+
+                case GameState.Playing:
+                    break;
+            }
+
+            _spriteBatch.End();
+
+            // ----------- GAMEPLAY DRAW ---------------------
             _spriteBatch.Begin(transformMatrix: camera.GetViewMatrix());
 
             _backgroundManager.Draw(_spriteBatch, cameraX: 0f);
@@ -251,24 +326,23 @@ namespace MonogameTest
 
             if (goom is moveGoom g && g.IsAlive)
                 g.Draw(_spriteBatch, g.Position);
+
             if (koop is moveKoop k && k.IsAlive)
                 k.Draw(_spriteBatch, k.Position);
-            if (mushroom != null && (mushroom as movePower).IsAlive)
-                mushroom.Draw(_spriteBatch, (mushroom as movePower).Position);
+
+            if (mushroom is movePower m && m.IsAlive)
+                m.Draw(_spriteBatch, m.Position);
 
             _spriteBatch.End();
+
+            // HUD
             _spriteBatch.Begin();
-
-            _spriteBatch.DrawString(myFont, "MARIO", new Vector2(90, 15), Color.White);
-            _spriteBatch.DrawString(myFont, "000000", new Vector2(90, 55), Color.White);
-            _spriteBatch.DrawString(myFont, "x" + coins, new Vector2(375, 55), Color.White);
-            _spriteBatch.DrawString(myFont, "WORLD", new Vector2(550, 15), Color.White);
-            _spriteBatch.DrawString(myFont, "1-1", new Vector2(580, 55), Color.White);
-            _spriteBatch.DrawString(myFont, "TIME", new Vector2(800, 15), Color.White);
-            _spriteBatch.DrawString(myFont, ((int)time).ToString(), new Vector2(825, 55), Color.White);
-            _spriteBatch.Draw(coin, new Vector2(330, 45), null, Color.White, 0f, Vector2.Zero, 3f, SpriteEffects.None, 0f);
-
+            _hud.Draw(_spriteBatch);
             _spriteBatch.End();
+
+            
+            
+            
             base.Draw(gameTime);
         }
     }

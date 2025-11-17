@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\krist\\Downloads\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj": {}
+    "C:\\users\\krist\\OneDrive\\Desktop\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\krist\\Downloads\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj": {
+    "C:\\users\\krist\\OneDrive\\Desktop\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\krist\\Downloads\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj",
+        "projectUniqueName": "C:\\users\\krist\\OneDrive\\Desktop\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj",
         "projectName": "MonogameTest",
-        "projectPath": "C:\\Users\\krist\\Downloads\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj",
+        "projectPath": "C:\\users\\krist\\OneDrive\\Desktop\\3902_Mario_Game\\MonogameTest\\MonogameTest.csproj",
         "packagesPath": "C:\\Users\\krist\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\krist\\Downloads\\3902_Mario_Game\\MonogameTest\\obj\\",
+        "outputPath": "C:\\users\\krist\\OneDrive\\Desktop\\3902_Mario_Game\\MonogameTest\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
