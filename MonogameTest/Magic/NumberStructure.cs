@@ -1,0 +1,152 @@
+using System.Collections.Generic;
+using MonogameTest;
+
+public class NumberStructure
+{
+    public CameraManager CameraManager { get; set; }
+    public EnemyCollision EnemyCollision { get; set; }
+    public GoombaNum GoombaM { get; set; }
+    public KoopaNum KoopaM { get; set; }
+    public MapSettings MapSettings { get; set; }
+    public Dictionary<int, string> TileGrid { get; set; }
+    public PhysicsNum GPhysics { get; set; }
+
+    public PlayerNumbers PlayerPhysics { get; set; }
+    public PlayerAnimation PlayerAnimations { get; set; }
+
+    public BigMarioNumbers BigMario { get; set; }
+
+    public SmallMarioNumbers SmallMario { get; set; }
+
+
+
+}
+
+public class CameraManager
+{
+    public float SmoothSpeed { get; set; }
+    public float HorizontalOffsetRatio { get; set; }
+    public float NesViewWidth { get; set; }
+    public float ZoomDivisor { get; set; }
+    public float LeftClamp { get; set; }
+    public float FixedCameraY { get; set; }
+    public float TileSize { get; set; }
+
+}
+
+public class EnemyCollision
+{
+    public int EnemyInflateX { get; set; }
+    public int StompInflateX { get; set; }
+    public int FeetHeight { get; set; }
+    public int StompThreshold { get; set; }
+    public float SmallMarioBounce { get; set; }
+    public float BigMarioBounce { get; set; }
+}
+
+public class GoombaNum
+{
+    public float SpriteWidth { get; set; }
+    public float SpriteHeight { get; set; }
+    public float Speed { get; set; }
+    public float AnimationDelay { get; set; }
+    public float ClampMin { get; set; }
+    public float ClampMax { get; set; }
+}
+
+public class KoopaNum
+{
+    public int DestWidth { get; set; }
+    public int DestHeight { get; set; }
+    public int SrcWidth { get; set; }
+    public int SrcHeight { get; set; }
+    public float Speed { get; set; }
+    public float AnimationDelay { get; set; }
+    public float ClampMin { get; set; }
+    public float ClampMax { get; set; }
+    public int[] LeftFrames { get; set; }
+    public int[] RightFrames { get; set; }
+}
+
+public class MapSettings
+{
+    public int MapWidth { get; set; }
+    public int MapHeight { get; set; }
+}
+
+public class PhysicsNum
+{
+    public float Gravity {get; set;}
+    public float GroundY {get; set;}
+}
+
+public class PlayerNumbers
+{
+    public float MoveAcceleration { get; set; }
+    public float MaxMoveSpeed { get; set; }
+    public float GroundFriction { get; set; }
+    public float AirFriction { get; set; }
+    public float JumpStrength { get; set; }
+}
+
+public class AnimInfo
+{
+    public int FrameWidth { get; set; }
+    public int FrameHeight { get; set; }
+    public int FrameCount { get; set; }
+    public float FrameDuration { get; set; }
+    public int StartFrame { get; set; }
+}
+
+public class PlayerAnimation
+{
+    public string Texture { get; set; }
+    public AnimInfo Idle { get; set; }
+    public AnimInfo Run { get; set; }
+    public AnimInfo Jump { get; set; }
+}
+
+public class BigMarioNumbers
+{
+    public float MoveSpeed { get; set; }
+    public float SprintMultiplier { get; set; }
+
+    public int FrameWidth { get; set; }
+    public int FrameHeight { get; set; }
+    public int SheetColumnWidth { get; set; }
+
+    public List<int> RunFrames { get; set; }
+    public int IdleFrame { get; set; }
+    public int JumpFrame { get; set; }
+    public int CrouchFrame { get; set; }
+
+    public float FrameTime { get; set; }
+
+    public float JumpOffset { get; set; }
+    public float BounceHeight { get; set; }
+
+    public float CrouchOffset { get; set; }
+}
+
+public class SmallMarioNumbers
+{
+    public float MoveSpeed { get; set; }
+    public float SprintMultiplier { get; set; }
+
+    public int FrameWidth { get; set; }
+    public int FrameHeight { get; set; }
+    public int SheetColumnWidth { get; set; }
+
+    public List<int> RunFrames { get; set; }
+    public int CrouchFrame { get; set; }
+    public int JumpFrame { get; set; }
+    public int IdleFrame { get; set; }
+
+    public float FrameTime { get; set; }
+
+    public float JumpStrength { get; set; }
+    public float Gravity { get; set; }
+
+    public float BounceHeight { get; set; }
+}
+

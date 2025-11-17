@@ -10,16 +10,22 @@ namespace MonogameTest
     public float Zoom { get; set; } = 1f;
     public float LeftEdge => _position.X - (_viewport.Width / 2f) / Zoom;
 
-    private float _smoothSpeed = 0.15f;
-    private float _levelWidth = TiledMapLoader.MapWidth * 16f;
-    private float _levelHeight = TiledMapLoader.MapHeight * 16f;
+    private float _smoothSpeed;
+    private float _levelWidth;
+    private float _levelHeight;
     private float _furthestRight = 0f;
-    private float _horizontalOffsetRatio = 0.35f;
+    private float _horizontalOffsetRatio;
+    private readonly NumberStructure _numbers;
 
-    public CameraManager(Viewport viewport)
+    public CameraManager(Viewport viewport, NumberStructure numbers)
     {
         _viewport = viewport;
-        Zoom = _viewport.Width / 256f;  // keep NES view width of 256px
+        _numbers = numbers;
+
+        Zoom = _viewport.Width / numbers.CameraManager.NesViewWidth;  // keep NES view width of 256px
+
+        _smoothSpeed = numbers.CameraManager.SmoothSpeed;
+        _horizontalOffsetRatio = numbers.CameraManager.HorizontalOffsetRatio;
     }
 
     public Matrix GetViewMatrix()
@@ -31,10 +37,10 @@ namespace MonogameTest
 
     public void LookAt(Vector2 target)
     {
-        float desiredX = target.X - (_viewport.Width / (Zoom * 100f));
+        float desiredX = target.X - (_viewport.Width / (Zoom * _numbers.CameraManager.ZoomDivisor));
         _position = Vector2.Lerp(_position, new Vector2(desiredX, 0), _smoothSpeed);
-        _position.X = MathHelper.Clamp(_position.X, 128, _levelWidth - (_viewport.Width / Zoom));
-        _position.Y = 120;
+        _position.X = MathHelper.Clamp(_position.X, _numbers.CameraManager.LeftClamp, _levelWidth - (_viewport.Width / Zoom));
+        _position.Y = _numbers.CameraManager.FixedCameraY;
 
         if (_position.X > _furthestRight)
             _furthestRight = _position.X;

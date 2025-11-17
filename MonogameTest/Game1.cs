@@ -84,6 +84,10 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
+        //MAGIC NUMBERS:
+        NumberLoad.Load();
+
+
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         SoundManager = new SoundManager();
 
@@ -183,7 +187,7 @@ public class Game1 : Game
         /****  JEnd Added  ****/
 
         //loads the camera on mario
-        camera = new CameraManager(GraphicsDevice.Viewport);
+        camera = new CameraManager(GraphicsDevice.Viewport, NumberLoad.Numbers);
         camera.Reset(_currentMario.Position); // start centered on Mario
         camera.LookAt(_currentMario.Position); // immediately focus on him
 

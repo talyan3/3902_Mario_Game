@@ -1,0 +1,151 @@
+{
+  "CameraManager": {
+    "SmoothSpeed": 0.15,
+    "HorizontalOffsetRatio": 0.35,
+    "NesViewWidth": 256,
+    "ZoomDivisor": 100,
+    "LeftClamp": 128,
+    "FixedCameraY": 120,
+    "TileSize": 16
+  },
+
+  "EnemyCollision": {
+    "EnemyInflateX": -5,
+    "StompInflateX": -6,
+    "FeetHeight": 4,
+    "StompThreshold": 4,
+    "SmallMarioBounce": 20,
+    "BigMarioBounce": 24
+  },
+
+    "GoombaM": {
+        "SpriteWidth": 32,
+        "SpriteHeight": 16,
+        "Speed": 30,
+        "AnimationDelay": 150,
+        "ClampMin": -2,
+        "ClampMax": 2
+  },
+
+  "KoopaM": {
+    "DestWidth": 32,
+    "DestHeight": 24,
+    "SrcWidth": 30,
+    "SrcHeight": 24,
+    "Speed": 30,
+    "AnimationDelay": 150,
+    "ClampMin": -2,
+    "ClampMax": 2,
+    "LeftFrames": [2, 3],
+    "RightFrames": [4, 5]
+  },
+
+  "MapSettings": {
+    "MapWidth": 208,
+    "MapHeight": 30
+  },
+
+  "TileGrid": {
+    "1": "Ground",
+    "2": "Brick",
+    "5": "Question",
+    "7": "Question",
+    "8": "PipeTopLeft",
+    "9": "PipeTopRight",
+    "10": "PipeBodyLeft",
+    "11": "PipeBodyRight"
+  },
+
+  "GPhysics": {
+    "Gravity": 1000,
+    "GroundY": 400
+  },
+
+  "PlayerPhysics": {
+  "MoveAcceleration": 1000,
+  "MaxMoveSpeed": 400,
+  "GroundFriction": 800,
+  "AirFriction": 100,
+  "JumpStrength": -300
+},
+
+"PlayerAnimations": {
+  "Texture": "small-mario-final.png",
+
+  "Idle": {
+    "FrameWidth": 30,
+    "FrameHeight": 16,
+    "FrameCount": 1,
+    "FrameDuration": 0.15,
+    "StartFrame": 8
+  },
+
+  "Run": {
+    "FrameWidth": 30,
+    "FrameHeight": 16,
+    "FrameCount": 3,
+    "FrameDuration": 0.10,
+    "StartFrame": 9
+  },
+
+  "Jump": {
+    "FrameWidth": 30,
+    "FrameHeight": 16,
+    "FrameCount": 1,
+    "FrameDuration": 0.20,
+    "StartFrame": 13
+  }
+
+},
+
+"BigMario": {
+  "MoveSpeed": 100,
+  "SprintMultiplier": 1.8,
+
+  "FrameWidth": 16,
+  "FrameHeight": 32,
+  "SheetColumnWidth": 30,
+
+  "RunFrames": [3, 4, 5],
+  "IdleFrame": 6,
+  "JumpFrame": 2,
+  "CrouchFrame": 0,
+
+  "FrameTime": 0.12,
+
+  "JumpOffset": 100,
+  "BounceHeight": 24,
+
+  "CrouchOffset": 6
+},
+
+"SmallMario": {
+  "MoveSpeed": 100,
+  "SprintMultiplier": 1.5,
+
+  "FrameWidth": 16,
+  "FrameHeight": 16,
+  "SheetColumnWidth": 30,
+
+  "RunFrames": [3, 4, 5],
+  "CrouchFrame": 0,
+  "JumpFrame": 1,
+  "IdleFrame": 6,
+
+  "FrameTime": 0.12,
+
+  "JumpStrength": -350,
+  "Gravity": 900,
+
+  "BounceHeight": 20
+}
+
+
+
+
+
+
+
+
+
+}
