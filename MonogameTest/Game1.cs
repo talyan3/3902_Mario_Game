@@ -389,6 +389,7 @@ public class Game1 : Game
             break;
 
         case PowerupType.Coin:
+		//Delete this part that was here before
             break;
     }
 }
