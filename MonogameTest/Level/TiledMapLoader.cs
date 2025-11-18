@@ -12,6 +12,9 @@ namespace MonogameTest
         public const int MapWidth = 208;  // Number of tiles horizontally
         public const int MapHeight = 30;  // Number of tiles vertically
 
+        
+
+
         // Represents the basic structure of a Tiled map
         private class TiledMap
         {
@@ -90,8 +93,8 @@ namespace MonogameTest
                         int gid = tileId + 1;               // back to 1-based (matches JSON)
                         string name = NameForGid(gid);
 
-                        // Add a new Tile using this source rectangle and position
-                        tiles.Add(new Tile(tileset, srcRect, pos));
+                        // Add a new Tile using this source rectangle and position and name
+                        tiles.Add(new Tile(tileset, srcRect, pos, gid, name)); 
                     }
                 }
             }
@@ -100,5 +103,3 @@ namespace MonogameTest
         }
     }
 }
-
-
