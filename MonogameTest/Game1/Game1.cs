@@ -10,19 +10,16 @@ using MonoGame.Extended.Animations;
 using System.Net;
 using System.Runtime.Intrinsics.X86;
 using MonogameTest.Sounds;
-<<<<<<< HEAD:MonogameTest/Game1.cs
 using MonogameTest.Screens;
-=======
->>>>>>> anika_CodeReview:MonogameTest/Game1/Game1.cs
 using System.Net.Mime;
 
 namespace MonogameTest;
 
 public class Game1 : Game
 {
-    private GraphicsDeviceManager _graphics;
+    public InitializeGame graphicsInitialize { get; private set; } = new InitializeGame();
     private SpriteBatch _spriteBatch;
-    private InputController _input = new InputController();/////
+    /////
     //public CommandManager CommandManager { get; set; }
     public Texture2D goombaSprite;
     public Texture2D koopaSprite;
@@ -107,16 +104,16 @@ public class Game1 : Game
 
     public Game1()
     {
-        _graphics = new GraphicsDeviceManager(this);
+        graphicsInitialize.Graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
     }
 
     protected override void Initialize()
     {
-        _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
-        _graphics.PreferredBackBufferHeight = GameNumbers.BackBufferHeight * scale;      // typical NES height
-        _graphics.ApplyChanges();
+        graphicsInitialize.Graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
+        graphicsInitialize.Graphics.PreferredBackBufferHeight = GameNumbers.BackBufferHeight * scale;      // typical NES height
+        graphicsInitialize.Graphics.ApplyChanges();
         _screenManager = new ScreenManager();
         base.Initialize();
     }
@@ -200,7 +197,6 @@ public class Game1 : Game
             goombas.Add(g);
         }
 
-<<<<<<< HEAD:MonogameTest/Game1.cs
         (koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 106 tiles over, ground level
 
         powerupsSheet = Content.Load<Texture2D>("Sprites/powerups");
@@ -209,14 +205,6 @@ public class Game1 : Game
         powerups.Add(PowerupFactory.Create(PowerupType.Coin, powerupsSheet, new Vector2(16*9, 16*11)));
         powerups.Add(PowerupFactory.Create(PowerupType.Star, powerupsSheet, new Vector2(16*10, 16*11)));
         powerups.Add(PowerupFactory.Create(PowerupType.GreenMushroom, powerupsSheet, new Vector2(16*12, 16*11)));
-=======
-        (koop as moveKoop).Position = new Vector2(TileSize * GameNumbers.KoopaPosX, TileSize * GameNumbers.KoopaPosY); // 35 tiles over, ground level
-
-        //load powerups
-        powerupTexture = Content.Load<Texture2D>("Sprites/powerups");
-        mushroom = new movePower(powerupTexture, _spriteBatch);
-        (mushroom as movePower).Position = new Vector2(TileSize * GameNumbers.MushroomPosX, TileSize * GameNumbers.MushroomPosY);
->>>>>>> anika_CodeReview:MonogameTest/Game1/Game1.cs
         
         _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
         _bigMario = new BigMarioSprite(GraphicsDevice);
