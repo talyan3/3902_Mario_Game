@@ -56,6 +56,7 @@ namespace MonogameTest
                     _isSliding = true;
                 }
 
+            //if collision horizontally with pole, start sliding down
             if (_isSliding)
             {
 
@@ -65,10 +66,12 @@ namespace MonogameTest
 
                 marioPos.X = _poleRect.Center.X;
 
+                //mario slide
                 marioPos.Y += _slideSpeed * dt;
 
                 float poleBottomY = _poleRect.Bottom;
 
+                //stop sliding at bottom of pole
                 if (marioPos.Y > poleBottomY)
                 {
                     marioPos.Y = poleBottomY;

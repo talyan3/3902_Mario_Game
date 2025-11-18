@@ -114,9 +114,9 @@ public class Game1 : Game
         _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
         _backgroundManager.LoadContent();
 
-        //FLAG LOADING!!!!!!!!!!!!!!!!
+        //!!!!!!!!!!!!!!FLAG LOADING!!!!!!!!!!!!! (trying to make it easy to see)
         _flagTexture = Content.Load<Texture2D>("flag_mario.png");
-        _poleRect = new Rectangle(TileSize * 200, TileSize * 5, 8, 128); // guessing numbers for testing
+        _poleRect = new Rectangle(TileSize * 330, TileSize * 5, 5, 130); // guessing numbers for testing (I can't find the specific place for the flagpole in the level)
         _flagpole = new Flagpole(_spriteBatch, _flagTexture, _poleRect, _currentMario);
 
         /////
