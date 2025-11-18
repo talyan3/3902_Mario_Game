@@ -35,6 +35,11 @@ namespace MonogameTest
 		public SoundManager SoundManager { get; set; }
 
         private const float CROUCH_DRAW_OFFSET = 6f; // how far lower the crouch sprite is drawn
+        
+        private float verticalVelocity = 0f;
+        private float gravity = 900f;
+        private float jumpStrength = -350f;
+
 
         public override Rectangle Bounds
         {
@@ -58,7 +63,7 @@ namespace MonogameTest
             _runFrames.Add(new TextureRegion(texture, 30 * 5, 0, FrameW, FrameH));
 
             _crouchFrame = new TextureRegion(texture, 0, 0, FrameW, FrameH);
-            _jumpFrame = new TextureRegion(texture, 30 * 2, 0, FrameW, FrameH);
+            _jumpFrame = new TextureRegion(texture, 30 * 1, 0, FrameW, FrameH);
             _idleFrame = new TextureRegion(texture, 30 * 6, 0, FrameW, FrameH);
 
             _current = _idleFrame;
@@ -73,6 +78,8 @@ namespace MonogameTest
 
             if (_groundPos == Vector2.Zero)
                 _groundPos = Position;
+
+            bool moving = false;
 
             float speed = _moveSpeed;
             if (kb.IsKeyDown(Keys.LeftShift) || kb.IsKeyDown(Keys.RightShift))
@@ -95,9 +102,10 @@ namespace MonogameTest
                 {
                     float newX = Position.X - speed * dt;
 
-                    // prevent moving left past camera or level start
+                    // prevent going left past camera or level start
                     if (newX >= cameraLeftLimit && newX >= 0)
                         Position = new Vector2(newX, Position.Y);
+                        moving = true;
 
                     _effects = SpriteEffects.None;
                     AdvanceRun(dt);
@@ -106,34 +114,52 @@ namespace MonogameTest
                 else if (kb.IsKeyDown(Keys.Right))
                 {
                     Position = new Vector2(Position.X + speed * dt, Position.Y);
+                    moving = true;
                     _effects = SpriteEffects.FlipHorizontally;
                     AdvanceRun(dt);
                 }
                 // === JUMP ===
-                else if (kb.IsKeyDown(Keys.Up))
+                if (kb.IsKeyDown(Keys.Up))
                 {
                     if (!_isJumping)
                     {
                         _isJumping = true;
-                        Position = new Vector2(Position.X, Position.Y - _jumpOffset);
-                        SoundManager.PlayEffect("jumpSuper");
+                        verticalVelocity = jumpStrength;
+                        SoundManager.PlayEffect("jumpBig");
                     }
+                    //_current = _jumpFrame;
+                }
+
+                // ---- GRAVITY ----
+                verticalVelocity += gravity * dt;
+                Position = new Vector2(Position.X, Position.Y + verticalVelocity * dt);
+
+                // ---- LANDING ----
+                if (Position.Y >= _groundPos.Y)
+                {
+                    Position = new Vector2(Position.X, _groundPos.Y);
+                    verticalVelocity = 0;
+                    _isJumping = false;
+                }
+
+                // ---- ANIMATIONS ----
+                if (_isJumping)
+                {
                     _current = _jumpFrame;
                 }
-                // === IDLE ===
+                else if (moving)
+                {
+                    AdvanceRun(dt);
+                }
                 else
                 {
-                    if (_isJumping)
-                    {
-                        Position = new Vector2(Position.X, _groundPos.Y);
-                        _isJumping = false;
-                    }
-
                     _current = _idleFrame;
                     _frameIndex = 0;
                     _frameTimer = 0f;
                 }
+
             }
+            Region = _current;
         }
 
         public override void Update(GameTime gameTime)
@@ -151,7 +177,6 @@ namespace MonogameTest
             }
 
             _current = _runFrames[_frameIndex];
-            Region = _current;
         }
 
         public void Bounce(float pixels = 24f)

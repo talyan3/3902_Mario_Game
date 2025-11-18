@@ -11,7 +11,7 @@ namespace MonogameTest
     public float LeftEdge => _position.X - (_viewport.Width / 2f) / Zoom;
 
     private float _smoothSpeed = 0.15f;
-    private float _levelWidth = TiledMapLoader.MapWidth * 16f;
+    private float _levelWidth = (TiledMapLoader.MapWidth + 8) * 16f;
     private float _levelHeight = TiledMapLoader.MapHeight * 16f;
     private float _furthestRight = 0f;
     private float _horizontalOffsetRatio = 0.35f;

@@ -11,6 +11,7 @@ using System.Net;
 using System.Runtime.Intrinsics.X86;
 using MonogameTest.Sounds;
 using MonogameTest.Screens;
+using System.Net.Mime;
 
 namespace MonogameTest;
 
@@ -79,6 +80,11 @@ public class Game1 : Game
     //powerups
     Texture2D powerupsSheet;
     List<PowerupInstance> powerups = new List<PowerupInstance>();
+    private Flagpole _flagpole;
+    private Texture2D _flagTexture;
+    private Rectangle _poleRect;
+
+    private int cooldown = 80;
 
     public Game1()
     {
@@ -152,15 +158,12 @@ public class Game1 : Game
 
         (koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 106 tiles over, ground level
 
-        //load powerups
-        //powerupTexture = Content.Load<Texture2D>("Sprites/powerups");
-        //mushroom = new movePower(powerupTexture, _spriteBatch);
-        //(mushroom as movePower).Position = new Vector2(16 * 10, 16 * 11);
         powerupsSheet = Content.Load<Texture2D>("Sprites/powerups");
 
         powerups.Add(PowerupFactory.Create(PowerupType.Mushroom, powerupsSheet, new Vector2(16*8, 16*11)));
         powerups.Add(PowerupFactory.Create(PowerupType.Coin, powerupsSheet, new Vector2(16*9, 16*11)));
         powerups.Add(PowerupFactory.Create(PowerupType.Star, powerupsSheet, new Vector2(16*10, 16*11)));
+        powerups.Add(PowerupFactory.Create(PowerupType.GreenMushroom, powerupsSheet, new Vector2(16*12, 16*11)));
         
         _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
         _bigMario = new BigMarioSprite(GraphicsDevice);
@@ -220,6 +223,10 @@ public class Game1 : Game
         _introScreen = new LevelIntroScreen(this, _screenManager, myFont, coin);
         _timeUpScreen = new TimeUpScreen(this, _screenManager, myFont, coin);
         _gameOverScreen = new GameOverScreen(this, _screenManager, myFont, coin);
+
+        _flagTexture = Texture2D.FromFile(GraphicsDevice, "flag.png");
+        _poleRect = new Rectangle(TileSize * 198, TileSize * 3, 5, 160); // guessing numbers for testing
+        _flagpole = new Flagpole(_spriteBatch, _flagTexture, _poleRect, _currentMario);
     }
 
     protected override void Update(GameTime gameTime)
@@ -351,6 +358,7 @@ public class Game1 : Game
                     var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
                     _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
                     _currentMario = _smallMario;
+
                 });
         }
         else
@@ -388,7 +396,7 @@ public class Game1 : Game
         HandlePowerupPickup(p);
         }
     }
-
+        _flagpole.Update(gameTime);
         base.Update(gameTime);
     }
 
@@ -402,6 +410,7 @@ public class Game1 : Game
             case PowerupType.Mushroom:
                 if(_isBig == false)
                     ToggleMarioSize();
+                score = (int.Parse(score) + 200).ToString("000000");
                 break;
 
             case PowerupType.FireFlower:
@@ -413,7 +422,14 @@ public class Game1 : Game
                 break;
 
             case PowerupType.Coin:
+                SoundManager.Instance.PlayEffect("coin");
                 coins = (int.Parse(coins) + 1).ToString("00");
+                score = (int.Parse(score) + 100).ToString("000000");
+                break;
+            case PowerupType.GreenMushroom:
+                SoundManager.Instance.PlayEffect("oneUp");
+                score = (int.Parse(score) + 200).ToString("000000");
+                _screenManager.Lives += 1;
                 break;
         }
     }
@@ -475,6 +491,8 @@ public class Game1 : Game
                 case GameState.GameOver:
                     _gameOverScreen.Draw(_spriteBatch);
                     _spriteBatch.End();
+                    _screenManager.Lives = 3;
+                    //Exit();
                     return;
 
                 case GameState.Playing:
@@ -506,7 +524,9 @@ public class Game1 : Game
 
         //powerups
         foreach (var p in powerups)
-            p.Draw(_spriteBatch); 
+            p.Draw(_spriteBatch);
+
+        _flagpole.Draw(); 
 
         _spriteBatch.End();
 
