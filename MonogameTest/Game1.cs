@@ -266,7 +266,7 @@ public class Game1 : Game
                 Vector2 spawnPos = hitTile.Position;
                 spawnPos.Y -= hitTile.Bounds.Height;
 
-                if (marioPos.X < 16 * 22 && marioPos.X > 16 * 19)
+                if (marioPos.X < TileSize * 22 && marioPos.X > 16 * 19)
                 {
                     powerups.Add(
                     PowerupFactory.Create(
@@ -358,7 +358,6 @@ public class Game1 : Game
                     var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
                     _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
                     _currentMario = _smallMario;
-
                 });
         }
         else
