@@ -9,14 +9,16 @@ class moveKoop : ISprite
    private SpriteBatch _spriteBatch;
     private Texture2D sprite;
 
+    private readonly KoopaNum Numbers = NumberLoad.Numbers.KoopaM;
+
     Rectangle sRect;
     Rectangle dRect;
     float elasped;
-    float delay = 150f;
-    private const float Speed = 30f;
+    float delay;
+    private const float Speed = 0;
     int frames;
-    int walkLeft = 1;
-    int walkRight = 1;
+    int walkLeft;
+    int walkRight;
     bool walkingR = true;
     public Vector2 Velocity { get; set; } = Vector2.Zero;
     public bool IsAlive { get; set; } = true;
@@ -30,15 +32,15 @@ class moveKoop : ISprite
         _spriteBatch = spriteBatch;
 
         if (dRect.Width == 0 || dRect.Height == 0)
-            dRect = new Rectangle(0, 0, 32, 24);
+            dRect = new Rectangle(0, 0, Numbers.DestWidth, Numbers.DestHeight);
         if (sRect.Width == 0 || sRect.Height == 0)
-            sRect = new Rectangle(0, 0, 30, 24);
+            sRect = new Rectangle(0, 0, Numbers.SrcWidth, Numbers.SrcHeight);
     }
 
     public Vector2 Position
     {
         get => new Vector2(dRect.X, dRect.Y);
-        set => dRect = new Rectangle((int)value.X, (int)value.Y, dRect.Width == 0 ? 32 : dRect.Width, dRect.Height == 0 ? 32 : dRect.Height);
+        set => dRect = new Rectangle((int)value.X, (int)value.Y, dRect.Width == 0 ? Numbers.DestWidth : dRect.Width, dRect.Height == 0 ? Numbers.DestHeight : dRect.Height);
     }
     public Rectangle Bounds => IsAlive ? dRect : Rectangle.Empty;   
     public Rectangle Region => sRect;
@@ -52,18 +54,20 @@ class moveKoop : ISprite
     // Public method to be called by the collision handler in Game1.Update
     public void ReverseDirection()
     {
-        direction *= -2;
-        flag *= -1;
+        direction *= Numbers.Direction;
+        flag *=  (int)Numbers.Flag;
     }
 
     public void Update(GameTime gameTime)
     {
         if (!IsAlive) return;
+        delay = Numbers.AnimationDelay;
+        Speed = Numbers.Speed;
 
         deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         // 1. Apply Movement: Goomba moves continuously based on its current 'direction'
-        Position += new Vector2(Math.Clamp((float)direction, -2f, 2f) * Speed * deltaTime, 0);
+        Position += new Vector2(Math.Clamp((float)direction, Numbers.ClampMin, Numbers.ClampMax) * Speed * deltaTime, 0);
 
         // NOTE: Direction is now only reversed externally when collision with a tile occurs.
 
@@ -74,18 +78,18 @@ class moveKoop : ISprite
             if (flag == 1)
             {
                 // Alternate between animation frames (2 and 3) (moving left)
-                frames = ((frames + 1) % 2) + 2;
+                frames = ((frames + 1) % Numbers.LeftFrames.Length) + Numbers.LeftFrames.Length;
             }
             if (flag == -1)
             {
                 // Alternate between animation frames (4 and 5) (moving right)
-                frames = ((frames + 1) % 2) + 4;
+                frames = ((frames + 1) % Numbers.RightFrames.Length) + Numbers.RightFrames[0];
             }
             
             elasped = 0f;
 
             // Update the source rectangle based on the current animation frame
-            sRect = new Rectangle(frames * 30, 0, 30, 24);
+            sRect = new Rectangle(frames * Numbers.SrcWidth, 0, Numbers.SrcWidth, Numbers.SrcHeight);
         }
     }
 }

@@ -1,6 +1,6 @@
 # Ignore build output
-/MonogameTest/bin/
-/MonogameTest/obj/
+MonogameTest/bin/
+MonogameTest/obj/
 
 # OS or IDE specific files
 *.user

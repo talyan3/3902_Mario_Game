@@ -18,20 +18,23 @@ public class PlayerMario
 
     public bool isFacingRight = true;
 
+    private static readonly PlayerSmall playerNum = NumberLoad.Numbers.PlayerSmall;
+    private static readonly PlayerAnimation playerA = NumberLoad.Numbers.PlayerAnimations;
+
     // private float moveAcceleration = 1000f;
     // private float maxMoveSpeed = 400f;
     // private float groundFriction = 800f;
     // private float airFriction = 100f;
     // private float jumpStrength = -300f;
 
-    private float scale = 1f;
+    private float scale = playerNum.Scale;
 
     public bool FacingRight = true;
     public SoundManager SM;
     public PlayerMario()
     {
         Physics = new Physics();
-        Physics.position = new Vector2(-100, 100);
+        Physics.position = new Vector2(playerNum.StartX, playerNum.StartY);
         PhysicsP = new PlayerPhysics();
         animPlayer = new AnimationPlayer();
         Input = new InputController();
@@ -40,9 +43,29 @@ public class PlayerMario
     public void LoadContent(ContentManager content, SoundManager soundManager, GraphicsDevice graphicsDevice)
     {
         SM = soundManager;
-        animIdle = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"),30,16,1, 0.15f, 8);
-        animRun  = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"), 30,16,3,0.10f,9);
-        animJump = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"),30,16,1,0.20f,13);
+        animIdle = new Animation
+            (Texture2D.FromFile(graphicsDevice, "small-mario-final.png"),
+            playerA.Idle.FrameWidth,
+            playerA.Idle.FrameHeight,
+            playerA.Idle.FrameCount, 
+            playerA.Idle.FrameDuration, 
+            playerA.Idle.StartFrame);
+
+        animRun  = new Animation
+            (Texture2D.FromFile(graphicsDevice, "small-mario-final.png"), 
+            playerA.Run.FrameWidth,
+            playerA.Run.FrameHeight,
+            playerA.Run.FrameCount, 
+            playerA.Run.FrameDuration, 
+            playerA.Run.StartFrame);
+
+        animJump = new Animation
+            (Texture2D.FromFile(graphicsDevice, "small-mario-final.png"),
+            playerA.Jump.FrameWidth,
+            playerA.Jump.FrameHeight,
+            playerA.Jump.FrameCount, 
+            playerA.Jump.FrameDuration, 
+            playerA.Jump.StartFrame);
 
         ChangeState(new IdleState(this));
     }
