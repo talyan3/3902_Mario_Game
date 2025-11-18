@@ -1,0 +1,243 @@
+{
+  "CameraManager": {
+    "SmoothSpeed": 0.15,
+    "HorizontalOffsetRatio": 0.35,
+    "NesViewWidth": 256,
+    "ZoomDivisor": 100,
+    "LeftClamp": 128,
+    "FixedCameraY": 120,
+    "TileSize": 16
+  },
+
+  "EnemyCollision": {
+    "EnemyInflateX": -5,
+    "StompInflateX": -6,
+    "FeetHeight": 4,
+    "StompThreshold": 4,
+    "SmallMarioBounce": 20,
+    "BigMarioBounce": 24,
+    "Direction": -2,
+    "Frames": 2
+  },
+
+    "GoombaM": {
+        "SpriteWidth": 32,
+        "SpriteHeight": 16,
+        "Speed": 30,
+        "AnimationDelay": 150,
+        "ClampMin": -2,
+        "ClampMax": 2
+  },
+
+  "KoopaM": {
+    "DestWidth": 32,
+    "DestHeight": 24,
+    "SrcWidth": 30,
+    "SrcHeight": 24,
+    "Speed": 30,
+    "AnimationDelay": 150,
+    "ClampMin": -2,
+    "ClampMax": 2,
+    "LeftFrames": [2, 3],
+    "RightFrames": [4, 5],
+    "Direction": -2,
+    "Flag": -1
+  },
+
+  "MapSettings": {
+    "MapWidth": 208,
+    "MapHeight": 30
+  },
+
+  "TileGrid": {
+    "1": "Ground",
+    "2": "Brick",
+    "5": "Question",
+    "7": "Question",
+    "8": "PipeTopLeft",
+    "9": "PipeTopRight",
+    "10": "PipeBodyLeft",
+    "11": "PipeBodyRight"
+  },
+
+  "GPhysics": {
+    "Gravity": 1000,
+    "GroundY": 400
+  },
+
+  "PlayerPhysics": {
+  "MoveAcceleration": 1000,
+  "MaxMoveSpeed": 400,
+  "GroundFriction": 800,
+  "AirFriction": 100,
+  "JumpStrength": -300
+},
+
+"PlayerSmall":
+  {
+    "StartX": -100,
+    "StartY": 100,
+    "Scale": 1
+  },
+
+"PlayerAnimations": {
+  "Texture": "small-mario-final.png",
+
+  
+
+  "Idle": {
+    "FrameWidth": 30,
+    "FrameHeight": 16,
+    "FrameCount": 1,
+    "FrameDuration": 0.15,
+    "StartFrame": 8
+  },
+
+  "Run": {
+    "FrameWidth": 30,
+    "FrameHeight": 16,
+    "FrameCount": 3,
+    "FrameDuration": 0.10,
+    "StartFrame": 9
+  },
+
+  "Jump": {
+    "FrameWidth": 30,
+    "FrameHeight": 16,
+    "FrameCount": 1,
+    "FrameDuration": 0.20,
+    "StartFrame": 13
+  }
+
+},
+
+"BigMario": {
+  "MoveSpeed": 100,
+  "SprintMultiplier": 1.8,
+
+  "FrameWidth": 16,
+  "FrameHeight": 32,
+  "SheetColumnWidth": 30,
+
+  "RunFrames": [3, 4, 5],
+  "IdleFrame": 6,
+  "JumpFrame": 2,
+  "CrouchFrame": 0,
+
+  "FrameTime": 0.12,
+
+  "JumpOffset": 100,
+  "BounceHeight": 24,
+
+  "CrouchOffset": 6
+},
+
+"SmallMario": {
+  "MoveSpeed": 100,
+  "SprintMultiplier": 1.5,
+
+  "Scale": 1,
+
+  "FrameWidth": 16,
+  "FrameHeight": 16,
+  "SheetColumnWidth": 30,
+
+  "RunFrames": [3, 4, 5],
+  "CrouchFrame": 0,
+  "JumpFrame": 1,
+  "IdleFrame": 6,
+
+  "FrameTime": 0.12,
+
+  "JumpStrength": -350,
+  "Gravity": 900,
+
+  "BounceHeight": 20,
+  "JumpOffset": 100
+},
+
+"GameNum":
+{
+    "Scale": 4,
+    "TilePos": 12,
+    "TitlePosX": 90,
+    "TopPosY": 15,
+    "CoinsPosX": 375,
+    "LowPosY": 55,
+    "WorldPosX": 550,
+    "LevelPosX": 580,
+    "TimePosX": 800,
+    "ElapsedTimeX": 825,
+    "TilePosHighY": 12,
+    "TilePosLowY": 4,
+    "BackBufferHeight": 240,
+
+    "ColorFirst": 92,
+    "ColorSecond": 148,
+    "ColorThird": 252,
+
+    "TopLeftPosX": 330,
+    "TopLeftPosY": 45,
+
+    "StartMarioX": 5,
+    "StartMarioY": 13,
+
+    "MushroomPosX": 10,
+    "MushroomPosY": 11,
+
+    "KoopaPosX": 106,
+    "KoopaPosY": 12,
+
+    "SpriteScale": 3,
+
+    "TimeStart": 360
+
+},
+
+  "BackgroundElements":
+  [ 
+      { "Type": "HillBig",   "X": 0,    "Y": 173 },
+    { "Type": "Bush3",     "X": 184,  "Y": 192 },
+    { "Type": "HillSmall", "X": 256,  "Y": 189 },
+    { "Type": "Bush1",     "X": 360,  "Y": 192 },
+    { "Type": "Bush2",     "X": 664,  "Y": 192 },
+    { "Type": "HillBig",   "X": 768,  "Y": 173 },
+    { "Type": "Bush3",     "X": 952,  "Y": 192 },
+    { "Type": "HillSmall", "X": 1024, "Y": 189 },
+    { "Type": "Bush1",     "X": 1144, "Y": 192 },
+    { "Type": "Bush2",     "X": 1432, "Y": 192 },
+    { "Type": "HillBig",   "X": 1536, "Y": 173 },
+    { "Type": "Bush3",     "X": 1720, "Y": 192 },
+    { "Type": "HillSmall", "X": 1792, "Y": 189 },
+    { "Type": "Bush1",     "X": 1912, "Y": 192 },
+    { "Type": "Bush2",     "X": 2200, "Y": 192 },
+    { "Type": "HillBig",   "X": 2304, "Y": 173 },
+    { "Type": "HillSmall", "X": 2560, "Y": 189 },
+    { "Type": "Bush1",     "X": 2680, "Y": 192 },
+    { "Type": "HillBig",   "X": 3072, "Y": 173 },
+
+    { "Type": "Cloud1", "X": 136,  "Y": 50 },
+    { "Type": "Cloud1", "X": 300,  "Y": 25 },
+    { "Type": "Cloud3", "X": 425,  "Y": 50 },
+    { "Type": "Cloud2", "X": 575,  "Y": 25 },
+    { "Type": "Cloud1", "X": 925,  "Y": 50 },
+    { "Type": "Cloud1", "X": 1100, "Y": 25 },
+    { "Type": "Cloud3", "X": 1225, "Y": 50 },
+    { "Type": "Cloud2", "X": 1375, "Y": 25 },
+    { "Type": "Cloud1", "X": 1675, "Y": 50 },
+    { "Type": "Cloud1", "X": 1850, "Y": 25 },
+    { "Type": "Cloud3", "X": 1975, "Y": 50 },
+    { "Type": "Cloud2", "X": 2125, "Y": 25 },
+    { "Type": "Cloud1", "X": 2450, "Y": 50 },
+    { "Type": "Cloud1", "X": 2625, "Y": 25 },
+    { "Type": "Cloud3", "X": 2725, "Y": 50 },
+    { "Type": "Cloud2", "X": 2875, "Y": 25 },
+    { "Type": "Cloud1", "X": 3207, "Y": 50 }
+  ]
+
+
+
+
+
+
+}

@@ -35,3 +35,8 @@ namespace MonogameTest
         }
     }
 }
+
+//powerups.Add(PowerupFactory.Create(PowerupType.Mushroom, powerupsSheet, new Vector2(16*8, 16*11)));
+        //powerups.Add(PowerupFactory.Create(PowerupType.Coin, powerupsSheet, new Vector2(16*9, 16*11)));
+        //powerups.Add(PowerupFactory.Create(PowerupType.Star, powerupsSheet, new Vector2(16*10, 16*11)));
+        //powerups.Add(PowerupFactory.Create(PowerupType.GreenMushroom, powerupsSheet, new Vector2(16*12, 16*11)));
