@@ -192,7 +192,51 @@
 
     "TimeStart": 360
 
-}
+},
+
+  "BackgroundElements":
+  [ 
+      { "Type": "HillBig",   "X": 0,    "Y": 173 },
+    { "Type": "Bush3",     "X": 184,  "Y": 192 },
+    { "Type": "HillSmall", "X": 256,  "Y": 189 },
+    { "Type": "Bush1",     "X": 360,  "Y": 192 },
+    { "Type": "Bush2",     "X": 664,  "Y": 192 },
+    { "Type": "HillBig",   "X": 768,  "Y": 173 },
+    { "Type": "Bush3",     "X": 952,  "Y": 192 },
+    { "Type": "HillSmall", "X": 1024, "Y": 189 },
+    { "Type": "Bush1",     "X": 1144, "Y": 192 },
+    { "Type": "Bush2",     "X": 1432, "Y": 192 },
+    { "Type": "HillBig",   "X": 1536, "Y": 173 },
+    { "Type": "Bush3",     "X": 1720, "Y": 192 },
+    { "Type": "HillSmall", "X": 1792, "Y": 189 },
+    { "Type": "Bush1",     "X": 1912, "Y": 192 },
+    { "Type": "Bush2",     "X": 2200, "Y": 192 },
+    { "Type": "HillBig",   "X": 2304, "Y": 173 },
+    { "Type": "HillSmall", "X": 2560, "Y": 189 },
+    { "Type": "Bush1",     "X": 2680, "Y": 192 },
+    { "Type": "HillBig",   "X": 3072, "Y": 173 },
+
+    { "Type": "Cloud1", "X": 136,  "Y": 50 },
+    { "Type": "Cloud1", "X": 300,  "Y": 25 },
+    { "Type": "Cloud3", "X": 425,  "Y": 50 },
+    { "Type": "Cloud2", "X": 575,  "Y": 25 },
+    { "Type": "Cloud1", "X": 925,  "Y": 50 },
+    { "Type": "Cloud1", "X": 1100, "Y": 25 },
+    { "Type": "Cloud3", "X": 1225, "Y": 50 },
+    { "Type": "Cloud2", "X": 1375, "Y": 25 },
+    { "Type": "Cloud1", "X": 1675, "Y": 50 },
+    { "Type": "Cloud1", "X": 1850, "Y": 25 },
+    { "Type": "Cloud3", "X": 1975, "Y": 50 },
+    { "Type": "Cloud2", "X": 2125, "Y": 25 },
+    { "Type": "Cloud1", "X": 2450, "Y": 50 },
+    { "Type": "Cloud1", "X": 2625, "Y": 25 },
+    { "Type": "Cloud3", "X": 2725, "Y": 50 },
+    { "Type": "Cloud2", "X": 2875, "Y": 25 },
+    { "Type": "Cloud1", "X": 3207, "Y": 50 }
+  ]
+
+
+
 
 
 

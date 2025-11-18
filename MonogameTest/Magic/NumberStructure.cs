@@ -22,6 +22,8 @@ public class NumberStructure
 
     public GameNumbers GameNum { get; set; }
 
+    public List<BackgroundElementInfo> BackgroundElements { get; set; }
+
 
 
 }
@@ -205,3 +207,9 @@ public class GameNumbers
 
 }
 
+public class BackgroundElementInfo
+{
+    public string Type {get; set;}
+    public float X {get; set;}
+    public float Y {get; set;}
+}
