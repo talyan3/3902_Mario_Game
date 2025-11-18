@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\MonogameTest.csproj": {}
+    "C:\\Users\\anika\\Desktop\\Class_3902\\MonogameTest\\MonogameTest.csproj": {}
   },
   "projects": {
-    "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\MonogameTest.csproj": {
+    "C:\\Users\\anika\\Desktop\\Class_3902\\MonogameTest\\MonogameTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\MonogameTest.csproj",
+        "projectUniqueName": "C:\\Users\\anika\\Desktop\\Class_3902\\MonogameTest\\MonogameTest.csproj",
         "projectName": "MonogameTest",
-        "projectPath": "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\MonogameTest.csproj",
-        "packagesPath": "C:\\Users\\olson\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\olson\\Desktop\\3902_Mario_Game-test\\MonogameTest\\obj\\",
+        "projectPath": "C:\\Users\\anika\\Desktop\\Class_3902\\MonogameTest\\MonogameTest.csproj",
+        "packagesPath": "C:\\Users\\anika\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\anika\\Desktop\\Class_3902\\MonogameTest\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\olson\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\anika\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
@@ -68,24 +68,6 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[8.0.19, 8.0.19]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[8.0.19, 8.0.19]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[8.0.19, 8.0.19]"
-            },
-            {
-              "name": "Microsoft.WindowsDesktop.App.Ref",
-              "version": "[8.0.19, 8.0.19]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
