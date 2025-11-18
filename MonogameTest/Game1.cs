@@ -67,6 +67,8 @@ public class Game1 : Game
     List<PowerupInstance> powerups = new List<PowerupInstance>();
 
 
+    private HashSet<Tile> _usedQuestionBlocks = new HashSet<Tile>();
+
 
 
 
@@ -236,10 +238,34 @@ public class Game1 : Game
                    Vector2.Zero;
         camera.LookAt(marioPos);
 
-        if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
-        {
-            Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
-        }
+//Added Jahnavi
+       if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
+{
+    if (hitTile.TileName == "Question" &&
+        res.Side == typeCollision.Bottom &&
+        !_usedQuestionBlocks.Contains(hitTile))
+    {
+        _usedQuestionBlocks.Add(hitTile);
+
+        // Spawn a coin just above the block
+        Vector2 spawnPos = hitTile.Position;
+        spawnPos.Y -= hitTile.Bounds.Height;
+
+        powerups.Add(
+            PowerupFactory.Create(
+                PowerupType.Coin,
+                powerupsSheet,
+                spawnPos
+            )
+        );
+
+        // Add 1 to the coin counter immediately
+        coins = (int.Parse(coins) + 1).ToString("00");
+
+    }
+}
+
+//Closed Added Jahnavi
 
         //if (MarioManager.ActiveSprite != null)
         //MarioManager.ActiveSprite.Update(gameTime);
@@ -363,7 +389,6 @@ public class Game1 : Game
             break;
 
         case PowerupType.Coin:
-            coins = (int.Parse(coins) + 1).ToString("00");
             break;
     }
 }
