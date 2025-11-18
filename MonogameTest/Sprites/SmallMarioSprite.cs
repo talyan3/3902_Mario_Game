@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Particles.Modifiers;
 using MonogameTest.Sounds;
 
 namespace MonogameTest
@@ -36,8 +37,8 @@ namespace MonogameTest
 
         // physics
         private float verticalVelocity = 0f;
-        private float gravity = 900f;
-        private float jumpStrength = -350f;
+        const float gravity = 900f;        // pixels/sec² 
+        const float jumpStrength = -350f;  // upward
 
 
         public override Rectangle Bounds
@@ -53,9 +54,9 @@ namespace MonogameTest
             }
         }
 
-        public void Bounce(float pixels = 20f)
+        public void Bounce(float pixels)
         {
-            Position = new Vector2(Position.X, Position.Y - pixels);
+            verticalVelocity = pixels;
         }
 
         public SmallMarioSprite(GraphicsDevice graphicsDevice)

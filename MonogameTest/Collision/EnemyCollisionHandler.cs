@@ -30,13 +30,13 @@ namespace MonogameTest
             {
                 pos = goom.Position;
                 enemyRect = goom.Bounds;
-                enemyRect.Inflate(-5, 0);   // Shrinks width by 8 total, height unchanged
+                enemyRect.Inflate(-5, 0);   // Shrinks width by 10 total, height unchanged
             }
             else if (enemyAny is moveKoop koop)
             {
                 pos = koop.Position;
                 enemyRect = koop.Bounds;
-                enemyRect.Inflate(-5, 0);   // Shrinks width by 8 total, height unchanged
+                enemyRect.Inflate(-5, 0);   // Shrinks width by 10 total, height unchanged
             }
             else
             {
@@ -157,7 +157,7 @@ namespace MonogameTest
         {
             HandleMarioVsEnemiesCore(
                 marioBounds: mario.Bounds,
-                bounce: () => mario.Bounce(20f),
+                bounce: () => mario.Bounce(-250f),
                 onHit: restart,
                 enemies: enemies
             );
@@ -169,7 +169,7 @@ namespace MonogameTest
         {
             HandleMarioVsEnemiesCore(
                 marioBounds: mario.Bounds,
-                bounce: () => mario.Bounce(24f),
+                bounce: () => mario.Bounce(-250f),
                 onHit: onBigHit,   
                 enemies: enemies
             );

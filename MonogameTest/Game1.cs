@@ -12,6 +12,7 @@ using System.Runtime.Intrinsics.X86;
 using MonogameTest.Sounds;
 using MonogameTest.Screens;
 using System.Net.Mime;
+using System.Runtime.InteropServices;
 
 namespace MonogameTest;
 
@@ -47,9 +48,6 @@ public class Game1 : Game
     private List<Rectangle> _solidRects; //Added
     private Vector2 _spawnPoint; //Added
     private BackgroundManager _backgroundManager;
-
-    public Texture2D powerupTexture;
-    public ISprite mushroom;
     private List<object> _enemies = new List<object>();
 
     private SpriteFont myFont;
@@ -85,6 +83,9 @@ public class Game1 : Game
     private Rectangle _poleRect;
 
     private int cooldown = 80;
+    private HashSet<Tile> _usedQuestionBlocks = new HashSet<Tile>();
+
+
 
     public Game1()
     {
@@ -135,8 +136,8 @@ public class Game1 : Game
             new Vector2(16 * 39, 16 * 12),
             new Vector2(16 * 50, 16 * 12),
             new Vector2(16 * 52, 16 * 12),
-            new Vector2(16 * 79, 16 * 4),
-            new Vector2(16 * 81, 16 * 4),
+            //new Vector2(16 * 79, 16 * 4),
+            //new Vector2(16 * 81, 16 * 4),
             new Vector2(16 * 96, 16 * 12),
             new Vector2(16 * 98, 16 * 12),
             new Vector2(16 * 113, 16 * 12),
@@ -160,8 +161,8 @@ public class Game1 : Game
 
         powerupsSheet = Content.Load<Texture2D>("Sprites/powerups");
 
-        powerups.Add(PowerupFactory.Create(PowerupType.Mushroom, powerupsSheet, new Vector2(16*8, 16*11)));
-        powerups.Add(PowerupFactory.Create(PowerupType.Coin, powerupsSheet, new Vector2(16*9, 16*11)));
+        //powerups.Add(PowerupFactory.Create(PowerupType.Mushroom, powerupsSheet, new Vector2(16*8, 16*11)));
+        //powerups.Add(PowerupFactory.Create(PowerupType.Coin, powerupsSheet, new Vector2(16*9, 16*11)));
         powerups.Add(PowerupFactory.Create(PowerupType.Star, powerupsSheet, new Vector2(16*10, 16*11)));
         powerups.Add(PowerupFactory.Create(PowerupType.GreenMushroom, powerupsSheet, new Vector2(16*12, 16*11)));
         
@@ -207,9 +208,9 @@ public class Game1 : Game
         camera.LookAt(_currentMario.Position); // immediately focus on him
 
         //physics test $$$
-        Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
+        //Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
         //Mar = new MarioPhysiscsTest(Hollow); // **$$$
-        platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
+        //platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
         //platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
 
         myFont = Content.Load<SpriteFont>("marioFont");
@@ -274,11 +275,7 @@ public class Game1 : Game
 
         if (state.IsKeyDown(Keys.R))
         {
-            _currentMario.Position = _spawnPoint;
-            _smallMario.Position = _spawnPoint;
-            _bigMario.Position = _spawnPoint;
-            camera.Reset(_spawnPoint);
-            camera.LookAt(_spawnPoint);
+            ResetLevel();
         }
 
         _currentMario.Update(gameTime);
@@ -287,11 +284,50 @@ public class Game1 : Game
                    Vector2.Zero;
         camera.LookAt(marioPos);
 
+        //if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
+        //{
+            //Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
+        //}
         if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
         {
-            Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
-        }
+            if (hitTile.TileName == "Question" &&
+                res.Side == typeCollision.Bottom &&
+                !_usedQuestionBlocks.Contains(hitTile))
+            {
+                SoundManager.Instance.PlayEffect("bump");
+                _usedQuestionBlocks.Add(hitTile);
 
+                // Spawn a coin just above the block
+                Vector2 spawnPos = hitTile.Position;
+                spawnPos.Y -= hitTile.Bounds.Height;
+
+                if (marioPos.X < 16 * 22 && marioPos.X > 16 * 19)
+                {
+                    powerups.Add(
+                    PowerupFactory.Create(
+                        PowerupType.Mushroom,
+                        powerupsSheet,
+                        spawnPos
+                    )
+                );
+                SoundManager.Instance.PlayEffect("powerUpAppears");
+                } else
+                {
+                   powerups.Add(
+                    PowerupFactory.Create(
+                        PowerupType.Coin,
+                        powerupsSheet,
+                        spawnPos
+                    )
+                ); 
+                SoundManager.Instance.PlayEffect("coin");
+                coins = (int.Parse(coins) + 1).ToString("00");
+                score = (int.Parse(score) + 100).ToString("000000");
+                }
+
+            }
+        }
+    
         //Mar.Update(gameTime, state, platformRect); 
         foreach (var gg in goombas)
             if (gg.IsAlive)
@@ -422,9 +458,6 @@ public class Game1 : Game
                 break;
 
             case PowerupType.Coin:
-                SoundManager.Instance.PlayEffect("coin");
-                coins = (int.Parse(coins) + 1).ToString("00");
-                score = (int.Parse(score) + 100).ToString("000000");
                 break;
             case PowerupType.GreenMushroom:
                 SoundManager.Instance.PlayEffect("oneUp");
@@ -458,6 +491,7 @@ public class Game1 : Game
 		// keep mario in the same spot when switching forms
 		Vector2 pos = (_currentMario is SmallMarioSprite sm ? sm.Position :
 					   (_currentMario is BigMarioSprite bm ? bm.Position : Vector2.Zero));
+        pos.Y = 16 * 13;
 
 		_currentMario = _isBig ? (StaticSprite)_bigMario : _smallMario;
 

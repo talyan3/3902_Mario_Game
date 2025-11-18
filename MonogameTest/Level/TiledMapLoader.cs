@@ -42,6 +42,7 @@ namespace MonogameTest
             // Local helper to label known gids
             static string NameForGid(int gid) => gid switch
             {
+                0 => "Air",
                 1  => "Ground",
                 2  => "Brick",
                 5  => "Question",
@@ -91,7 +92,8 @@ namespace MonogameTest
                         string name = NameForGid(gid);
 
                         // Add a new Tile using this source rectangle and position
-                        tiles.Add(new Tile(tileset, srcRect, pos));
+                        tiles.Add(new Tile(tileset, srcRect, pos, gid, name));
+
                     }
                 }
             }
