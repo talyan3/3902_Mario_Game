@@ -1,0 +1,8 @@
+# Ignore build output
+/MonogameTest/bin/
+/MonogameTest/obj/
+
+# OS or IDE specific files
+*.user
+*.suo
+*.vs/
