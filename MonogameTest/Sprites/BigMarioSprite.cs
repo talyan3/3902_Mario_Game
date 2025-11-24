@@ -8,15 +8,17 @@ namespace MonogameTest
 {
     public class BigMarioSprite : StaticSprite
     {
+        private static readonly BigMarioNumbers bigNumbers = NumberLoad.Numbers.BigMario;
         public override Vector2 Position { get; set; } = Vector2.Zero;
         public Vector2 Scale { get; set; } = new Vector2(1f, 1f);
 
-        private float _moveSpeed = 100f;
-        private float _sprintMultiplier = 1.8f;
+        private float _moveSpeed = bigNumbers.MoveSpeed;
+        private float _sprintMultiplier = bigNumbers.SprintMultiplier;
         private SpriteEffects _effects = SpriteEffects.None;
 
-        private const int FrameW = 16;
-        private const int FrameH = 32;
+        //CONSTANT REMOVED?? :((( IM SORRY IF IT BREAKS IT
+        private int FrameW = bigNumbers.FrameWidth;
+        private int FrameH = bigNumbers.FrameHeight;
 
         private readonly List<TextureRegion> _runFrames = new();
         private TextureRegion _idleFrame;
@@ -25,20 +27,22 @@ namespace MonogameTest
         private TextureRegion _current;
 
         private int _frameIndex = 0;
-        private float _frameTimer = 0f;
-        private float _frameTime = 0.12f;
+        private float _frameTimer = bigNumbers.CrouchFrame;
+        private float _frameTime = bigNumbers.FrameTime;
 
         private bool _isJumping = false;
         private bool _isCrouching = false;
-        private float _jumpOffset = 100f;
+        private float _jumpOffset = bigNumbers.JumpOffset;
 		private Vector2 _groundPos;
 		public SoundManager SoundManager { get; set; }
-
-        private const float CROUCH_DRAW_OFFSET = 6f; // how far lower the crouch sprite is drawn
         
         private float verticalVelocity = 0f;
         private float gravity = 900f;
         private float jumpStrength = -350f;
+        public float pixels = bigNumbers.BounceHeight;
+
+        //ALSO TAKE CONST AWAY :(((
+        private float CROUCH_DRAW_OFFSET = bigNumbers.CrouchOffset; // how far lower the crouch sprite is drawn
 
 
         public override Rectangle Bounds
@@ -48,7 +52,7 @@ namespace MonogameTest
                 if (Region == null) return Rectangle.Empty;
                 int w = (int)(Region.Width * Scale.X);
                 int h = (int)(Region.Height * Scale.Y);
-                int left = (int)(Position.X - w / 2f);
+                int left = (int)(Position.X - w / bigNumbers.JumpFrame);
                 int top = (int)(Position.Y - h);
                 return new Rectangle(left, top, w, h);
             }
@@ -58,13 +62,17 @@ namespace MonogameTest
         {
             Texture2D texture = Texture2D.FromFile(graphicsDevice, "big-mario-final.png");
 
-            _runFrames.Add(new TextureRegion(texture, 30 * 3, 0, FrameW, FrameH));
-            _runFrames.Add(new TextureRegion(texture, 30 * 4, 0, FrameW, FrameH));
-            _runFrames.Add(new TextureRegion(texture, 30 * 5, 0, FrameW, FrameH));
+            _runFrames.Add
+                (new TextureRegion
+                    (texture, bigNumbers.SheetColumnWidth * bigNumbers.RunFrames[0], 0, FrameW, FrameH));
+            _runFrames.Add
+                (new TextureRegion
+                    (texture, bigNumbers.SheetColumnWidth * bigNumbers.RunFrames[1], 0, FrameW, FrameH));
+            _runFrames.Add(new TextureRegion(texture, bigNumbers.SheetColumnWidth * bigNumbers.RunFrames[2], 0, FrameW, FrameH));
 
             _crouchFrame = new TextureRegion(texture, 0, 0, FrameW, FrameH);
-            _jumpFrame = new TextureRegion(texture, 30 * 1, 0, FrameW, FrameH);
-            _idleFrame = new TextureRegion(texture, 30 * 6, 0, FrameW, FrameH);
+            _jumpFrame = new TextureRegion(texture, bigNumbers.SheetColumnWidth * bigNumbers.JumpFrame, 0, FrameW, FrameH);
+            _idleFrame = new TextureRegion(texture, bigNumbers.SheetColumnWidth * bigNumbers.IdleFrame, 0, FrameW, FrameH);
 
             _current = _idleFrame;
 			Region = _current;
@@ -179,7 +187,7 @@ namespace MonogameTest
             _current = _runFrames[_frameIndex];
         }
 
-        public void Bounce(float pixels = 24f)
+        public void Bounce(pixels)
 		{
 			Position = new Vector2(Position.X, Position.Y - pixels);
 		}
@@ -189,7 +197,7 @@ namespace MonogameTest
         {
             if (_current == null) return;
 
-            var origin = new Vector2(_current.Width / 2f, _current.Height);
+            var origin = new Vector2(_current.Width / bigNumbers.JumpFrame, _current.Height);
 
             // visually lower sprite while crouching without moving collision box
             float drawYOffset = _isCrouching ? CROUCH_DRAW_OFFSET : 0f;
