@@ -95,7 +95,8 @@ namespace MonogameTest
                         string name = NameForGid(gid);
 
                         // Add a new Tile using this source rectangle and position
-                        tiles.Add(new Tile(tileset, srcRect, pos));
+                        tiles.Add(new Tile(tileset, srcRect, pos, gid, name));
+
                     }
                 }
             }

@@ -11,27 +11,29 @@ using System.Net;
 using System.Runtime.Intrinsics.X86;
 using MonogameTest.Sounds;
 using MonogameTest.Screens;
-using System.Net.Mime;
 
 namespace MonogameTest;
 
 public class Game1 : Game
 {
+    // Graphics + Sprites
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private InputController _input = new InputController();/////
-    //public CommandManager CommandManager { get; set; }
     public Texture2D goombaSprite;
     public Texture2D koopaSprite;
     public ISprite goom;
     public ISprite koop;
     private List<moveGoom> goombas = new List<moveGoom>();
-    public Vector2 pos;
+
+    // Mario
     private SmallMarioSprite _smallMario;
     private BigMarioSprite _bigMario;
 	private StaticSprite _currentMario;
 	private bool _isBig = false;
     private bool _bHeldLast = false;
+
+    // Level
     private Texture2D _tileset;
     private List<Tile> _mapTiles;
 
@@ -51,7 +53,9 @@ public class Game1 : Game
     //TOOK AWAY CONSTANT
 
     KeyboardState previousState;
-    const int ViewWidth = TilesVisibleX * TileSize; // 256
+    const int ViewWidth = TilesVisibleX * TileSize;
+
+    // Camera 
     private ICamera camera;
 
     //TOOK
@@ -64,10 +68,13 @@ public class Game1 : Game
     private Vector2 _spawnPoint; //Added
     private BackgroundManager _backgroundManager;
 
-    public Texture2D powerupTexture;
-    public ISprite mushroom;
+    // Objects
+    private List<Rectangle> _solidRects; 
+    private Vector2 _spawnPoint;
+    private BackgroundManager _backgroundManager;
     private List<object> _enemies = new List<object>();
 
+    // UI Elements
     private SpriteFont myFont;
     public string score = "000000";
     private string coins = "00";
@@ -75,13 +82,12 @@ public class Game1 : Game
     private Texture2D coin;
 
     //THE EVER PROMISED STATE MACHINE 
-    //... Testy
     Animation idleAnim;
     Animation runAnim;
     Animation jumpAnim;
     AnimationPlayer animPlayer;
     Physics Phys;
-    PlayerMario Mar; ///////
+    PlayerMario Mar; 
 
     public SoundManager SoundManager { get; private set; }
 
@@ -93,7 +99,7 @@ public class Game1 : Game
     private LevelIntroScreen _introScreen;
     private TimeUpScreen _timeUpScreen;
     private GameOverScreen _gameOverScreen;
-    //powerups
+    // Powerups + Flagpole
     Texture2D powerupsSheet;
     List<PowerupInstance> powerups = new List<PowerupInstance>();
     private Flagpole _flagpole;
@@ -101,6 +107,11 @@ public class Game1 : Game
     private Rectangle _poleRect;
 
     private int cooldown = 80;
+    private HashSet<Tile> _usedQuestionBlocks = new HashSet<Tile>();
+     //MAGIC:
+    private static readonly GameNumbers GameNumbers = NumberLoad.Numbers.GameNum;
+    private static readonly CameraMan UINumbers = NumberLoad.Numbers.CameraMan;
+    private static readonly PlayerAnimation PlayerAnimation = NumberLoad.Numbers.PlayerAnimations;
 
     public Game1()
     {
@@ -163,7 +174,6 @@ public class Game1 : Game
 
         goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
         koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
-        goom = new moveGoom(goombaSprite, _spriteBatch);
         koop = new moveKoop(koopaSprite, _spriteBatch);
 
         int tileS = (int)NumberLoad.Numbers.CameraMan.TileSize;
@@ -190,10 +200,10 @@ public class Game1 : Game
             new Vector2(TileSize * 175, TileSize * GameNumbers.TilePosHighY)
         };
         // Load goombas
-        foreach (var posG in goombaPositions)
+        foreach (var posTile in EnemyPositions.Goombas)
         {
             var g = new moveGoom(goombaSprite, _spriteBatch);
-            g.Position = posG;
+            g.Position = posTile * TileSize;
             goombas.Add(g);
         }
 
@@ -201,10 +211,8 @@ public class Game1 : Game
 
         powerupsSheet = Content.Load<Texture2D>("Sprites/powerups");
 
-        powerups.Add(PowerupFactory.Create(PowerupType.Mushroom, powerupsSheet, new Vector2(16*8, 16*11)));
-        powerups.Add(PowerupFactory.Create(PowerupType.Coin, powerupsSheet, new Vector2(16*9, 16*11)));
-        powerups.Add(PowerupFactory.Create(PowerupType.Star, powerupsSheet, new Vector2(16*10, 16*11)));
-        powerups.Add(PowerupFactory.Create(PowerupType.GreenMushroom, powerupsSheet, new Vector2(16*12, 16*11)));
+        // Uncomment this to see One-up functionality
+        //powerups.Add(PowerupFactory.Create(PowerupType.GreenMushroom, powerupsSheet, new Vector2(16*12, 16*11)));
         
         _smallMario = new SmallMarioSprite(GraphicsDevice); //Added
         _bigMario = new BigMarioSprite(GraphicsDevice);
@@ -247,12 +255,6 @@ public class Game1 : Game
         camera.Reset(_currentMario.Position); // start centered on Mario
         camera.LookAt(_currentMario.Position); // immediately focus on him
 
-        //physics test $$$
-        Hollow = Texture2D.FromFile(GraphicsDevice, "mario-static.png"); // **$$$
-        //Mar = new MarioPhysiscsTest(Hollow); // **$$$
-        platformTexture = new Texture2D(GraphicsDevice, 1, 1); // **$$$
-        //platformRect = new Rectangle(0, 209, 5000, 50); // **$$$
-
         myFont = Content.Load<SpriteFont>("marioFont");
         coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
         var titleTex = Texture2D.FromFile(GraphicsDevice, "titlescreen.png");
@@ -283,30 +285,24 @@ public class Game1 : Game
             case GameState.Title:
                 _titleScreen.Update(gameTime);
                 return;
-
             case GameState.LevelIntro:
                 _introScreen.Update(gameTime);
                 return;
-
             case GameState.TimeUp:
                 _timeUpScreen.Update(gameTime);
                 return;
-
             case GameState.GameOver:
                 _gameOverScreen.Update(gameTime);
                 return;
-
             case GameState.Playing:
                 break;
         }
 
-        //if (MarioManager.ActiveSprite != null) MarioManager.ActiveSprite.Update(gameTime);
-
         KeyboardState state = Keyboard.GetState();
-        animPlayer.Update(gameTime);////////
+        animPlayer.Update(gameTime);
         previousState = state; 
 
-        _input.Update();/////
+        _input.Update();
 
         bool bDown = state.IsKeyDown(Keys.B);
 		if (bDown && !_bHeldLast)
@@ -315,11 +311,7 @@ public class Game1 : Game
 
         if (state.IsKeyDown(Keys.R))
         {
-            _currentMario.Position = _spawnPoint;
-            _smallMario.Position = _spawnPoint;
-            _bigMario.Position = _spawnPoint;
-            camera.Reset(_spawnPoint);
-            camera.LookAt(_spawnPoint);
+            ResetLevel();
         }
 
         _currentMario.Update(gameTime);
@@ -330,10 +322,44 @@ public class Game1 : Game
 
         if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
         {
-            Console.WriteLine($"Mario hit {hitTile.TileName} (gid={hitTile.Gid}) at {hitTile.Position} | Side={res.Side} | MTV={res.MTV}");
+            if (hitTile.TileName == "Question" &&
+                res.Side == typeCollision.Bottom &&
+                !_usedQuestionBlocks.Contains(hitTile))
+            {
+                SoundManager.Instance.PlayEffect("bump");
+                _usedQuestionBlocks.Add(hitTile);
+
+                // Spawn a coin just above the block
+                Vector2 spawnPos = hitTile.Position;
+                spawnPos.Y -= hitTile.Bounds.Height;
+
+                if (marioPos.X < TileSize * 22 && marioPos.X > 16 * 19)
+                {
+                    powerups.Add(
+                    PowerupFactory.Create(
+                        PowerupType.Mushroom,
+                        powerupsSheet,
+                        spawnPos
+                    )
+                );
+                SoundManager.Instance.PlayEffect("powerUpAppears");
+                } else
+                {
+                   powerups.Add(
+                    PowerupFactory.Create(
+                        PowerupType.Coin,
+                        powerupsSheet,
+                        spawnPos
+                    )
+                ); 
+                SoundManager.Instance.PlayEffect("coin");
+                coins = (int.Parse(coins) + 1).ToString("00");
+                score = (int.Parse(score) + 100).ToString("000000");
+                }
+
+            }
         }
 
-        //Mar.Update(gameTime, state, platformRect); 
         foreach (var gg in goombas)
             if (gg.IsAlive)
                 gg.Update(gameTime);
@@ -399,7 +425,6 @@ public class Game1 : Game
                     var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
                     _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
                     _currentMario = _smallMario;
-
                 });
         }
         else
@@ -463,9 +488,6 @@ public class Game1 : Game
                 break;
 
             case PowerupType.Coin:
-                SoundManager.Instance.PlayEffect("coin");
-                coins = (int.Parse(coins) + 1).ToString("00");
-                score = (int.Parse(score) + 100).ToString("000000");
                 break;
             case PowerupType.GreenMushroom:
                 SoundManager.Instance.PlayEffect("oneUp");
@@ -499,6 +521,7 @@ public class Game1 : Game
 		// keep mario in the same spot when switching forms
 		Vector2 pos = (_currentMario is SmallMarioSprite sm ? sm.Position :
 					   (_currentMario is BigMarioSprite bm ? bm.Position : Vector2.Zero));
+        pos.Y = TileSize * 13;
 
 		_currentMario = _isBig ? (StaticSprite)_bigMario : _smallMario;
 
@@ -571,7 +594,7 @@ public class Game1 : Game
 
         _spriteBatch.End();
 
-        // HUD
+        // HUD, sort of has to be like this since many things are incremented in game1
         _spriteBatch.Begin();
 
         _spriteBatch.DrawString(myFont, "MARIO", new Vector2(GameNumbers.TitlePosX, GameNumbers.TopPosY), Color.White);

@@ -24,6 +24,7 @@ class moveGoom : ISprite
     public bool IsAlive { get; set; } = true;
     public double direction = -1; // -1 = left, +1 = right
     float deltaTime;
+    private Texture2D goombaDead;
 
     public moveGoom(Texture2D texture, SpriteBatch spriteBatch)
     {
@@ -59,8 +60,11 @@ class moveGoom : ISprite
 
     public void Update(GameTime gameTime)
     {
-        if (!IsAlive) return;
-
+        if (!IsAlive) 
+        {
+           // goombaDead = Texture2D.FromFile(GraphicsDevice, "coin2.png");
+            return;
+        }
         deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
         // 1. Apply Movement: Goomba moves continuously based on its current 'direction'

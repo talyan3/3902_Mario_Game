@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.Particles.Modifiers;
 using MonogameTest.Sounds;
 
 namespace MonogameTest
@@ -59,7 +60,7 @@ namespace MonogameTest
 
         public void Bounce(pixels)
         {
-            Position = new Vector2(Position.X, Position.Y - pixels);
+            verticalVelocity = pixels;
         }
 
         public SmallMarioSprite(GraphicsDevice graphicsDevice)

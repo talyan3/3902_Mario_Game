@@ -133,7 +133,7 @@ namespace MonogameTest
                     {
                         _isJumping = true;
                         verticalVelocity = jumpStrength;
-                        SoundManager.PlayEffect("jumpBig");
+                        SoundManager.PlayEffect("jumpSuper");
                     }
                     //_current = _jumpFrame;
                 }
@@ -189,7 +189,7 @@ namespace MonogameTest
 
         public void Bounce(pixels)
 		{
-			Position = new Vector2(Position.X, Position.Y - pixels);
+			verticalVelocity = pixels;
 		}
 
 
