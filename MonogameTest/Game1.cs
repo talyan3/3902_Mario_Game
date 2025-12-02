@@ -11,11 +11,14 @@ using System.Net;
 using System.Runtime.Intrinsics.X86;
 using MonogameTest.Sounds;
 using MonogameTest.Screens;
+using MonogameTest.Managers;
 
 namespace MonogameTest;
 
 public class Game1 : Game
 {
+    private GameConfig C => ConfigLoader.Config;
+
     // Graphics + Sprites
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
@@ -36,15 +39,15 @@ public class Game1 : Game
     // Level
     private Texture2D _tileset;
     private List<Tile> _mapTiles;
-    const int TilesVisibleX = 16;
-    const int TileSize = 16;
+    private int TilesVisibleX => C.TilesVisibleX;
+    private int TileSize => C.TileSize;
     KeyboardState previousState;
-    const int ViewWidth = TilesVisibleX * TileSize;
+    private int ViewWidth => C.ViewWidth;
 
     // Camera 
     private ICamera camera;
-    const int scale = 4;
-    const float SpriteScale = 0.30f;
+    private int Scale => C.Scale;
+    private float SpriteScale => C.SpriteScale;
 
     // Objects
     private List<Rectangle> _solidRects; 
@@ -56,7 +59,7 @@ public class Game1 : Game
     private SpriteFont myFont;
     public string score = "000000";
     private string coins = "00";
-    private double time = 360;
+    private double time;
     private Texture2D coin;
 
     //THE EVER PROMISED STATE MACHINE 
@@ -73,6 +76,8 @@ public class Game1 : Game
     private ScreenManager _screenManager;
     private HUDScreen _hud;
 
+    private int ScaleMod => C.ScaleMod;
+
     private TitleScreen _titleScreen;
     private LevelIntroScreen _introScreen;
     private TimeUpScreen _timeUpScreen;
@@ -84,15 +89,13 @@ public class Game1 : Game
     private Texture2D _flagTexture;
     private Rectangle _poleRect;
 
-    private int cooldown = 80;
+    private int cooldown;
     private HashSet<Tile> _usedQuestionBlocks = new HashSet<Tile>();
-     //MAGIC:
-    private static readonly GameNumbers GameNumbers = NumberLoad.Numbers.GameNum;
-    private static readonly CameraMan UINumbers = NumberLoad.Numbers.CameraMan;
-    private static readonly PlayerAnimation PlayerAnimation = NumberLoad.Numbers.PlayerAnimations;
+    private EnemyManager _enemyManager;
 
     public Game1()
     {
+        ConfigLoader.Load();  // Load JSON before anything needs the values
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
@@ -100,15 +103,20 @@ public class Game1 : Game
 
     protected override void Initialize()
     {
-        _graphics.PreferredBackBufferWidth = ViewWidth * scale; // 256 pixels
-        _graphics.PreferredBackBufferHeight = 240 * scale;      // typical NES height
+        _graphics.PreferredBackBufferWidth = ViewWidth * Scale; // 256 pixels
+        _graphics.PreferredBackBufferHeight = ScaleMod * Scale;      // typical NES height
         _graphics.ApplyChanges();
         _screenManager = new ScreenManager();
+        _enemyManager = new EnemyManager(TileSize);
         base.Initialize();
     }
 
     protected override void LoadContent()
     {
+        cooldown = C.Cooldown;
+        time = C.StartingTime;
+        _spawnPoint = new Vector2(C.MarioStartX, C.MarioStartY);
+
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         SoundManager = SoundManager.Instance;
 
@@ -117,7 +125,6 @@ public class Game1 : Game
 
         _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
         _backgroundManager.LoadContent();
-
 
         Assets.Load(Content,GraphicsDevice);
         idleAnim = new Animation(Assets.PlayerIdle, 30, 16, 1, 0.1f, 8);
@@ -128,19 +135,21 @@ public class Game1 : Game
         Mar = new PlayerMario();
         Mar.LoadContent(Content, SoundManager, GraphicsDevice);
 
-        goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
-        koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
-        koop = new moveKoop(koopaSprite, _spriteBatch);
+        _enemyManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
+
+        //goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
+        //koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
+        //koop = new moveKoop(koopaSprite, _spriteBatch);
 
         // Load goombas
-        foreach (var posTile in EnemyPositions.Goombas)
-        {
-            var g = new moveGoom(goombaSprite, _spriteBatch);
-            g.Position = posTile * TileSize;
-            goombas.Add(g);
-        }
+        //foreach (var posTile in EnemyPositions.Goombas)
+        //{
+           // var g = new moveGoom(goombaSprite, _spriteBatch);
+            //g.Position = posTile * TileSize;
+            //goombas.Add(g);
+        //}
 
-        (koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 106 tiles over, ground level
+        //(koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 106 tiles over, ground level
 
         powerupsSheet = Content.Load<Texture2D>("Sprites/powerups");
 
@@ -176,12 +185,10 @@ public class Game1 : Game
         // Load map tiles
         _mapTiles = TiledMapLoader.Load(mapPath, _tileset);
 
-        /**** JAdded  ****/
         // After loading your map tiles:
         _solidRects = new List<Rectangle>(_mapTiles.Count);
         foreach (var tile in _mapTiles)
             _solidRects.Add(tile.Bounds); 
-        /****  JEnd Added  ****/
 
         //loads the camera on mario
         camera = new CameraManager(GraphicsDevice.Viewport);
@@ -293,18 +300,20 @@ public class Game1 : Game
             }
         }
 
-        foreach (var gg in goombas)
+        _enemyManager.Update(gameTime, _mapTiles);
+
+        /*foreach (var gg in goombas)
             if (gg.IsAlive)
                 gg.Update(gameTime);
             
-        koop.Update(gameTime);
+        koop.Update(gameTime); */
 
         if (Keyboard.GetState().IsKeyDown(Keys.M))
         {
             SoundManager.Instance.ToggleMute();
         }
 
-        foreach (var g in goombas)
+        /*foreach (var g in goombas)
         {
             if (EnemyCollisionHandler.HandleMany(g, _mapTiles, out var gRes, out var gTile))
             {
@@ -337,14 +346,15 @@ public class Game1 : Game
                     $"[Collision] Enemy=Koopa   Side={kRes.Side}  MTV={kRes.MTV}  TilePixel={kRes.TileRect.Location}");
 
             }
-        }
+        } */
     
-    var enemies = new List<object>();
+    /*var enemies = new List<object>();
         foreach (var g in goombas)
             if (g.IsAlive)
                 enemies.Add(g);
         
-    if (koop is moveKoop k2 && k2.IsAlive) enemies.Add(k2);
+    if (koop is moveKoop k2 && k2.IsAlive) enemies.Add(k2); */
+    var enemies = _enemyManager.GetLiveEnemies();
 
         if (_isBig)
         {
@@ -509,15 +519,16 @@ public class Game1 : Game
             tile.Draw(_spriteBatch);
         }
         Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
-        //draw enemies (koop and goom)
-        foreach (var g in goombas)
+        _enemyManager.Draw(_spriteBatch);
+
+        /*foreach (var g in goombas)
             if (g.IsAlive)
                 g.Draw(_spriteBatch, g.Position);
 
         if(koop is moveKoop k && k.IsAlive)
         {
             k.Draw(_spriteBatch, k.Position);
-        }
+        } */
 
         //powerups
         foreach (var p in powerups)
