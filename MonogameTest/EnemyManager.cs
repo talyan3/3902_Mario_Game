@@ -86,6 +86,8 @@ namespace MonogameTest.Managers
                 {
                     if (res.HitWall)
                         g.ReverseDirection();
+                    if (res.Grounded) Console.WriteLine("Goomba grounded");
+                    if (res.BonkedHead) Console.WriteLine("Goomba bonked head");
                 }
             }
 
@@ -98,6 +100,8 @@ namespace MonogameTest.Managers
                 {
                     if (res.HitWall)
                         _koopa.ReverseDirection();
+                    if (res.Grounded) Console.WriteLine("Goomba grounded");
+                    if (res.BonkedHead) Console.WriteLine("Goomba bonked head");
                 }
             }
         }

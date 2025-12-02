@@ -23,11 +23,6 @@ public class Game1 : Game
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
     private InputController _input = new InputController();/////
-    public Texture2D goombaSprite;
-    public Texture2D koopaSprite;
-    public ISprite goom;
-    public ISprite koop;
-    private List<moveGoom> goombas = new List<moveGoom>();
 
     // Mario
     private SmallMarioSprite _smallMario;
@@ -53,7 +48,6 @@ public class Game1 : Game
     private List<Rectangle> _solidRects; 
     private Vector2 _spawnPoint;
     private BackgroundManager _backgroundManager;
-    private List<object> _enemies = new List<object>();
 
     // UI Elements
     private SpriteFont myFont;
@@ -84,7 +78,8 @@ public class Game1 : Game
     private GameOverScreen _gameOverScreen;
     // Powerups + Flagpole
     Texture2D powerupsSheet;
-    List<PowerupInstance> powerups = new List<PowerupInstance>();
+    private PowerupFieldManager _powerupFieldManager;
+
     private Flagpole _flagpole;
     private Texture2D _flagTexture;
     private Rectangle _poleRect;
@@ -92,6 +87,8 @@ public class Game1 : Game
     private int cooldown;
     private HashSet<Tile> _usedQuestionBlocks = new HashSet<Tile>();
     private EnemyManager _enemyManager;
+
+    private CollisionManager _collisionManager;
 
     public Game1()
     {
@@ -108,6 +105,7 @@ public class Game1 : Game
         _graphics.ApplyChanges();
         _screenManager = new ScreenManager();
         _enemyManager = new EnemyManager(TileSize);
+        _powerupFieldManager = new PowerupFieldManager();
         base.Initialize();
     }
 
@@ -137,21 +135,9 @@ public class Game1 : Game
 
         _enemyManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
 
-        //goombaSprite = Content.Load<Texture2D>("Sprites/goomba-Final");
-        //koopaSprite = Content.Load<Texture2D>("Sprites/green-koopa");
-        //koop = new moveKoop(koopaSprite, _spriteBatch);
-
-        // Load goombas
-        //foreach (var posTile in EnemyPositions.Goombas)
-        //{
-           // var g = new moveGoom(goombaSprite, _spriteBatch);
-            //g.Position = posTile * TileSize;
-            //goombas.Add(g);
-        //}
-
-        //(koop as moveKoop).Position = new Vector2(16 * 106, 16 * 12); // 106 tiles over, ground level
-
         powerupsSheet = Content.Load<Texture2D>("Sprites/powerups");
+        _powerupFieldManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
+        _powerupFieldManager.SetPowerupSheet(powerupsSheet);
 
         // Uncomment this to see One-up functionality
         //powerups.Add(PowerupFactory.Create(PowerupType.GreenMushroom, powerupsSheet, new Vector2(16*12, 16*11)));
@@ -210,6 +196,24 @@ public class Game1 : Game
         _flagTexture = Texture2D.FromFile(GraphicsDevice, "flag.png");
         _poleRect = new Rectangle(TileSize * 198, TileSize * 3, 5, 160); // guessing numbers for testing
         _flagpole = new Flagpole(_spriteBatch, _flagTexture, _poleRect, _currentMario);
+
+        _collisionManager = new CollisionManager(
+            _smallMario,
+            _bigMario,
+            _currentMario,
+            _mapTiles,
+            _enemyManager,
+            _powerupFieldManager,
+            _screenManager,
+            SoundManager,
+            _flagpole,
+            _spawnPoint,
+            TileSize,
+            () => ToggleMarioSize(), // <-- pass the callback
+            (int points) => { score = (int.Parse(score) + points).ToString("000000"); }, // score
+            () => { coins = (int.Parse(coins) + 1).ToString("00"); } // coin
+        );
+
     }
 
     protected override void Update(GameTime gameTime)
@@ -255,189 +259,28 @@ public class Game1 : Game
         }
 
         _currentMario.Update(gameTime);
+        _collisionManager.Update(
+            gameTime,
+            _currentMario,
+            _isBig,
+            (CameraManager)camera
+        );
         Vector2 marioPos = _currentMario is SmallMarioSprite sm ? sm.Position :
                    _currentMario is BigMarioSprite bm ? bm.Position :
                    Vector2.Zero;
         camera.LookAt(marioPos);
 
-        if (StaticCollisionHandler.HandleMany(_currentMario, _mapTiles, out var res, out var hitTile))
-        {
-            if (hitTile.TileName == "Question" &&
-                res.Side == typeCollision.Bottom &&
-                !_usedQuestionBlocks.Contains(hitTile))
-            {
-                SoundManager.Instance.PlayEffect("bump");
-                _usedQuestionBlocks.Add(hitTile);
-
-                // Spawn a coin just above the block
-                Vector2 spawnPos = hitTile.Position;
-                spawnPos.Y -= hitTile.Bounds.Height;
-
-                if (marioPos.X < TileSize * 22 && marioPos.X > 16 * 19)
-                {
-                    powerups.Add(
-                    PowerupFactory.Create(
-                        PowerupType.Mushroom,
-                        powerupsSheet,
-                        spawnPos
-                    )
-                );
-                SoundManager.Instance.PlayEffect("powerUpAppears");
-                } else
-                {
-                   powerups.Add(
-                    PowerupFactory.Create(
-                        PowerupType.Coin,
-                        powerupsSheet,
-                        spawnPos
-                    )
-                ); 
-                SoundManager.Instance.PlayEffect("coin");
-                coins = (int.Parse(coins) + 1).ToString("00");
-                score = (int.Parse(score) + 100).ToString("000000");
-                }
-
-            }
-        }
-
         _enemyManager.Update(gameTime, _mapTiles);
-
-        /*foreach (var gg in goombas)
-            if (gg.IsAlive)
-                gg.Update(gameTime);
-            
-        koop.Update(gameTime); */
 
         if (Keyboard.GetState().IsKeyDown(Keys.M))
         {
             SoundManager.Instance.ToggleMute();
         }
 
-        /*foreach (var g in goombas)
-        {
-            if (EnemyCollisionHandler.HandleMany(g, _mapTiles, out var gRes, out var gTile))
-            {
-                if (gRes.HitWall)
-                {
-                    Console.WriteLine($"Goomba hit wall at {gRes.TileRect.Location}");
-                    g.ReverseDirection();
-                }
-                if (gRes.Grounded) Console.WriteLine("Goomba grounded");
-                if (gRes.BonkedHead) Console.WriteLine("Goomba bonked head");
-
-                Console.WriteLine(
-                    $"[Collision] Enemy=Goomba  Side={gRes.Side}  MTV={gRes.MTV}  TilePixel={gRes.TileRect.Location}");
-            }
-            
-        }
-
-        if (koop is moveKoop k)
-        {
-            if (EnemyCollisionHandler.HandleMany(k, _mapTiles, out var kRes, out var kTile))
-            {
-                if (kRes.HitWall)
-                {
-                    Console.WriteLine($"Koopa hit wall at {kRes.TileRect.Location}");
-                    k.ReverseDirection();
-                }
-                if (kRes.Grounded) Console.WriteLine("Koopa grounded");
-                if (kRes.BonkedHead) Console.WriteLine("Koopa bonked head");
-                Console.WriteLine(
-                    $"[Collision] Enemy=Koopa   Side={kRes.Side}  MTV={kRes.MTV}  TilePixel={kRes.TileRect.Location}");
-
-            }
-        } */
-    
-    /*var enemies = new List<object>();
-        foreach (var g in goombas)
-            if (g.IsAlive)
-                enemies.Add(g);
-        
-    if (koop is moveKoop k2 && k2.IsAlive) enemies.Add(k2); */
-    var enemies = _enemyManager.GetLiveEnemies();
-
-        if (_isBig)
-        {
-            EnemyCollisionHandler.HandleMarioEnemyCollision(
-                _bigMario,
-                enemies,
-                onBigHit: () =>
-                {
-                    _isBig = false;
-                    _smallMario.Position = _bigMario.Position;
-                    var deltaFeet = _bigMario.Bounds.Bottom - _smallMario.Bounds.Bottom;
-                    _smallMario.Position = new Vector2(_smallMario.Position.X, _smallMario.Position.Y + deltaFeet);
-                    _currentMario = _smallMario;
-                });
-        }
-        else
-        {
-            EnemyCollisionHandler.HandleMarioEnemyCollision(
-                _smallMario,
-                enemies,
-                restart: () =>
-                {
-                    _currentMario = _smallMario;
-                    _smallMario.Position = _spawnPoint;
-
-                    if (goom is moveGoom gg) gg.IsAlive = true;
-                    if (koop is moveKoop kk) kk.IsAlive = true;
-                    camera.Reset(_spawnPoint);
-                    camera.LookAt(_spawnPoint);
-                    _screenManager.Lives--;
-                    if (_screenManager.Lives <= 0)
-                        _screenManager.ChangeState(GameState.GameOver);
-                    else
-                    {
-                        _screenManager.ChangeState(GameState.LevelIntro);
-                    }
-                });
-
-        }
+        var enemies = _enemyManager.GetLiveEnemies();
         time -= 0.02;
-        //powerups
-        foreach (var p in powerups)
-        {
-         p.Update(gameTime);
 
-        if (PowerupCollisionHandler.CheckMarioPowerupCollision(_currentMario, p))
-        {
-        HandlePowerupPickup(p);
-        }
-    }
-        _flagpole.Update(gameTime);
         base.Update(gameTime);
-    }
-
-    //powerups
-    private void HandlePowerupPickup(PowerupInstance p)
-    {
-        p.IsAlive = false;
-
-        switch (p.Type)
-        {
-            case PowerupType.Mushroom:
-                if(_isBig == false)
-                    ToggleMarioSize();
-                score = (int.Parse(score) + 200).ToString("000000");
-                break;
-
-            case PowerupType.FireFlower:
-                // give fire ability
-                break;
-
-            case PowerupType.Star:
-                //invincibility
-                break;
-
-            case PowerupType.Coin:
-                break;
-            case PowerupType.GreenMushroom:
-                SoundManager.Instance.PlayEffect("oneUp");
-                score = (int.Parse(score) + 200).ToString("000000");
-                _screenManager.Lives += 1;
-                break;
-        }
     }
 
     private void ResetLevel()
@@ -521,18 +364,8 @@ public class Game1 : Game
         Mar.Draw(_spriteBatch); // ***$$$ maybe not mario
         _enemyManager.Draw(_spriteBatch);
 
-        /*foreach (var g in goombas)
-            if (g.IsAlive)
-                g.Draw(_spriteBatch, g.Position);
-
-        if(koop is moveKoop k && k.IsAlive)
-        {
-            k.Draw(_spriteBatch, k.Position);
-        } */
-
         //powerups
-        foreach (var p in powerups)
-            p.Draw(_spriteBatch);
+        _powerupFieldManager.Draw(_spriteBatch);
 
         _flagpole.Draw(); 
 

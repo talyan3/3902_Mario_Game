@@ -45,7 +45,7 @@ namespace MonogameTest
                 0 => "Air",
                 1  => "Ground",
                 2  => "Brick",
-                5  => "Question",
+                5  => "Stair",
                 7  => "Question",
                 8  => "PipeTopLeft",
                 9  => "PipeTopRight",
