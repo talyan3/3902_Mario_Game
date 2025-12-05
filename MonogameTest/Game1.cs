@@ -30,7 +30,7 @@ public class Game1 : Game
 	private StaticSprite _currentMario;
 	private bool _isBig = false;
     private bool _bHeldLast = false;
-
+    private bool _pHeldLast = false;
     // Level
     private Texture2D _tileset;
     private List<Tile> _mapTiles;
@@ -89,6 +89,9 @@ public class Game1 : Game
     private EnemyManager _enemyManager;
 
     private CollisionManager _collisionManager;
+
+    private bool _isPaused = false;
+    private bool _isMuted = false;
 
     public Game1()
     {
@@ -212,7 +215,7 @@ public class Game1 : Game
             () => ToggleMarioSize(), // <-- pass the callback
             (int points) => { score = (int.Parse(score) + points).ToString("000000"); }, // score
             () => { coins = (int.Parse(coins) + 1).ToString("00"); }, // coin
-            () => { score = "000000"; coins = "00"; }
+            () => { score = "000000"; coins = "00"; time = 400;}
         );
 
     }
@@ -249,6 +252,30 @@ public class Game1 : Game
 
         _input.Update();
 
+        // ----------------------------------
+        // === TOGGLE PAUSE (P key) ===
+        // ----------------------------------
+        bool pDown = state.IsKeyDown(Keys.P);
+        if (pDown && !_pHeldLast)
+        {
+            _isPaused = !_isPaused;
+
+            SoundManager.Instance.PlayEffect("pause");
+
+            if (_isPaused)
+                SoundManager.Instance.PauseSong();
+            else
+                SoundManager.Instance.ResumeSong();
+        }
+        _pHeldLast = pDown;
+
+        // === FREEZE GAMEPLAY WHEN PAUSED ===
+        if (_isPaused)
+        {
+            previousState = state;
+            return; // stop all gameplay logic
+        }
+
         bool bDown = state.IsKeyDown(Keys.B);
 		if (bDown && !_bHeldLast)
 			ToggleMarioSize();
@@ -275,9 +302,10 @@ public class Game1 : Game
 
         if (Keyboard.GetState().IsKeyDown(Keys.M))
         {
+            _isMuted = !_isMuted;
             SoundManager.Instance.ToggleMute();
         }
-
+        previousState = state;
         var enemies = _enemyManager.GetLiveEnemies();
         time -= 0.02;
         base.Update(gameTime);
@@ -297,6 +325,7 @@ public class Game1 : Game
     {
         score = "000000";
         coins = "0";
+        time = 400;
     }
     
     private void ToggleMarioSize()
@@ -397,6 +426,16 @@ public class Game1 : Game
             SpriteEffects.None,    
             0f                     
         );
+        // === PAUSE OVERLAY ===
+        if (_isPaused)
+        {
+            _spriteBatch.DrawString(
+                myFont,
+                "PAUSE",
+                new Vector2(450, 300),
+                Color.White
+            );
+        }
         _spriteBatch.End();
 
         base.Draw(gameTime);
