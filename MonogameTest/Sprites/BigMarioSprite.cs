@@ -28,7 +28,7 @@ namespace MonogameTest
         private float _frameTimer = 0f;
         private float _frameTime = 0.12f;
 
-        private bool _isJumping = false;
+        public bool _isJumping = false;
         private bool _isCrouching = false;
         private float _jumpOffset = 100f;
 		private Vector2 _groundPos;
@@ -36,7 +36,7 @@ namespace MonogameTest
 
         private const float CROUCH_DRAW_OFFSET = 6f; // how far lower the crouch sprite is drawn
         
-        private float verticalVelocity = 0f;
+        public float verticalVelocity = 0f;
         private float gravity = 900f;
         private float jumpStrength = -350f;
 

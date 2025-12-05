@@ -101,7 +101,8 @@ namespace MonogameTest.Managers
             {
                 usedQuestionBlocks.Add(hitTile);
                 sound.PlayEffect("bump");
-
+                smallMario.verticalVelocity = 0;
+                bigMario.verticalVelocity = 0;
                 Vector2 spawnPos = hitTile.Position;
                 spawnPos.Y -= tileSize; // offset to safely spawn powerups above block
 
@@ -127,6 +128,14 @@ namespace MonogameTest.Managers
                     // Optional: break brick logic or play effect
                     sound.PlayEffect("break");
                 }
+            }
+            if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight") &&
+                res.Side == typeCollision.Top)
+            {
+                smallMario.verticalVelocity = 0;
+                smallMario._isJumping = false;
+                bigMario.verticalVelocity = 0;
+                bigMario._isJumping = false;
             }
         }
 
@@ -169,6 +178,8 @@ namespace MonogameTest.Managers
                         restart: () =>
                         {
                             activeMario = smallMario;
+
+                            //smallMario.verticalVelocity = -5f;
                             smallMario.Position = spawnPoint;
 
                             enemyManager.Reset();
