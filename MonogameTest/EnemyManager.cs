@@ -63,7 +63,8 @@ namespace MonogameTest.Managers
             foreach (var posTile in EnemyPositions.Goombas)
             {
                 var g = new moveGoom(_goombaSprite, spriteBatch);
-                g.Position = posTile * _tileSize;
+                g.SpawnPosition = posTile * _tileSize;
+                g.Position = g.SpawnPosition;
                 _goombas.Add(g);
             }
         }
@@ -127,8 +128,10 @@ namespace MonogameTest.Managers
         public void Reset()
         {
             foreach (var g in _goombas)
+            {
                 g.IsAlive = true;
-
+                g.Position = g.SpawnPosition;    // restore original tile position
+            }
             if (_koopa != null)
             {
                 _koopa.IsAlive = true;

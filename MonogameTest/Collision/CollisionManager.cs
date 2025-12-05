@@ -26,6 +26,10 @@ namespace MonogameTest.Managers
         private readonly System.Action onMushroomCollected;
         private readonly System.Action<int> addScore;
         private readonly System.Action addCoin;
+        private readonly System.Action resetScoreAndCoins;
+
+        private bool _isHurt = false;
+        private double _hurtTimer = 0;
 
         public CollisionManager(
             SmallMarioSprite small,
@@ -41,7 +45,9 @@ namespace MonogameTest.Managers
             int tileSize,
             System.Action onMushroomCollected,
             System.Action<int> addScore,
-            System.Action addCoin)
+            System.Action addCoin,
+            System.Action resetScoreAndCoins
+            )
         {
             smallMario = small;
             bigMario = big;
@@ -59,14 +65,20 @@ namespace MonogameTest.Managers
             this.onMushroomCollected = onMushroomCollected;
             this.addScore = addScore;
             this.addCoin = addCoin;
+            this.resetScoreAndCoins = resetScoreAndCoins;
         }
 
-        /// <summary>
         /// Main collision update, called from Game1.Update
-        /// </summary>
         public void Update(GameTime gameTime, StaticSprite activeMario, bool isBig, CameraManager camera)
         {
             currentMario = activeMario;
+            // === HURT INVINCIBILITY TIMER ===
+            if (_isHurt)
+            {
+                _hurtTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                if (_hurtTimer <= 0)
+                    _isHurt = false;
+            }
 
             HandleTileCollision(activeMario);
             HandleEnemyCollision(activeMario, isBig, camera);
@@ -91,7 +103,7 @@ namespace MonogameTest.Managers
                 sound.PlayEffect("bump");
 
                 Vector2 spawnPos = hitTile.Position;
-                spawnPos.Y -= tileSize + 2; // offset to safely spawn powerups above block
+                spawnPos.Y -= tileSize; // offset to safely spawn powerups above block
 
                 if (hitTile.TileName == "Question")
                 {
@@ -124,50 +136,57 @@ namespace MonogameTest.Managers
         private void HandleEnemyCollision(StaticSprite activeMario, bool isBig, CameraManager camera)
         {
             var enemies = enemyManager.GetLiveEnemies();
-
-            if (isBig)
+            if (!_isHurt)
             {
-                EnemyCollisionHandler.HandleMarioEnemyCollision(
-                    bigMario,
-                    enemies,
-                    onBigHit: () =>
-                    {
-                        // Mario gets hit, shrink to small
-                        smallMario.Position = bigMario.Position;
+                if (isBig)
+                {
+                    EnemyCollisionHandler.HandleMarioEnemyCollision(
+                        bigMario,
+                        enemies,
+                        onBigHit: () =>
+                        {
+                            // Mario gets hit, shrink to small
+                            smallMario.Position = bigMario.Position;
 
-                        float shift = bigMario.Bounds.Bottom - smallMario.Bounds.Bottom;
-                        smallMario.Position = new Vector2(
+                            float shift = bigMario.Bounds.Bottom - smallMario.Bounds.Bottom;
+                            smallMario.Position = new Vector2(
                             smallMario.Position.X,
                             smallMario.Position.Y + shift);
+                            onMushroomCollected?.Invoke();
+                            activeMario = smallMario;
+                            // Optional: update currentMario reference if needed
+                            currentMario = activeMario;
+                            // Start invincibility
+                            _isHurt = true;
+                            _hurtTimer = 1.5; // Mario flashes for 1.2 seconds
+                        });
+                }
+                else
+                {
+                    EnemyCollisionHandler.HandleMarioEnemyCollision(
+                        smallMario,
+                        enemies,
+                        restart: () =>
+                        {
+                            activeMario = smallMario;
+                            smallMario.Position = spawnPoint;
 
-                        activeMario = smallMario;
-                        // Optional: update currentMario reference if needed
-                        currentMario = activeMario;
-                    });
-            }
-            else
-            {
-                EnemyCollisionHandler.HandleMarioEnemyCollision(
-                    smallMario,
-                    enemies,
-                    restart: () =>
-                    {
-                        activeMario = smallMario;
-                        smallMario.Position = spawnPoint;
+                            enemyManager.Reset();
 
-                        enemyManager.Reset();
+                            camera.Reset(spawnPoint);
+                            camera.LookAt(spawnPoint);
 
-                        camera.Reset(spawnPoint);
-                        camera.LookAt(spawnPoint);
+                            screenManager.Lives--;
+                            if (screenManager.Lives <= 0)
+                                screenManager.ChangeState(GameState.GameOver);
+                            else
+                                screenManager.ChangeState(GameState.LevelIntro);
 
-                        screenManager.Lives--;
-                        if (screenManager.Lives <= 0)
-                            screenManager.ChangeState(GameState.GameOver);
-                        else
-                            screenManager.ChangeState(GameState.LevelIntro);
-
-                        currentMario = activeMario;
-                    });
+                            currentMario = activeMario;
+                            usedQuestionBlocks.Clear(); 
+                            resetScoreAndCoins?.Invoke();
+                        });
+                }
             }
         }
 

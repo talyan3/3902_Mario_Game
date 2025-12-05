@@ -22,6 +22,7 @@ class moveGoom : ISprite
     public double direction = -1; // -1 = left, +1 = right
     float deltaTime;
     private Texture2D goombaDead;
+    public Vector2 SpawnPosition { get; set; }
 
     public moveGoom(Texture2D texture, SpriteBatch spriteBatch)
     {

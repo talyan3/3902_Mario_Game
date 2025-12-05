@@ -211,7 +211,8 @@ public class Game1 : Game
             TileSize,
             () => ToggleMarioSize(), // <-- pass the callback
             (int points) => { score = (int.Parse(score) + points).ToString("000000"); }, // score
-            () => { coins = (int.Parse(coins) + 1).ToString("00"); } // coin
+            () => { coins = (int.Parse(coins) + 1).ToString("00"); }, // coin
+            () => { score = "000000"; coins = "00"; }
         );
 
     }
@@ -279,7 +280,6 @@ public class Game1 : Game
 
         var enemies = _enemyManager.GetLiveEnemies();
         time -= 0.02;
-
         base.Update(gameTime);
     }
 
@@ -291,6 +291,12 @@ public class Game1 : Game
         camera.Reset(_spawnPoint);
         camera.LookAt(_spawnPoint);
         _screenManager.ResetLevel();
+    }
+
+    private void ResetScoreAndCoins()
+    {
+        score = "000000";
+        coins = "0";
     }
     
     private void ToggleMarioSize()
