@@ -13,6 +13,9 @@ public class PlayerMario
     public Animation animRun;
     public Animation animJump;
 
+    //added for star mario
+    public Animation animStar;
+
     public InputController Input;
     public PlayerState currState;
 
@@ -43,6 +46,8 @@ public class PlayerMario
         animIdle = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"),30,16,1, 0.15f, 8);
         animRun  = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"), 30,16,3,0.10f,9);
         animJump = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"),30,16,1,0.20f,13);
+        //added star animation
+        animStar = new Animation(Texture2D.FromFile(graphicsDevice, "mario_star_bkgrd_remvd.png"), 30, 16, 4, 0.08f, 0);
 
         ChangeState(new IdleState(this));
     }

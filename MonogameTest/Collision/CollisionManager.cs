@@ -200,6 +200,11 @@ namespace MonogameTest.Managers
                 case PowerupType.Star:
                     sound.PlayEffect("powerUp");
                     addScore?.Invoke(500);
+
+                    if(activeMario is PlayerMario marioPlayer)
+                    {
+                        marioPlayer.ChangeState(new StarState(marioPlayer));
+                    }
                     break;
                 case PowerupType.FireFlower:
                     sound.PlayEffect("powerUp");

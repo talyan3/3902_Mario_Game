@@ -117,3 +117,7 @@ C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Conten
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\BGSprites\SmallHill.xnb
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\Entity\mario-static.xnb
 C:\Users\olson\Desktop\3902_Mario_Game-test\MonogameTest\bin\Debug\net8.0\Content\Sprites\ItemSprite\coin2.xnb
+C:\Users\anika\Desktop\Class_3902\MonogameTest\obj\Debug\net8.0\mgcb.tool.restore
+C:\Users\anika\Desktop\Class_3902\MonogameTest\obj\Debug\net8.0\MonogameTest.dll
+C:\Users\anika\Desktop\Class_3902\MonogameTest\obj\Debug\net8.0\refint\MonogameTest.dll
+C:\Users\anika\Desktop\Class_3902\MonogameTest\obj\Debug\net8.0\MonogameTest.pdb

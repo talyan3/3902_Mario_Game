@@ -7,6 +7,9 @@ public class AnimationPlayer
     public int CurrentFrame { get; private set; }
     private float _timer;
 
+    //add tint color for star state
+    public Color TintColor = Color.White;
+
     public void Play(Animation animation)
     {
         if (CurrentAnimation == animation)
@@ -15,6 +18,8 @@ public class AnimationPlayer
         CurrentAnimation = animation;
         CurrentFrame = 0;
         _timer = 0f;
+
+        TintColor = Color.White;
     }
 
     public void Update(GameTime gameTime)
@@ -37,7 +42,7 @@ public class AnimationPlayer
     public void Draw(SpriteBatch spriteBatch, Vector2 position, SpriteEffects effects, float scale)
     {
         var source = CurrentAnimation.GetFrameRect(CurrentFrame);
-        spriteBatch.Draw(CurrentAnimation.Texture, position, source, Color.White, 
+        spriteBatch.Draw(CurrentAnimation.Texture, position, source, TintColor, 
             0f, Vector2.Zero, scale, effects, 0f);
     }
 }
