@@ -139,9 +139,15 @@ namespace MonogameTest
                 {
                     if (enemy is moveGoom g)
                     {
+                        SoundManager.Instance.PlayEffect("stomp");
                         g.IsAlive = false;
                     }
-                    else if (enemy is moveKoop k) k.IsAlive = false;
+                    else if (enemy is moveKoop k) 
+                    {
+                        SoundManager.Instance.PlayEffect("stomp");
+                        k.IsAlive = false;
+                    } 
+                    
 
                     bounce?.Invoke();
                     continue;

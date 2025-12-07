@@ -8,21 +8,27 @@ namespace MonogameTest
 {
     public sealed class SoundManager
     {
-        
-        private static readonly Lazy<SoundManager> _instance = new(() => new SoundManager());
+        // Singleton instance
+        private static readonly Lazy<SoundManager> _instance =
+            new(() => new SoundManager());
         public static SoundManager Instance => _instance.Value;
 
+        // Storage
         private readonly Dictionary<string, Song> _songs = new();
         private readonly Dictionary<string, SoundEffect> _effects = new();
 
+        // Mute state
         private bool _isMuted = false;
-        private float _previousMediaVolume = 1f;
-        private float _previousEffectVolume = 1f;
+        private float _prevMediaVolume = DefaultVolume;
+        private float _prevEffectVolume = DefaultVolume;
 
-
+        // Volume constants
+        private const float DefaultVolume = 1f;
+        private const float MutedVolume = 0f;
 
         private SoundManager() { }
 
+        // Load a music track
         public void LoadSong(Game game, string key, string path)
         {
             try
@@ -35,6 +41,7 @@ namespace MonogameTest
             }
         }
 
+        // Load a sound effect
         public void LoadEffect(Game game, string key, string path)
         {
             try
@@ -43,10 +50,16 @@ namespace MonogameTest
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to load sound effect '{path}': {ex.Message}");
+                Console.WriteLine($"Failed to load effect '{path}': {ex.Message}");
             }
         }
 
+        public bool IsSongPlaying()
+        {
+            return MediaPlayer.State == MediaState.Playing;
+        }
+
+        // Toggle mute on/off
         public void ToggleMute()
         {
             _isMuted = !_isMuted;
@@ -54,26 +67,22 @@ namespace MonogameTest
             if (_isMuted)
             {
                 // Save volumes
-                _previousMediaVolume = MediaPlayer.Volume;
-                _previousEffectVolume = SoundEffect.MasterVolume;
+                _prevMediaVolume = MediaPlayer.Volume;
+                _prevEffectVolume = SoundEffect.MasterVolume;
 
-                // Mute everything
-                MediaPlayer.Volume = 0f;
-                SoundEffect.MasterVolume = 0f;
-
-                Console.WriteLine("Audio muted.");
+                // Mute
+                MediaPlayer.Volume = MutedVolume;
+                SoundEffect.MasterVolume = MutedVolume;
             }
             else
             {
-                // Restore previous volumes
-                MediaPlayer.Volume = _previousMediaVolume;
-                SoundEffect.MasterVolume = _previousEffectVolume;
-
-                Console.WriteLine("Audio unmuted.");
+                // Restore volumes
+                MediaPlayer.Volume = _prevMediaVolume;
+                SoundEffect.MasterVolume = _prevEffectVolume;
             }
         }
 
-
+        // Play a music track
         public void PlaySong(string key, bool loop = true)
         {
             if (_songs.TryGetValue(key, out Song song))
@@ -84,10 +93,11 @@ namespace MonogameTest
             }
             else
             {
-                Console.WriteLine($"Song with key '{key}' not found.");
+                Console.WriteLine($"Song '{key}' not found.");
             }
         }
 
+        // Play a sound effect
         public void PlayEffect(string key)
         {
             if (_effects.TryGetValue(key, out SoundEffect effect))
@@ -96,29 +106,28 @@ namespace MonogameTest
             }
             else
             {
-                Console.WriteLine($"Sound effect with key '{key}' not found.");
+                Console.WriteLine($"Effect '{key}' not found.");
             }
         }
 
+        // Stop current song
         public void StopSong()
         {
             MediaPlayer.Stop();
         }
 
+        // Pause current song
         public void PauseSong()
         {
             if (MediaPlayer.State == MediaState.Playing)
-            {
                 MediaPlayer.Pause();
-            }
         }
 
+        // Resume paused song
         public void ResumeSong()
         {
             if (MediaPlayer.State == MediaState.Paused)
-            {
                 MediaPlayer.Resume();
-            }
         }
     }
 }

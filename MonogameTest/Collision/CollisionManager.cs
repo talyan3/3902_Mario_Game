@@ -8,29 +8,29 @@ namespace MonogameTest.Managers
 {
     public class CollisionManager
     {
-        private SmallMarioSprite smallMario;
-        private BigMarioSprite bigMario;
-        private StaticSprite currentMario;
+        private readonly MarioStateController marioState;
 
-        private List<Tile> mapTiles;
-        private HashSet<Tile> usedQuestionBlocks = new HashSet<Tile>();
+        private readonly List<Tile> mapTiles;
+        private readonly HashSet<Tile> usedQuestionBlocks = new HashSet<Tile>();
 
-        private EnemyManager enemyManager;
-        private PowerupFieldManager powerupManager;
-        private ScreenManager screenManager;
-        private SoundManager sound;
-        private Flagpole flagpole;
+        private readonly EnemyManager enemyManager;
+        private readonly PowerupFieldManager powerupManager;
+        private readonly ScreenManager screenManager;
+        private readonly SoundManager sound;
+        private readonly Flagpole flagpole;
 
-        private Vector2 spawnPoint;
-        private int tileSize;
-        private readonly System.Action onMushroomCollected;
+        private readonly Vector2 spawnPoint;
+        private readonly int tileSize;
+
         private readonly System.Action<int> addScore;
         private readonly System.Action addCoin;
+        private readonly System.Action resetScoreAndCoins;
+
+        private bool _isHurt = false;
+        private double _hurtTimer = 0;
 
         public CollisionManager(
-            SmallMarioSprite small,
-            BigMarioSprite big,
-            StaticSprite current,
+            MarioStateController marioState,
             List<Tile> tiles,
             EnemyManager enemies,
             PowerupFieldManager powerups,
@@ -39,13 +39,12 @@ namespace MonogameTest.Managers
             Flagpole flag,
             Vector2 spawn,
             int tileSize,
-            System.Action onMushroomCollected,
             System.Action<int> addScore,
-            System.Action addCoin)
+            System.Action addCoin,
+            System.Action resetScoreAndCoins
+        )
         {
-            smallMario = small;
-            bigMario = big;
-            currentMario = current;
+            this.marioState = marioState;
 
             mapTiles = tiles;
             enemyManager = enemies;
@@ -56,46 +55,53 @@ namespace MonogameTest.Managers
 
             spawnPoint = spawn;
             this.tileSize = tileSize;
-            this.onMushroomCollected = onMushroomCollected;
+
             this.addScore = addScore;
             this.addCoin = addCoin;
+            this.resetScoreAndCoins = resetScoreAndCoins;
         }
 
-        /// <summary>
-        /// Main collision update, called from Game1.Update
-        /// </summary>
-        public void Update(GameTime gameTime, StaticSprite activeMario, bool isBig, CameraManager camera)
+        // =========================================================
+        // MAIN UPDATE
+        // =========================================================
+        public void Update(GameTime gameTime, StaticSprite activeMario, CameraManager camera)
         {
-            currentMario = activeMario;
+            // === HURT INVINCIBILITY TIMER ===
+            if (_isHurt)
+            {
+                _hurtTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                if (_hurtTimer <= 0)
+                    _isHurt = false;
+            }
 
             HandleTileCollision(activeMario);
-            HandleEnemyCollision(activeMario, isBig, camera);
-            HandlePowerups(activeMario, gameTime, isBig);
+            HandleEnemyCollision(activeMario, camera);
+            HandlePowerups(activeMario, gameTime);
+
             flagpole.Update(gameTime);
         }
 
-        // ---------------------------------------------------------
+        // =========================================================
         // TILE COLLISION + QUESTION BLOCK LOGIC
-        // ---------------------------------------------------------
+        // =========================================================
         private void HandleTileCollision(StaticSprite activeMario)
         {
             if (!StaticCollisionHandler.HandleMany(activeMario, mapTiles, out var res, out var hitTile))
                 return;
 
-            // Only act if Mario hits the **bottom of his head to top of tile**
+            // --- HEAD HIT LOGIC ---
             if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick") &&
-                res.Side == typeCollision.Bottom && // top of tile is hit
+                res.Side == typeCollision.Bottom &&
                 !usedQuestionBlocks.Contains(hitTile))
             {
                 usedQuestionBlocks.Add(hitTile);
                 sound.PlayEffect("bump");
 
                 Vector2 spawnPos = hitTile.Position;
-                spawnPos.Y -= tileSize + 2; // offset to safely spawn powerups above block
+                spawnPos.Y -= tileSize;
 
                 if (hitTile.TileName == "Question")
                 {
-                    // custom mushroom range, example logic
                     if (activeMario.Position.X < tileSize * 22 &&
                         activeMario.Position.X > tileSize * 19)
                     {
@@ -112,69 +118,60 @@ namespace MonogameTest.Managers
                 }
                 else if (hitTile.TileName == "Brick")
                 {
-                    // Optional: break brick logic or play effect
                     sound.PlayEffect("break");
                 }
             }
         }
 
-        // ---------------------------------------------------------
+        // =========================================================
         // ENEMY COLLISIONS
-        // ---------------------------------------------------------
-        private void HandleEnemyCollision(StaticSprite activeMario, bool isBig, CameraManager camera)
+        // =========================================================
+        private void HandleEnemyCollision(StaticSprite activeMario, CameraManager camera)
         {
             var enemies = enemyManager.GetLiveEnemies();
+            if (_isHurt) return;
 
-            if (isBig)
+            if (marioState.IsBig)
             {
                 EnemyCollisionHandler.HandleMarioEnemyCollision(
-                    bigMario,
+                    marioState.CurrentMario as BigMarioSprite,   
                     enemies,
                     onBigHit: () =>
                     {
-                        // Mario gets hit, shrink to small
-                        smallMario.Position = bigMario.Position;
-
-                        float shift = bigMario.Bounds.Bottom - smallMario.Bounds.Bottom;
-                        smallMario.Position = new Vector2(
-                            smallMario.Position.X,
-                            smallMario.Position.Y + shift);
-
-                        activeMario = smallMario;
-                        // Optional: update currentMario reference if needed
-                        currentMario = activeMario;
+                        marioState.Shrink();
+                        _isHurt = true;
+                        _hurtTimer = 1.5;
                     });
             }
             else
             {
                 EnemyCollisionHandler.HandleMarioEnemyCollision(
-                    smallMario,
+                    marioState.CurrentMario as SmallMarioSprite, 
                     enemies,
                     restart: () =>
                     {
-                        activeMario = smallMario;
-                        smallMario.Position = spawnPoint;
+                        marioState.ForceSmall(spawnPoint);
 
                         enemyManager.Reset();
-
                         camera.Reset(spawnPoint);
                         camera.LookAt(spawnPoint);
 
-                        screenManager.Lives--;
-                        if (screenManager.Lives <= 0)
-                            screenManager.ChangeState(GameState.GameOver);
-                        else
+                        screenManager.LoseLife();
+
+                        if (screenManager.CurrentState != GameState.GameOver)
                             screenManager.ChangeState(GameState.LevelIntro);
 
-                        currentMario = activeMario;
+                        usedQuestionBlocks.Clear();
+                        resetScoreAndCoins?.Invoke();
                     });
             }
         }
 
-        // ---------------------------------------------------------
+
+        // =========================================================
         // POWERUPS
-        // ---------------------------------------------------------
-        private void HandlePowerups(StaticSprite activeMario, GameTime gameTime, bool isBig)
+        // =========================================================
+        private void HandlePowerups(StaticSprite activeMario, GameTime gameTime)
         {
             var pickedUp = powerupManager.Update(gameTime, activeMario);
             if (pickedUp == null)
@@ -185,22 +182,26 @@ namespace MonogameTest.Managers
             switch (pickedUp.Type)
             {
                 case PowerupType.Mushroom:
-                    sound.PlayEffect("powerUp");
-                    if(isBig == false)
-                        onMushroomCollected?.Invoke();
+                    marioState.Grow();
                     addScore?.Invoke(200);
                     break;
+
                 case PowerupType.Coin:
+                    addCoin?.Invoke();
+                    addScore?.Invoke(100);
                     break;
+
                 case PowerupType.GreenMushroom:
                     sound.PlayEffect("oneUp");
-                    screenManager.Lives += 1;
-                    addScore?.Invoke(200);
+                    screenManager.AddScore(200);
+                    screenManager.ChangeState(screenManager.CurrentState);
                     break;
+
                 case PowerupType.Star:
                     sound.PlayEffect("powerUp");
                     addScore?.Invoke(500);
                     break;
+
                 case PowerupType.FireFlower:
                     sound.PlayEffect("powerUp");
                     addScore?.Invoke(300);
@@ -209,4 +210,3 @@ namespace MonogameTest.Managers
         }
     }
 }
-
