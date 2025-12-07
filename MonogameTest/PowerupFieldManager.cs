@@ -5,19 +5,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonogameTest.Managers
 {
+    /// <summary>
+    /// Handles all active powerups in the level: spawn, update, collision, and draw.
+    /// </summary>
     public class PowerupFieldManager
     {
-        private readonly List<PowerupInstance> _powerups = new List<PowerupInstance>();
+        private readonly List<PowerupInstance> _powerups = new();
 
         private Texture2D _powerupSheet;
         private SpriteBatch _spriteBatch;
 
         public PowerupFieldManager() { }
 
+        // =========================================================
+        // LOAD / SETUP
+        // =========================================================
+
         public void LoadContent(ContentManager content, GraphicsDevice graphics, SpriteBatch spriteBatch)
         {
             _spriteBatch = spriteBatch;
-
         }
 
         /// Allows Game1 to provide the shared powerup sheet.
@@ -26,14 +32,23 @@ namespace MonogameTest.Managers
             _powerupSheet = sheet;
         }
 
+        // =========================================================
+        // SPAWN
+        // =========================================================
+
         /// Spawns a new powerup at a world position.
         public void Spawn(PowerupType type, Vector2 position)
         {
-            if (_powerupSheet == null) return;
+            if (_powerupSheet == null)
+                return;
 
             var p = PowerupFactory.Create(type, _powerupSheet, position);
             _powerups.Add(p);
         }
+
+        // =========================================================
+        // UPDATE + COLLISION
+        // =========================================================
 
         /// Updates all powerups and returns the one Mario picked up, if any.
         public PowerupInstance Update(GameTime gameTime, StaticSprite mario)
@@ -51,20 +66,27 @@ namespace MonogameTest.Managers
                 }
             }
 
-            // Cleanup dead powerups
+            // Cleanup dead powerups AFTER iteration
             _powerups.RemoveAll(p => !p.IsAlive);
 
             return pickedUp;
         }
 
-        /// Draw all active powerups.
+        // =========================================================
+        // DRAW
+        // =========================================================
+
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (var p in _powerups)
                 p.Draw(spriteBatch);
         }
 
-        /// Allows Game1 to see the list if needed.
-        public IReadOnlyList<PowerupInstance> GetPowerups() => _powerups;
+        // =========================================================
+        // DEBUG / ACCESS
+        // =========================================================
+
+        public IReadOnlyList<PowerupInstance> GetPowerups()
+            => _powerups;
     }
 }

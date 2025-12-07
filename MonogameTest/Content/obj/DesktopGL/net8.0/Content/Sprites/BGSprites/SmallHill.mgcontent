@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <SourceFile>C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/Sprites/BGSprites/SmallHill.png</SourceFile>
-  <SourceTime>2025-11-09T14:53:28.9645775-05:00</SourceTime>
-  <DestFile>C:/Users/olson/Desktop/3902_Mario_Game-test/MonogameTest/Content/bin/DesktopGL/Content/Sprites/BGSprites/SmallHill.xnb</DestFile>
-  <DestTime>2025-11-16T23:52:32.1225497-05:00</DestTime>
+  <SourceFile>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/Sprites/BGSprites/SmallHill.png</SourceFile>
+  <SourceTime>2025-11-17T20:31:08.8037649-05:00</SourceTime>
+  <DestFile>C:/Users/krist/Downloads/3902_Mario_Game/MonogameTest/Content/bin/DesktopGL/Content/Sprites/BGSprites/SmallHill.xnb</DestFile>
+  <DestTime>2025-12-07T10:17:12.3851294-05:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2025-06-02T06:31:02-04:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

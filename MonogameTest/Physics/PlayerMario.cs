@@ -1,114 +1,103 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-namespace MonogameTest;
-public class PlayerMario
+
+namespace MonogameTest
 {
-    public Physics Physics;
-    public AnimationPlayer animPlayer;
-    public PlayerPhysics PhysicsP;
-
-    public Animation animIdle;
-    public Animation animRun;
-    public Animation animJump;
-
-    public InputController Input;
-    public PlayerState currState;
-
-    public bool isFacingRight = true;
-
-    // private float moveAcceleration = 1000f;
-    // private float maxMoveSpeed = 400f;
-    // private float groundFriction = 800f;
-    // private float airFriction = 100f;
-    // private float jumpStrength = -300f;
-
-    private float scale = 1f;
-
-    public bool FacingRight = true;
-    public SoundManager SM;
-    public PlayerMario()
+    public class PlayerMario
     {
-        Physics = new Physics();
-        Physics.position = new Vector2(-100, 100);
-        PhysicsP = new PlayerPhysics();
-        animPlayer = new AnimationPlayer();
-        Input = new InputController();
-    }
+        public Physics Physics;
+        public AnimationPlayer animPlayer;
+        public PlayerPhysics PhysicsP;
 
-    public void LoadContent(ContentManager content, SoundManager soundManager, GraphicsDevice graphicsDevice)
-    {
-        SM = soundManager;
-        animIdle = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"),30,16,1, 0.15f, 8);
-        animRun  = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"), 30,16,3,0.10f,9);
-        animJump = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"),30,16,1,0.20f,13);
+        public Animation animIdle;
+        public Animation animRun;
+        public Animation animJump;
 
-        ChangeState(new IdleState(this));
-    }
+        public PlayerState currState;
+        public bool FacingRight = true;
+        public SoundManager SM;
+        public KeyboardController Input;
 
-    public void ChangeState(PlayerState newState)
-    {
-        currState?.Exit();
-        currState = newState;
-        currState.Enter();
-    }
+        private float scale = 1f;
 
-    public void Update(GameTime gameTime, Rectangle platformRect)
-    {
-        float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-        Input.Update();
-        int moveDir = Input.GetMoveDirection();   // -1, 0, or +1
+        public bool VictoryLock { get; private set; } = false;
 
-        if (moveDir != 0)
+        public PlayerMario()
         {
-            FacingRight = moveDir > 0;
-        }
-        PhysicsP.ApplyHorizontalInput(moveDir, dt);
-        Physics.velocity.X = PhysicsP.velocity.X;;
-
-        if (Input.jumpPressed && Physics.isGrounded)
-        {
-            Physics.velocity.Y = PhysicsP.jumpStrength;
-            Physics.isGrounded = false;
-            ChangeState(new JumpState(this));
-        }
-        // Physics update
-        Physics.Update(gameTime);
-        // PLATFORM COLLISION
-        Rectangle rect = new Rectangle(
-            (int)Physics.position.X,
-            (int)Physics.position.Y,
-            (int)(animPlayer.CurrentAnimation.FWidth * scale),
-            (int)(animPlayer.CurrentAnimation.FHeight * scale)
-        );
-
-        if (rect.Intersects(platformRect) && Physics.velocity.Y >= 0)
-        {
-            Physics.position.Y = platformRect.Top - rect.Height;
-            Physics.velocity.Y = 0;
-            Physics.isGrounded = true;
+            Physics = new Physics();
+            Physics.position = new Vector2(-100, 100);
+            PhysicsP = new PlayerPhysics();
+            animPlayer = new AnimationPlayer();
+            Input = new KeyboardController();
         }
 
-        // Update state machine
-        currState.Update(gameTime);
+        public void LoadContent(ContentManager content, SoundManager soundManager, GraphicsDevice graphicsDevice)
+        {
+            SM = soundManager;
 
-        // Update facing direction
-        if (Physics.velocity.X > 0) FacingRight = true;
-        if (Physics.velocity.X < 0) FacingRight = false;
+            animIdle = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"), 30, 16, 1, 0.15f, 8);
+            animRun  = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"), 30, 16, 3, 0.10f, 9);
+            animJump = new Animation(Texture2D.FromFile(graphicsDevice, "small-mario-final.png"), 30, 16, 1, 0.20f, 13);
 
-        // Update animation
-        animPlayer.Update(gameTime);
+            ChangeState(new IdleState(this));
+        }
+
+        public void LockForVictory()
+        {
+            VictoryLock = true;
+            Physics.velocity = Vector2.Zero;
+            PhysicsP.velocity = Vector2.Zero;
+        }
+
+        public void ForceWalkRight(float dt)
+        {
+            PhysicsP.ApplyHorizontalInput(1, dt);
+            Physics.velocity.X = PhysicsP.velocity.X;
+        }
+
+        public void ChangeState(PlayerState newState)
+        {
+            currState?.Exit();
+            currState = newState;
+            currState.Enter();
+        }
+
+        public void Update(GameTime gameTime, Rectangle platformRect)
+        {
+            float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            if (!VictoryLock)
+            {
+                Input.Update();
+                int moveDir = Input.GetMoveDirection();
+
+                PhysicsP.ApplyHorizontalInput(moveDir, dt);
+                Physics.velocity.X = PhysicsP.velocity.X;
+
+                if (Input.jumpPressed && Physics.isGrounded)
+                {
+                    Physics.velocity.Y = PhysicsP.jumpStrength;
+                    Physics.isGrounded = false;
+                    ChangeState(new JumpState(this));
+                }
+            }
+
+            Physics.Update(gameTime);
+
+            currState.Update(gameTime);
+            animPlayer.Update(gameTime);
+        }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            animPlayer.Draw(
+                spriteBatch,
+                Physics.position,
+                FacingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
+                scale
+            );
+        }
     }
-
-    public void Draw(SpriteBatch spriteBatch)
-    {
-        animPlayer.Draw(
-            spriteBatch,
-            Physics.position,
-            FacingRight ? SpriteEffects.None : SpriteEffects.FlipHorizontally,
-            scale
-        );
-    }
-} 
+}

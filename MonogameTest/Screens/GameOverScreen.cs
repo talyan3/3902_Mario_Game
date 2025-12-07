@@ -23,9 +23,6 @@ namespace MonogameTest.Screens
             _font = font;
             _hud = new HUDScreen(font, coin, manager);
 
-            // Play Game Over music
-            SoundManager.Instance.StopSong();
-            //SoundManager.Instance.PlaySong("gameOver2", loop: false);
         }
 
         public override void Update(GameTime gameTime)
