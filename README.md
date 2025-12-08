@@ -1,14 +1,20 @@
 # 3902_Mario_Game
 
 ## Team 2 - Names
-  <img width="15" height="15" alt="image" src="https://github.com/user-attachments/assets/9406187d-3e0f-4d97-8cd9-e84973c44aef" /> Anika
-  <img width="15" height="15" alt="image" src="https://github.com/user-attachments/assets/0b4712a2-c99b-4552-bed5-4a516721c8a3" /> Donte
-  <img width="15" height="15" alt="image" src="https://github.com/user-attachments/assets/a0007ea9-ba73-4d35-b396-f3a31665dc3e" /> Jack
-  <img width="15" height="15" alt="image" src="https://github.com/user-attachments/assets/0e378ba3-ab66-4afb-988e-0ca93253dec6" /> Jhanavi
-  <img width="15" height="15" alt="image" src="https://github.com/user-attachments/assets/6d4955bd-01d0-40f5-9f15-5ef74eeed1b7" /> Krista
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" />
+ Anika
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/0a041384-c04f-46a9-ae2b-26a327774635" />
+ Donte
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/8b1cd855-0869-42fe-b28d-0f7b6d94a4b8" />
+Jack
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/e2e426f4-b72e-42a1-ba57-e86a51ba4980" />
+ Jhanavi
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/21ba2075-0edf-4eed-b778-049db8690e23" />
+ Krista
 
   
 
+<img width="512" height="512" alt="image" src="" />
 
   We are using a command manager and interfaces to create more seamless and quality code. 
 
