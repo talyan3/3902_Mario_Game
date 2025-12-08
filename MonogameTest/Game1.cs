@@ -206,6 +206,7 @@ namespace MonogameTest
 
             _input.Update();
 
+            _marioState.Update(gameTime);
             _marioState.CurrentMario.Update(gameTime);
             _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
 

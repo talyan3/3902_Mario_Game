@@ -2,7 +2,9 @@ bin/
 obj/
 Content/bin/
 Content/obj/
+*.dll
+*.exe
+*.pdb
 *.mgcontent
-*.mgstats
-*.cache
-*.xnb
+*.ogg
+*.wav
