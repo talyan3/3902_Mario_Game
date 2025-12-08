@@ -68,6 +68,8 @@ namespace MonogameTest
         private int ViewWidth => C.ViewWidth;
         private int Scale => C.Scale;
         private int ScaleMod => C.ScaleMod;
+        public static bool DebugGodMode = false;
+
 
         public Game1()
         {
@@ -205,6 +207,19 @@ namespace MonogameTest
             }
 
             _input.Update();
+
+            // DEBUG GOD MODE TOGGLE
+            // DEBUG GOD MODE (HOLD D)
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+                DebugGodMode = true;
+            else
+                DebugGodMode = false;
+
+            if (Keyboard.GetState().IsKeyUp(Keys.D))
+            {
+                // prevents permanent hold lock
+            }
+
 
             _marioState.Update(gameTime);
             _marioState.CurrentMario.Update(gameTime);

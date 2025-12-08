@@ -128,6 +128,9 @@ namespace MonogameTest.Managers
         // =========================================================
         private void HandleEnemyCollision(StaticSprite activeMario, CameraManager camera)
         {
+            if (Game1.DebugGodMode)
+            return;
+
             var enemies = enemyManager.GetLiveEnemies();
             if (_isHurt) return;
 
