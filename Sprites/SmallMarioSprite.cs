@@ -37,7 +37,7 @@ namespace MonogameTest
 
         // physics
         public float verticalVelocity = 0f;
-        const float gravity = 900f;        // pixels/sec² 
+        public float gravity = 900f;        // pixels/sec² 
         const float jumpStrength = -350f;  // upward
 
         public override Rectangle Bounds
@@ -135,6 +135,7 @@ namespace MonogameTest
                 }
 
                 // ---- GRAVITY ----
+                //if (_isJumping)
                 verticalVelocity += gravity * dt;
                 Position = new Vector2(Position.X, Position.Y + verticalVelocity * dt);
 
@@ -148,8 +149,8 @@ namespace MonogameTest
                 // ---- LANDING ----
                 if (Position.Y >= _groundPos.Y)
                 {
-                    Position = new Vector2(Position.X, _groundPos.Y);
-                    verticalVelocity = 0; // THIS IS WHY MARIO DOESNT FALL INTO PITS!!!
+                    //Position = new Vector2(Position.X, _groundPos.Y);
+                    //verticalVelocity = 0f; // THIS IS WHY MARIO DOESNT FALL INTO PITS!!!
                     _isJumping = false;
                 }
 

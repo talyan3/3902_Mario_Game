@@ -38,7 +38,7 @@ namespace MonogameTest
             SoundManager.Instance.PlayEffect("powerUp");
 
             Vector2 pos = smallMario.Position;
-            pos.Y = tileSize * 13;
+            pos.Y = smallMario.Position.Y;
 
             bigMario.Position = pos;
             currentMario = bigMario;

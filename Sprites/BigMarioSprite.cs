@@ -137,8 +137,8 @@ namespace MonogameTest
                 // ---- LANDING ----
                 if (Position.Y >= _groundPos.Y)
                 {
-                    Position = new Vector2(Position.X, _groundPos.Y);
-                    verticalVelocity = 0;
+                    //Position = new Vector2(Position.X, _groundPos.Y);
+                    //verticalVelocity = 0;
                     _isJumping = false;
                 }
 

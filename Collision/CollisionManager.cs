@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using MonogameTest.Sounds;
 using MonogameTest.Screens;
 using MonogameTest.Managers;
+using System.Threading;
 
 namespace MonogameTest.Managers
 {
@@ -77,6 +78,7 @@ namespace MonogameTest.Managers
             HandleTileCollision(activeMario);
             HandleEnemyCollision(activeMario, camera);
             HandlePowerups(activeMario, gameTime);
+            HandleVoid(activeMario,camera);
 
             flagpole.Update(gameTime);
         }
@@ -123,15 +125,25 @@ namespace MonogameTest.Managers
                     sound.PlayEffect("break");
                 }
             }
-            if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair") &&
+            if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "Ground") &&
                 res.Side == typeCollision.Top)
             {
+                int tileTop = hitTile.Bounds.Top;
+
+                marioState.smallMario.Position = new Vector2(marioState.smallMario.Position.X, tileTop + 1);
+                marioState.bigMario.Position = new Vector2(marioState.bigMario.Position.X, tileTop + 1);
+
                 marioState.smallMario.verticalVelocity = 0f;
                 marioState.smallMario._isJumping = false;
-                //smallMario.gravity = 0;
+                //marioState.smallMario.gravity = 0f;
                 marioState.bigMario.verticalVelocity = 0f;
                 marioState.bigMario._isJumping = false;
-                //bigMario.gravity = 0;
+                //marioState.bigMario.gravity = 0;
+            }
+            if(hitTile.TileName != "Air" && marioState.smallMario._isJumping == false && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
+            {
+                marioState.smallMario.verticalVelocity = -15f;
+                marioState.bigMario.verticalVelocity = -15f;
             }
         }
 
@@ -178,7 +190,25 @@ namespace MonogameTest.Managers
                     });
             }
         }
+        private void HandleVoid(StaticSprite activeMario, CameraManager camera)
+        {
+            if (marioState.smallMario.Position.Y > tileSize * 18 || marioState.bigMario.Position.Y > tileSize * 18)
+            {
+                marioState.ForceSmall(spawnPoint);
 
+                enemyManager.Reset();
+                camera.Reset(spawnPoint);
+                camera.LookAt(spawnPoint);
+
+                screenManager.LoseLife();
+
+                if (screenManager.CurrentState != GameState.GameOver)
+                    screenManager.ChangeState(GameState.LevelIntro);
+
+                usedQuestionBlocks.Clear();
+                resetScoreAndCoins?.Invoke();
+            }
+        }
 
         // =========================================================
         // POWERUPS
