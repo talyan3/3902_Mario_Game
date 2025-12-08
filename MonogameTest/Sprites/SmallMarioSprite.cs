@@ -39,6 +39,8 @@ namespace MonogameTest
         public float verticalVelocity = 0f;
         const float gravity = 900f;        // pixels/sec² 
         const float jumpStrength = -350f;  // upward
+        public bool ForceAutoWalkRight = false;
+
 
 
         public override Rectangle Bounds
@@ -116,8 +118,9 @@ namespace MonogameTest
                     AdvanceRun(dt);
                 }
                 // === MOVE RIGHT ===
-                else if (kb.IsKeyDown(Keys.Right))
+                else if (kb.IsKeyDown(Keys.Right) || ForceAutoWalkRight)
                 {
+                    if (ForceAutoWalkRight) _moveSpeed = 20f;
                     Position = new Vector2(Position.X + speed * dt, Position.Y);
                     moving = true;
                     _effects = SpriteEffects.FlipHorizontally;

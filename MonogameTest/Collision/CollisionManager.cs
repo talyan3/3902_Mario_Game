@@ -66,6 +66,13 @@ namespace MonogameTest.Managers
         // =========================================================
         public void Update(GameTime gameTime, StaticSprite activeMario, CameraManager camera)
         {
+
+            if (Game1.InputLocked)
+            {
+                flagpole.Update(gameTime);  // allow victory sequence
+                return;
+            }
+
             // === HURT INVINCIBILITY TIMER ===
             if (_isHurt)
             {

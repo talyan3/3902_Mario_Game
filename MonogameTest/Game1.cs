@@ -23,6 +23,8 @@ namespace MonogameTest
         private KeyboardController _input;
         private ScreenManager _screenManager;
         private SoundManager _sound;
+        public static bool InputLocked = false;
+
 
         // ===========================
         // WORLD / LEVEL
@@ -206,9 +208,10 @@ namespace MonogameTest
                 case GameState.GameOver: _gameOverScreen.Update(gameTime); return;
             }
 
-            _input.Update();
+            if (!InputLocked)
+                _input.Update();
 
-            // DEBUG GOD MODE TOGGLE
+
             // DEBUG GOD MODE (HOLD D)
             if (Keyboard.GetState().IsKeyDown(Keys.D))
                 DebugGodMode = true;

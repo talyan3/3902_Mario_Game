@@ -33,6 +33,10 @@ namespace MonogameTest
         private float _soundDelayTimer = 0f;
         private const float SOUND_DELAY = 2.8f;
 
+        private float _walkDelayTimer = 0f;
+        private const float WALK_DELAY = 1.2f; 
+
+
         private float _victoryTimer = 0f;
         private const float VICTORY_DELAY = 1.5f;
 
@@ -87,6 +91,9 @@ namespace MonogameTest
                 _hasWon = true;
                 _isSliding = true;
 
+                Game1.DebugGodMode = true;
+                Game1.InputLocked = true;
+
                 _screenManager.FreezeTime();
 
                 SoundManager.Instance.StopSong();
@@ -102,7 +109,7 @@ namespace MonogameTest
                 _screenManager.AddScore(heightScore);
 
                 mario.Position = new Vector2(
-                    _poleRect.Right - mario.Bounds.Width,
+                    _poleRect.Right + 4,
                     mario.Position.Y
                 );
             }
@@ -118,6 +125,7 @@ namespace MonogameTest
                     marioPos.Y = _poleRect.Bottom - mario.Bounds.Height;
                     _isSliding = false;
                     _soundDelayTimer = SOUND_DELAY;
+                    _walkDelayTimer = WALK_DELAY; 
                     SoundManager.Instance.PlaySong("levelComplete", loop: false);
                 }
 
@@ -127,11 +135,21 @@ namespace MonogameTest
             }
 
             //  WAIT FOR FULL SOUND
-            if (_hasWon && !_isSliding && !_isWalking && _soundDelayTimer > 0f)
+            if (_hasWon && !_isSliding && !_isWalking)
             {
-                _soundDelayTimer -= dt;
-                return;
+                if (_soundDelayTimer > 0f)
+                {
+                    _soundDelayTimer -= dt;
+                    return;
+                }
+
+                if (_walkDelayTimer > 0f)   
+                {
+                    _walkDelayTimer -= dt;
+                    return;
+                }
             }
+
 
             //  AUTO WALK TO CASTLE
             if (_hasWon && !_isSliding && !_isWalking)
@@ -141,17 +159,34 @@ namespace MonogameTest
 
             if (_isWalking)
             {
-                Vector2 marioPos = mario.Position;
-                marioPos.X += _walkSpeed * dt;
-                mario.Position = marioPos;
+                // FORCE AUTO WALK MODE
+                if (mario is SmallMarioSprite sm)
+                    sm.ForceAutoWalkRight = true;
 
-                if (marioPos.X >= _poleRect.Right + 120)
+                if (mario is BigMarioSprite bm)
+                    bm.ForceAutoWalkRight = true;
+
+                mario.Update(gameTime);
+
+                _camera.LookAt(mario.Position);
+
+                if (mario.Position.X >= _poleRect.Right + 60)
                 {
+                    // turn off auto walk
+                    if (mario is SmallMarioSprite sm2)
+                        sm2.ForceAutoWalkRight = false;
+
+                    if (mario is BigMarioSprite bm2)
+                        bm2.ForceAutoWalkRight = false;
+
                     _isWalking = false;
-                    _victoryTimer = VICTORY_DELAY;
+                    _screenManager.ResetLevel();
+                    _screenManager.ChangeState(GameState.Title);
                 }
+
                 return;
             }
+
 
             // END SCENE
             if (_hasWon)
