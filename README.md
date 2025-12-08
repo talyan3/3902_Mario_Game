@@ -1,16 +1,16 @@
 # 3902_Mario_Game
 
 ## Team 2 - Names
-  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" />
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> <br>
  Anika
  
-  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/0a041384-c04f-46a9-ae2b-26a327774635" />
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/0a041384-c04f-46a9-ae2b-26a327774635" /> <br>
  Donte
-  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/8b1cd855-0869-42fe-b28d-0f7b6d94a4b8" />
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/8b1cd855-0869-42fe-b28d-0f7b6d94a4b8" /> <br>
 Jack
-  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/e2e426f4-b72e-42a1-ba57-e86a51ba4980" />
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/e2e426f4-b72e-42a1-ba57-e86a51ba4980" /> <br>
  Jhanavi
-  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/21ba2075-0edf-4eed-b778-049db8690e23" />
+  <img width="20" height="20" alt="image" src="https://github.com/user-attachments/assets/21ba2075-0edf-4eed-b778-049db8690e23" /> <br>
  Krista
 
 
