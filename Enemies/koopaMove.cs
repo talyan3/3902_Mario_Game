@@ -2,90 +2,158 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonogameTest;
-
-class moveKoop : ISprite
+namespace MonogameTest
 {
-   private SpriteBatch _spriteBatch;
-    private Texture2D sprite;
-
-    Rectangle sRect;
-    Rectangle dRect;
-    float elasped;
-    float delay = 150f;
-    private const float Speed = 30f;
-    int frames;
-    int walkLeft = 1;
-    int walkRight = 1;
-    bool walkingR = true;
-    public Vector2 Velocity { get; set; } = Vector2.Zero;
-    public bool IsAlive { get; set; } = true;
-    public double direction = -1; // -1 = left, +1 = right
-    float deltaTime;
-    int flag = 1;
-
-    public moveKoop(Texture2D texture, SpriteBatch spriteBatch)
+    class moveKoop : ISprite
     {
-        sprite = texture;
-        _spriteBatch = spriteBatch;
+        private readonly SpriteBatch _spriteBatch;
+        private readonly Texture2D sprite;
 
-        if (dRect.Width == 0 || dRect.Height == 0)
-            dRect = new Rectangle(0, 0, 32, 24);
-        if (sRect.Width == 0 || sRect.Height == 0)
-            sRect = new Rectangle(0, 0, 30, 24);
-    }
+        private Rectangle sRect;
+        private Rectangle dRect;
 
-    public Vector2 Position
-    {
-        get => new Vector2(dRect.X, dRect.Y);
-        set => dRect = new Rectangle((int)value.X, (int)value.Y, dRect.Width == 0 ? 32 : dRect.Width, dRect.Height == 0 ? 32 : dRect.Height);
-    }
-    public Rectangle Bounds => IsAlive ? dRect : Rectangle.Empty;   
-    public Rectangle Region => sRect;
-    public Vector2 Scale => Vector2.One;
-    public void Draw(SpriteBatch spriteBatch, Vector2 position)
-    {
-        if (!IsAlive) return;
-        _spriteBatch.Draw(sprite, dRect, sRect, Color.White);//
-    }
-    
-    // Public method to be called by the collision handler in Game1.Update
-    public void ReverseDirection()
-    {
-        direction *= -2;
-        flag *= -1;
-    }
+        private float elapsed;
+        private const float delay = 150f;
 
-    public void Update(GameTime gameTime)
-    {
-        if (!IsAlive) return;
+        private const float WalkSpeed = 30f;
+        private const float ShellSpeed = 160f;
 
-        deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+        private int frames;
+        private float deltaTime;
 
-        // 1. Apply Movement: Goomba moves continuously based on its current 'direction'
-        Position += new Vector2(Math.Clamp((float)direction, -2f, 2f) * Speed * deltaTime, 0);
+        public bool IsAlive { get; set; } = true;
 
-        // NOTE: Direction is now only reversed externally when collision with a tile occurs.
+        // -1 = left, +1 = right
+        public double direction = -1;
 
-        // 2. Animation Logic (Time-delayed)
-        elasped += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-        if (elasped >= delay)
+        // ============================
+        // SPRITE FRAME CONSTANTS
+        // ============================
+        private const int WALK_FRAME_1 = 2;  // normal ground koopa
+        private const int WALK_FRAME_2 = 3;
+        private const int SHELL_FRAME  = 9;  //  correct NON-winged shell frame
+
+        // ============================
+        // KOOPA STATE MACHINE
+        // ============================
+        private enum KoopaState
         {
-            if (flag == 1)
-            {
-                // Alternate between animation frames (2 and 3) (moving left)
-                frames = ((frames + 1) % 2) + 2;
-            }
-            if (flag == -1)
-            {
-                // Alternate between animation frames (4 and 5) (moving right)
-                frames = ((frames + 1) % 2) + 4;
-            }
-            
-            elasped = 0f;
+            Walking,
+            ShellIdle,
+            ShellMoving
+        }
 
-            // Update the source rectangle based on the current animation frame
-            sRect = new Rectangle(frames * 30, 0, 30, 24);
+        private KoopaState state = KoopaState.Walking;
+
+        // ============================
+        // CONSTRUCTOR
+        // ============================
+        public moveKoop(Texture2D texture, SpriteBatch spriteBatch)
+        {
+            sprite = texture;
+            _spriteBatch = spriteBatch;
+
+            dRect = new Rectangle(0, 0, 32, 24);
+
+            frames = WALK_FRAME_1;
+            sRect = new Rectangle(frames * 30, 0, 30, 24); //  correct starting sprite
+        }
+
+        // ============================
+        // PROPERTIES
+        // ============================
+        public Vector2 Position
+        {
+            get => new Vector2(dRect.X, dRect.Y);
+            set => dRect = new Rectangle((int)value.X, (int)value.Y, dRect.Width, dRect.Height);
+        }
+
+        public Rectangle Bounds => IsAlive ? dRect : Rectangle.Empty;
+        public Rectangle Region => sRect;
+        public Vector2 Scale => Vector2.One;
+
+        // ============================
+        // STATE QUERIES
+        // ============================
+        public bool IsShell => state != KoopaState.Walking;
+        public bool IsShellIdle => state == KoopaState.ShellIdle;
+        public bool IsShellMoving => state == KoopaState.ShellMoving;
+        public bool IsWalking => state == KoopaState.Walking;
+
+        // ============================
+        // STATE TRANSITIONS
+        // ============================
+        public void EnterShell()
+        {
+            state = KoopaState.ShellIdle;
+            direction = 0;
+
+            // FORCE correct shell sprite
+            sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
+        }
+
+        public void Kick(int dir)
+        {
+            state = KoopaState.ShellMoving;
+            direction = Math.Sign(dir);
+            if (direction == 0) direction = 1;
+        }
+
+        public void KickShell(Vector2 marioPos)
+        {
+            int dir = marioPos.X < Position.X ? 1 : -1;
+            Kick(dir);
+        }
+
+        public void ReverseDirection()
+        {
+            direction *= -1;
+        }
+
+        // ============================
+        // UPDATE
+        // ============================
+        public void Update(GameTime gameTime)
+        {
+            if (!IsAlive) return;
+
+            deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+            switch (state)
+            {
+                case KoopaState.Walking:
+                    Position += new Vector2((float)direction * WalkSpeed * deltaTime, 0);
+
+                    elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                    if (elapsed >= delay)
+                    {
+                        frames = (frames == WALK_FRAME_1) ? WALK_FRAME_2 : WALK_FRAME_1;
+                        elapsed = 0f;
+                        sRect = new Rectangle(frames * 30, 0, 30, 24);
+                    }
+                    break;
+
+                case KoopaState.ShellMoving:
+                    Position += new Vector2((float)direction * ShellSpeed * deltaTime, 0);
+
+                    // LOCK shell sprite while moving
+                    sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
+                    break;
+
+                case KoopaState.ShellIdle:
+                    // LOCK shell sprite while idle
+                    sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
+                    break;
+            }
+        }
+
+        // ============================
+        // DRAW
+        // ============================
+        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        {
+            if (!IsAlive) return;
+            _spriteBatch.Draw(sprite, dRect, sRect, Color.White);
         }
     }
 }

@@ -23,6 +23,7 @@ namespace MonogameTest
         private KeyboardController _input;
         private ScreenManager _screenManager;
         private SoundManager _sound;
+        public static bool InputLocked = false;
 
         // ===========================
         // WORLD / LEVEL
@@ -68,6 +69,7 @@ namespace MonogameTest
         private int ViewWidth => C.ViewWidth;
         private int Scale => C.Scale;
         private int ScaleMod => C.ScaleMod;
+        public static bool DebugGodMode = false;
 
         public Game1()
         {
@@ -202,9 +204,24 @@ namespace MonogameTest
                 case GameState.GameOver: _gameOverScreen.Update(gameTime); return;
             }
 
-            _input.Update();
+            if (!InputLocked)
+            {
+               _input.Update(); 
+            }
+
             if (PauseManager.HandlePauseInput(Keyboard.GetState()))
                 return;
+
+            // DEBUG GOD MODE (HOLD D)
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+                DebugGodMode = true;
+            else
+                DebugGodMode = false;
+
+            if (Keyboard.GetState().IsKeyUp(Keys.D))
+            {
+                // prevents permanent hold lock
+            }
 
             ResetManager.HandleSoftResetInput(
                 Keyboard.GetState(),

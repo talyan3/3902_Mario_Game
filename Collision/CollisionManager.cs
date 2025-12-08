@@ -67,6 +67,12 @@ namespace MonogameTest.Managers
         // =========================================================
         public void Update(GameTime gameTime, StaticSprite activeMario, CameraManager camera)
         {
+            if (Game1.InputLocked)
+            {
+                flagpole.Update(gameTime);  // allow victory sequence
+                HandleTileCollision(activeMario);
+                return;
+            }
             // === HURT INVINCIBILITY TIMER ===
             if (_isHurt)
             {
@@ -125,7 +131,7 @@ namespace MonogameTest.Managers
                     sound.PlayEffect("break");
                 }
             }
-            if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "Ground") &&
+            if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "Ground" || hitTile.TileName == "DarkGround" || hitTile.TileName == "DarkBrick") &&
                 res.Side == typeCollision.Top)
             {
                 int tileTop = hitTile.Bounds.Top;
@@ -140,10 +146,15 @@ namespace MonogameTest.Managers
                 marioState.bigMario._isJumping = false;
                 //marioState.bigMario.gravity = 0;
             }
-            if(hitTile.TileName != "Air" && marioState.smallMario._isJumping == false && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
+            if ((hitTile.TileName == "Ground" || hitTile.TileName == "PipeTopLeft" || hitTile.TileName == "PipeTopRight" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "DarkGround") && (marioState.smallMario._isJumping == false || marioState.bigMario._isJumping == false) && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
             {
                 marioState.smallMario.verticalVelocity = -15f;
                 marioState.bigMario.verticalVelocity = -15f;
+            }
+            if ((hitTile.TileName == "Ground" || hitTile.TileName == "PipeTopLeft" || hitTile.TileName == "PipeTopRight" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "DarkGround") && (marioState.smallMario._isJumping == true || marioState.bigMario._isJumping == true) && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
+            {
+                marioState.smallMario._isJumping = false;
+                marioState.bigMario._isJumping = false;
             }
         }
 
@@ -152,6 +163,8 @@ namespace MonogameTest.Managers
         // =========================================================
         private void HandleEnemyCollision(StaticSprite activeMario, CameraManager camera)
         {
+            if (Game1.DebugGodMode)
+                return;
             var enemies = enemyManager.GetLiveEnemies();
             if (_isHurt) return;
 

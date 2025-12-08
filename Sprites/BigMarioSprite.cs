@@ -12,7 +12,7 @@ namespace MonogameTest
         public Vector2 Scale { get; set; } = new Vector2(1f, 1f);
 
         private float _moveSpeed = 100f;
-        private float _sprintMultiplier = 1.35f;
+        private float _sprintMultiplier = 1.4f;
         private SpriteEffects _effects = SpriteEffects.None;
 
         private const int FrameW = 16;
@@ -39,7 +39,7 @@ namespace MonogameTest
         public float verticalVelocity = 0f;
         private float gravity = 900f;
         private float jumpStrength = -350f;
-
+        public bool ForceAutoWalkRight = false;
 
         public override Rectangle Bounds
         {
@@ -113,6 +113,7 @@ namespace MonogameTest
                 // === MOVE RIGHT ===
                 else if (kb.IsKeyDown(Keys.Right))
                 {
+                    if (ForceAutoWalkRight) _moveSpeed = 20f;
                     Position = new Vector2(Position.X + speed * dt, Position.Y);
                     moving = true;
                     _effects = SpriteEffects.FlipHorizontally;
@@ -139,7 +140,7 @@ namespace MonogameTest
                 {
                     //Position = new Vector2(Position.X, _groundPos.Y);
                     //verticalVelocity = 0;
-                    _isJumping = false;
+                    //_isJumping = false;
                 }
 
                 // ---- ANIMATIONS ----

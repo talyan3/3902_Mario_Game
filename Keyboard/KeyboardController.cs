@@ -20,6 +20,8 @@ public class KeyboardController : IController
     public bool jumpPressed { get; private set; }
     public bool jumpHeld { get; private set; }
     public bool crouch { get; private set; }
+    public bool InputLocked { get; private set; } = false;
+
 
     private KeyboardState prevState;
 
@@ -41,6 +43,7 @@ public class KeyboardController : IController
         return false;
     }
 
+
     public bool removeMapping(KeyCombo key)
     {
         if (keyMap.ContainsKey(key))
@@ -61,6 +64,16 @@ public class KeyboardController : IController
     // -----------------------------
     public void Update()
     {
+        if (InputLocked)
+        {
+            moveLeft = false;
+            moveRight = false;
+            crouch = false;
+            jumpHeld = false;
+            jumpPressed = false;
+            return;
+        }
+
         KeyboardState state = Keyboard.GetState();
 
         moveLeft  = state.IsKeyDown(Keys.Left)  || state.IsKeyDown(Keys.F);
@@ -75,6 +88,22 @@ public class KeyboardController : IController
 
         prevState = state;
     }
+
+    public void LockInput()
+    {
+        InputLocked = true;
+        moveLeft = false;
+        moveRight = false;
+        jumpHeld = false;
+        jumpPressed = false;
+        crouch = false;
+    }
+
+    public void UnlockInput()
+    {
+        InputLocked = false;
+    }
+
 
     public int GetMoveDirection()
     {

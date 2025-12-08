@@ -13,7 +13,7 @@ namespace MonogameTest
         public Vector2 Scale { get; set; } = new Vector2(1f, 1f);
 
         private float _moveSpeed = 100f;
-        private float _sprintMultiplier = 1.35f;
+        private float _sprintMultiplier = 1.4f;
         private SpriteEffects _effects = SpriteEffects.None;
 
         private const int FrameW = 16;
@@ -39,6 +39,7 @@ namespace MonogameTest
         public float verticalVelocity = 0f;
         public float gravity = 900f;        // pixels/sec² 
         const float jumpStrength = -350f;  // upward
+        public bool ForceAutoWalkRight = false;
 
         public override Rectangle Bounds
         {
@@ -108,8 +109,10 @@ namespace MonogameTest
 
                     // prevent going left past camera or level start
                     if (newX >= cameraLeftLimit && newX >= 0)
+                    {
                         Position = new Vector2(newX, Position.Y);
                         moving = true;
+                    }
 
                     _effects = SpriteEffects.None;
                     AdvanceRun(dt);
@@ -117,6 +120,7 @@ namespace MonogameTest
                 // === MOVE RIGHT ===
                 else if (kb.IsKeyDown(Keys.Right))
                 {
+                    if (ForceAutoWalkRight) _moveSpeed = 20f;
                     Position = new Vector2(Position.X + speed * dt, Position.Y);
                     moving = true;
                     _effects = SpriteEffects.FlipHorizontally;
@@ -139,6 +143,10 @@ namespace MonogameTest
                 verticalVelocity += gravity * dt;
                 Position = new Vector2(Position.X, Position.Y + verticalVelocity * dt);
 
+                if (verticalVelocity > 300f)
+                {
+                    verticalVelocity = 300f;
+                }
                 // === IDLE ===
                 //if (_isJumping)
                 //{
