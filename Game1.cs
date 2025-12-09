@@ -1,4 +1,3 @@
-﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -13,6 +12,8 @@ namespace MonogameTest
 {
     public class Game1 : Game
     {
+        private GameConfig C => ConfigLoader.Config;
+
         // ===========================
         // CORE ENGINE OBJECTS
         // ===========================
@@ -21,7 +22,6 @@ namespace MonogameTest
 
         private KeyboardController _input;
         private ScreenManager _screenManager;
-        private PauseScreen _pauseScreen;
         private SoundManager _sound;
 
         // ===========================
@@ -39,6 +39,9 @@ namespace MonogameTest
         private SmallMarioSprite _smallMario;
         private BigMarioSprite _bigMario;
         private MarioStateController _marioState;
+        private FireMarioSprite _fireMario;
+
+
 
         // ===========================
         // GAMEPLAY SYSTEMS
@@ -47,12 +50,15 @@ namespace MonogameTest
         private PowerupFieldManager _powerupManager;
         private CollisionManager _collisionManager;
 
+        private FireballManager _fireballs;
+
         // ===========================
         // UI / SCREENS
         // ===========================
         private SpriteFont _font;
         private Texture2D _coin;
         private HUDScreen _hud;
+        private Texture2D _fireballTexture;
 
         private TitleScreen _titleScreen;
         private LevelIntroScreen _introScreen;
@@ -61,17 +67,9 @@ namespace MonogameTest
 
         private Flagpole _flagpole;
 
-        public static bool InputLocked { get; set; }
-        public static bool DebugGodMode { get; set; }
-        public static bool ChristmasMode { get; set; }
-        private bool _cWasDown;
-        public static int ScreenWidth { get; private set; }
-        public static int ScreenHeight { get; private set; }
-
         // ===========================
         // CONFIG SHORTCUTS
         // ===========================
-        private GameConfig C => ConfigLoader.Config;
         private int TileSize => C.TileSize;
         private int ViewWidth => C.ViewWidth;
         private int Scale => C.Scale;
@@ -93,9 +91,6 @@ namespace MonogameTest
             _graphics.PreferredBackBufferWidth = ViewWidth * Scale;
             _graphics.PreferredBackBufferHeight = ScaleMod * Scale;
             _graphics.ApplyChanges();
-
-            ScreenWidth = _graphics.PreferredBackBufferWidth;
-            ScreenHeight = _graphics.PreferredBackBufferHeight;
 
             _input = new KeyboardController();
             _screenManager = new ScreenManager();
@@ -126,12 +121,27 @@ namespace MonogameTest
             // ---------- MARIO ----------
             _smallMario = new SmallMarioSprite(GraphicsDevice) { SoundManager = _sound };
             _bigMario = new BigMarioSprite(GraphicsDevice) { SoundManager = _sound };
+            _fireMario = new FireMarioSprite(GraphicsDevice);
 
             _spawnPoint = new Vector2(TileSize * 5, TileSize * 13);
             _smallMario.Position = _spawnPoint;
             _bigMario.Position = _spawnPoint;
+            _fireMario.Position = _spawnPoint;
 
-            _marioState = new MarioStateController(_smallMario, _bigMario, _smallMario, TileSize);
+        
+
+            _marioState = new MarioStateController(
+            _smallMario,
+            _bigMario,
+            _fireMario,
+            _smallMario,
+            TileSize
+            );
+
+            // -------- FIREBALL --------
+            _fireballTexture = Texture2D.FromFile(GraphicsDevice, "fireball.png");
+            _fireballs = new FireballManager();
+            _fireballs.Load(_fireballTexture);
 
             // ---------- MAP ----------
             using var fs = new FileStream("blocksV10.png", FileMode.Open);
@@ -147,15 +157,16 @@ namespace MonogameTest
             _powerupManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
             _powerupManager.SetPowerupSheet(powerupsSheet);
 
+        
             // ---------- ENEMIES ----------
             _enemyManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
 
             // ---------- FLAGPOLE ----------
-            var flagTexture = Texture2D.FromFile(GraphicsDevice, "flag.png");
+            var flagTex = Texture2D.FromFile(GraphicsDevice, "flag.png");
             var poleRect = new Rectangle(TileSize * 198, TileSize * 3, 5, 160);
             _flagpole = new Flagpole(
                 _spriteBatch,
-                flagTexture,
+                flagTex,
                 poleRect,
                 _smallMario,
                 _bigMario,
@@ -177,7 +188,7 @@ namespace MonogameTest
                 _sound,
                 _flagpole,
                 _spawnPoint,
-                C.TileSize,
+                TileSize,
                 points => _screenManager.AddScore(points),
                 () => _screenManager.AddCoin(),
                 () => _screenManager.ResetLevel()
@@ -192,8 +203,6 @@ namespace MonogameTest
             _introScreen = new LevelIntroScreen(this, _screenManager, _font, _coin);
             _timeUpScreen = new TimeUpScreen(this, _screenManager, _font, _coin);
             _gameOverScreen = new GameOverScreen(this, _screenManager, _font, _coin);
-
-            _pauseScreen = new PauseScreen(this, _screenManager, _font);
         }
 
         // =========================================================
@@ -201,15 +210,8 @@ namespace MonogameTest
         // =========================================================
         protected override void Update(GameTime gameTime)
         {
-            // Pause logic first
-            _pauseScreen.Update(gameTime);
-            if (_pauseScreen.IsPaused)
-                return;
-
-            var pad = GamePad.GetState(PlayerIndex.One);
-            var kb = Keyboard.GetState();
-
-            if (pad.Buttons.Back == ButtonState.Pressed || kb.IsKeyDown(Keys.Escape))
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
+                Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
             _screenManager.Update(gameTime);
@@ -222,49 +224,38 @@ namespace MonogameTest
                 case GameState.GameOver: _gameOverScreen.Update(gameTime); return;
             }
 
-            if (!InputLocked)
-            {
-               _input.Update(); 
-            }
+            _input.Update();
+            if (PauseManager.HandlePauseInput(Keyboard.GetState()))
+                return;
 
-            DebugGodMode = kb.IsKeyDown(Keys.D);
-
-            /*if (PauseManager.HandlePauseInput(Keyboard.GetState()))
-                return;*/
-
-            /*// DEBUG GOD MODE (HOLD D)
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                DebugGodMode = true;
-            else
-                DebugGodMode = false;
-
-            if (Keyboard.GetState().IsKeyUp(Keys.D))
-            {
-                // prevents permanent hold lock
-            }*/
-
-            /*ResetManager.HandleSoftResetInput(
+            ResetManager.HandleSoftResetInput(
                 Keyboard.GetState(),
                 _smallMario,
                 _bigMario,
                 _marioState.CurrentMario,
                 _spawnPoint,
                 _camera
-            );*/
+            );
 
-            //_marioState.CurrentMario.Update(gameTime);
-            if(!InputLocked)
+            _marioState.CurrentMario.Update(gameTime);
+
+/* Added*/
+            _marioState.Tick(gameTime);
+
+            var kb = Keyboard.GetState();
+            if (kb.IsKeyDown(Keys.Z))
             {
-               if (_marioState.CurrentMario == _smallMario)
+            if (_marioState.TryShoot())
                 {
-                    _smallMario.Update(gameTime, _camera.LeftEdge);
-                }
-                    if (_marioState.CurrentMario == _bigMario)
-                {
-                    _bigMario.Update(gameTime, _camera.LeftEdge);
-                } 
+                bool facingRight = true; 
+
+                 Vector2 fbStart = _marioState.CurrentMario.Position + new Vector2(0, -10);
+                _fireballs.Shoot(fbStart, facingRight);
+            }
             }
 
+            _fireballs.Update(gameTime, _mapTiles, _enemyManager.GetLiveEnemies());
+/*Added end*/
             _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
 
             _camera.LookAt(_marioState.CurrentMario.Position);
@@ -272,16 +263,6 @@ namespace MonogameTest
 
             if (Keyboard.GetState().IsKeyDown(Keys.M))
                 _sound.ToggleMute();
-            
-            // Christmas mode toggle
-            if (kb.IsKeyDown(Keys.C) && !_cWasDown)
-            {
-                ChristmasMode = !ChristmasMode;
-                SoundLoader.LoadAllSounds(this, _sound);
-                _sound.PlaySong("mainTheme");
-            }
-
-            _cWasDown = kb.IsKeyDown(Keys.C);
 
             base.Update(gameTime);
         }
@@ -312,14 +293,15 @@ namespace MonogameTest
 
             _marioState.CurrentMario.Draw(_spriteBatch, _marioState.CurrentMario.Position);
             _enemyManager.Draw(_spriteBatch);
+            
             _powerupManager.Draw(_spriteBatch);
             _flagpole.Draw();
 
+            _fireballs.Draw(_spriteBatch);
             _spriteBatch.End();
 
             _spriteBatch.Begin();
             _hud.Draw(_spriteBatch);
-            _pauseScreen.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);
