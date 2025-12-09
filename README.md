@@ -51,6 +51,3 @@ With the hoilday season, our team thought there would be no better way to end of
 
 ## Program Structure
 
-
-# Descriptions of known bugs
-
