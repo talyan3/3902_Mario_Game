@@ -1,4 +1,4 @@
-# 3902_Mario_Game
+# 3902: Mario Game
 
 ## Team 2 - Members
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Anika <br>
