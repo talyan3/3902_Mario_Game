@@ -31,6 +31,10 @@
  ### Sprint 3
  <img width="300" height="300" alt="Screenshot 2025-12-09 160352" src="https://github.com/user-attachments/assets/5cb14c23-dd40-4530-a67f-b2126a80c148" />
 
+ ### Sprint 4
+
+ ### Sprint 5
+
 
 ## Level 2 - *Christmas Chaos Level*
 
@@ -45,11 +49,7 @@ With the hoilday season, our team thought there would be no better way to end of
   * 
   * Christmas-themed background
 
-## About
-  
-### Sprint 4
-
-### Sprint 5
+## Program Structure
 
 
 # Descriptions of known bugs
