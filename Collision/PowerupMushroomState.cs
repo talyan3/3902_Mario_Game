@@ -13,5 +13,6 @@ public class PowerupMushroomState : PowerupState
     public override void Update(GameTime gameTime)
     {
         _powerup.Position.X += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+        //_powerup.Position.Y += _speed * (float)gameTime.ElapsedGameTime.TotalSeconds;
     }
 }

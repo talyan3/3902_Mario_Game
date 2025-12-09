@@ -134,6 +134,7 @@ namespace MonogameTest
 
         private static void HandleMarioVsEnemiesCore(
             Rectangle marioBounds,
+            float marioVelocity, 
             Action bounce,
             Action onHit,
             IList<object> enemies)
@@ -171,8 +172,12 @@ namespace MonogameTest
                 if (enemyRect == Rectangle.Empty) continue;
                 if (!marioBounds.Intersects(enemyRect)) continue;
 
-                bool stomp = feet.Intersects(enemyRect) &&
-                             (marioBounds.Bottom <= enemyRect.Top + 4);
+                /*bool stomp = feet.Intersects(enemyRect) &&
+                             (marioBounds.Bottom <= enemyRect.Top + 4);*/
+                bool stomp = 
+                    marioVelocity > 0 &&       // Mario must be falling
+                    feet.Intersects(enemyRect);   // Feet must hit enemy
+
 
                 // =========================
                 // GOOMBA
@@ -251,6 +256,7 @@ namespace MonogameTest
         {
             HandleMarioVsEnemiesCore(
                 marioBounds: mario.Bounds,
+                marioVelocity: mario.verticalVelocity,
                 bounce: () => mario.Bounce(-250f),
                 onHit: restart,
                 enemies: enemies
@@ -264,6 +270,7 @@ namespace MonogameTest
         {
             HandleMarioVsEnemiesCore(
                 marioBounds: mario.Bounds,
+                marioVelocity: mario.verticalVelocity,
                 bounce: () => mario.Bounce(-250f),
                 onHit: onBigHit,
                 enemies: enemies
