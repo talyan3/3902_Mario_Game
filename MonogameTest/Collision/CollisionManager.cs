@@ -11,13 +11,13 @@ namespace MonogameTest.Managers
         //other collision handlers
         private readonly TileCollisionHandler _tileHandler;
         private readonly EnemyCollisionHandlerWrapper _enemyHandler;
-        private readonly PowerupCollisionHandler _powerupHandler;
+        private readonly PowerupCollisionHandlerWrapper _powerupHandler;
         private readonly Flagpole _flagpole;  
 
         public CollisionManager(
             TileCollisionHandler tileHandler,
             EnemyCollisionHandlerWrapper enemyHandler,
-            PowerupCollisionHandler powerupHandler,
+            PowerupCollisionHandlerWrapper powerupHandler,
             Flagpole flagpole)
         {
             _tileHandler = tileHandler;
