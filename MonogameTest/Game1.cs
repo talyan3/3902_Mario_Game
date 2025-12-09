@@ -7,77 +7,58 @@ using MonogameTest.Managers;
 using MonogameTest.Screens;
 using MonogameTest.Sounds;
 
-
 namespace MonogameTest
 {
     public class Game1 : Game
     {
-        private GameConfig C => ConfigLoader.Config;
-
-        // ===========================
-        // CORE ENGINE OBJECTS
-        // ===========================
+        // Graphics / Core
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
+        // Input and Screen Flow
         private KeyboardController _input;
         private ScreenManager _screenManager;
+        private PauseScreen _pauseScreen;
+
+        // Sound
         private SoundManager _sound;
-        public static bool InputLocked = false;
 
-
-        // ===========================
-        // WORLD / LEVEL
-        // ===========================
+        // World Data
         private List<Tile> _mapTiles;
         private Vector2 _spawnPoint;
-
         private ICamera _camera;
         private BackgroundManager _backgroundManager;
 
-        // ===========================
-        // MARIO
-        // ===========================
+        // Player
         private SmallMarioSprite _smallMario;
         private BigMarioSprite _bigMario;
         private MarioStateController _marioState;
 
-        // ===========================
-        // GAMEPLAY SYSTEMS
-        // ===========================
+        // Gameplay Systems
         private EnemyManager _enemyManager;
         private PowerupFieldManager _powerupManager;
         private CollisionManager _collisionManager;
 
-        // ===========================
-        // UI / SCREENS
-        // ===========================
+        // UI / Screens
         private SpriteFont _font;
         private Texture2D _coin;
         private HUDScreen _hud;
-
         private TitleScreen _titleScreen;
         private LevelIntroScreen _introScreen;
         private TimeUpScreen _timeUpScreen;
         private GameOverScreen _gameOverScreen;
-
         private Flagpole _flagpole;
 
-        // ===========================
-        // CONFIG SHORTCUTS
-        // ===========================
-        private int TileSize => C.TileSize;
-        private int ViewWidth => C.ViewWidth;
-        private int Scale => C.Scale;
-        private int ScaleMod => C.ScaleMod;
-        public static bool DebugGodMode = false;
+        // Config and View Info
+        private GameConfig Config => ConfigLoader.Config;
+        public static int ScreenWidth { get; private set; }
+        public static int ScreenHeight { get; private set; }
 
-        //CHRISTMAS MODE
-        public static bool ChristmasMode = false;
-
-        private bool _cWasDown = false;
-
-
+        // Flags
+        public static bool InputLocked { get; set; }
+        public static bool DebugGodMode { get; set; }
+        public static bool ChristmasMode { get; set; }
+        private bool _cWasDown;
 
         public Game1()
         {
@@ -87,74 +68,72 @@ namespace MonogameTest
             IsMouseVisible = true;
         }
 
-        // =========================================================
-        // INITIALIZE
-        // =========================================================
         protected override void Initialize()
         {
-            _graphics.PreferredBackBufferWidth = ViewWidth * Scale;
-            _graphics.PreferredBackBufferHeight = ScaleMod * Scale;
+            _graphics.PreferredBackBufferWidth = Config.ViewWidth * Config.Scale;
+            _graphics.PreferredBackBufferHeight = Config.ScaleMod * Config.Scale;
             _graphics.ApplyChanges();
+
+            ScreenWidth = _graphics.PreferredBackBufferWidth;
+            ScreenHeight = _graphics.PreferredBackBufferHeight;
 
             _input = new KeyboardController();
             _screenManager = new ScreenManager();
 
-            _enemyManager = new EnemyManager(TileSize);
+            _enemyManager = new EnemyManager(Config.TileSize);
             _powerupManager = new PowerupFieldManager();
 
             base.Initialize();
         }
 
-        // =========================================================
-        // LOAD CONTENT
-        // =========================================================
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // ---------- SOUND ----------
+            // Sound
             _sound = SoundManager.Instance;
             SoundLoader.LoadAllSounds(this, _sound);
             _sound.PlaySong("mainTheme");
 
-
-            // ---------- BACKGROUND ----------
+            // Background
             _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
             _backgroundManager.LoadContent();
 
-            // ---------- MARIO ----------
+            // Player setup
             _smallMario = new SmallMarioSprite(GraphicsDevice) { SoundManager = _sound };
-            _bigMario = new BigMarioSprite(GraphicsDevice) { SoundManager = _sound };
+            _bigMario = new BigMarioSprite(GraphicsDevice)   { SoundManager = _sound };
 
-            _spawnPoint = new Vector2(TileSize * 5, TileSize * 13);
+            _spawnPoint = new Vector2(Config.TileSize * 5, Config.TileSize * 13);
             _smallMario.Position = _spawnPoint;
             _bigMario.Position = _spawnPoint;
 
-            _marioState = new MarioStateController(_smallMario, _bigMario, _smallMario, TileSize);
+            _marioState = new MarioStateController(_smallMario, _bigMario, _smallMario, Config.TileSize);
 
-            // ---------- MAP ----------
+            // Map
             using var fs = new FileStream("blocksV10.png", FileMode.Open);
             var tileset = Texture2D.FromStream(GraphicsDevice, fs);
-            _mapTiles = TiledMapLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "level1.json"), tileset);
+            var levelPath = Path.Combine(Directory.GetCurrentDirectory(), "level1.json");
+            _mapTiles = TiledMapLoader.Load(levelPath, tileset);
 
-            // ---------- CAMERA ----------
+            // Camera
             _camera = new CameraManager(GraphicsDevice.Viewport);
             _camera.Reset(_spawnPoint);
 
-            // ---------- POWERUPS ----------
-            var powerupsSheet = Content.Load<Texture2D>("Sprites/powerups");
+            // Powerups
+            var powerupSheet = Content.Load<Texture2D>("Sprites/powerups");
             _powerupManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
-            _powerupManager.SetPowerupSheet(powerupsSheet);
+            _powerupManager.SetPowerupSheet(powerupSheet);
 
-            // ---------- ENEMIES ----------
+            // Enemies
             _enemyManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
 
-            // ---------- FLAGPOLE ----------
-            var flagTex = Texture2D.FromFile(GraphicsDevice, "flag.png");
-            var poleRect = new Rectangle(TileSize * 198, TileSize * 3, 5, 160);
+            // Flagpole
+            var flagTexture = Texture2D.FromFile(GraphicsDevice, "flag.png");
+            var poleRect = new Rectangle(Config.TileSize * 198, Config.TileSize * 3, 5, 160);
+
             _flagpole = new Flagpole(
                 _spriteBatch,
-                flagTex,
+                flagTexture,
                 poleRect,
                 _smallMario,
                 _bigMario,
@@ -166,9 +145,7 @@ namespace MonogameTest
                 _hud
             );
 
-
-
-            // ---------- COLLISION ----------
+            // Collision system
             _collisionManager = new CollisionManager(
                 _marioState,
                 _mapTiles,
@@ -178,13 +155,13 @@ namespace MonogameTest
                 _sound,
                 _flagpole,
                 _spawnPoint,
-                TileSize,
+                Config.TileSize,
                 points => _screenManager.AddScore(points),
                 () => _screenManager.AddCoin(),
                 () => _screenManager.ResetLevel()
             );
 
-            // ---------- HUD / SCREENS ----------
+            // UI Screens
             _font = Content.Load<SpriteFont>("marioFont");
             _coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
 
@@ -193,19 +170,26 @@ namespace MonogameTest
             _introScreen = new LevelIntroScreen(this, _screenManager, _font, _coin);
             _timeUpScreen = new TimeUpScreen(this, _screenManager, _font, _coin);
             _gameOverScreen = new GameOverScreen(this, _screenManager, _font, _coin);
+
+            // Pause
+            _pauseScreen = new PauseScreen(this, _screenManager, _font);
         }
 
-        // =========================================================
-        // UPDATE
-        // =========================================================
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // Pause logic first
+            _pauseScreen.Update(gameTime);
+            if (_pauseScreen.IsPaused)
+                return;
+
+            var pad = GamePad.GetState(PlayerIndex.One);
+            var kb = Keyboard.GetState();
+
+            if (pad.Buttons.Back == ButtonState.Pressed || kb.IsKeyDown(Keys.Escape))
                 Exit();
 
+            // Non-gameplay screens
             _screenManager.Update(gameTime);
-
             switch (_screenManager.CurrentState)
             {
                 case GameState.Title: _titleScreen.Update(gameTime); return;
@@ -217,50 +201,40 @@ namespace MonogameTest
             if (!InputLocked)
                 _input.Update();
 
+            DebugGodMode = kb.IsKeyDown(Keys.D);
 
-            // DEBUG GOD MODE (HOLD D)
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                DebugGodMode = true;
-            else
-                DebugGodMode = false;
-
-
+            // Mario and gameplay systems
             _marioState.Update(gameTime);
             if (!InputLocked)
-            {
                 _marioState.CurrentMario.Update(gameTime);
-            }
-            _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
 
-            _camera.LookAt(_marioState.CurrentMario.Position);
+            _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
             _enemyManager.Update(gameTime, _mapTiles);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.M))
+            _camera.LookAt(_marioState.CurrentMario.Position);
+
+            // Sound mute toggle
+            if (kb.IsKeyDown(Keys.M))
                 _sound.ToggleMute();
 
-            var kb = Keyboard.GetState();
-
-            //PRESS C TO TOGGLE CHRISTMAS MODE
+            // Christmas mode toggle
             if (kb.IsKeyDown(Keys.C) && !_cWasDown)
             {
-                ChristmasMode = !ChristmasMode;   // toggle on/off
+                ChristmasMode = !ChristmasMode;
                 SoundLoader.LoadAllSounds(this, _sound);
                 _sound.PlaySong("mainTheme");
             }
 
             _cWasDown = kb.IsKeyDown(Keys.C);
 
-
             base.Update(gameTime);
         }
 
-        // =========================================================
-        // DRAW
-        // =========================================================
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(new Color(92, 148, 252));
 
+            // Title and other menus
             _spriteBatch.Begin();
             switch (_screenManager.CurrentState)
             {
@@ -271,8 +245,8 @@ namespace MonogameTest
             }
             _spriteBatch.End();
 
+            // Main game world
             _spriteBatch.Begin(transformMatrix: _camera.GetViewMatrix());
-
             _backgroundManager.Draw(_spriteBatch, 0f);
 
             foreach (var tile in _mapTiles)
@@ -282,11 +256,12 @@ namespace MonogameTest
             _enemyManager.Draw(_spriteBatch);
             _powerupManager.Draw(_spriteBatch);
             _flagpole.Draw();
-
             _spriteBatch.End();
 
+            // HUD and overlays
             _spriteBatch.Begin();
             _hud.Draw(_spriteBatch);
+            _pauseScreen.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);
