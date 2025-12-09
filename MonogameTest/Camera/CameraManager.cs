@@ -11,15 +11,34 @@ namespace MonogameTest
     public float LeftEdge => _position.X - (_viewport.Width / 2f) / Zoom;
 
     private float _smoothSpeed;
-    private float _levelWidth = TiledMapLoader.MapWidth * 16f;
-    private float _levelHeight = TiledMapLoader.MapHeight * 16f;
+    private float _levelWidth;
+    private float _levelHeight;
     private float _furthestRight = 0f;
-    private float _horizontalOffsetRatio = 0.35f;
+    private float _horizontalOffsetRatio;
+    private float _zoomDivisor;
+    private float _leftClamp;
+    private float _fixedCameraY;
+    private float _rightClampPadding;
 
     public CameraManager(Viewport viewport)
     {
+
         _viewport = viewport;
-        Zoom = _viewport.Width / 256f;  // keep NES view width of 256px
+
+        //set and load JSON values
+        var cam = NumberLoad.Numbers.CameraMan;
+        _smoothSpeed = cam.SmoothSpeed;
+        _horizontalOffsetRatio = cam.HorizontalOffsetRatio;
+        _zoomDivisor = cam.ZoomDivisor;
+        _leftClamp = cam.LeftClamp;
+        _fixedCameraY = cam.FixedCameraY;
+        _rightClampPadding = cam.RightClampPadding;
+
+        //levels
+        _levelWidth = TiledMapLoader.MapWidth * cam.TileSize;
+        _levelHeight = TiledMapLoader.MapHeight * cam.TileSize;
+
+        Zoom = _viewport.Width / cam.NesViewWidth;  // keep NES view width of 256px
     }
 
     public Matrix GetViewMatrix()
@@ -31,10 +50,10 @@ namespace MonogameTest
 
     public void LookAt(Vector2 target)
     {
-        float desiredX = target.X - (_viewport.Width / (Zoom * 100f));
+        float desiredX = target.X - (_viewport.Width / (Zoom * _zoomDivisor));
         _position = Vector2.Lerp(_position, new Vector2(desiredX, 0), _smoothSpeed);
-        _position.X = MathHelper.Clamp(_position.X, 128, _levelWidth - (_viewport.Width / Zoom) + 256);
-        _position.Y = 120;
+        _position.X = MathHelper.Clamp(_position.X, _leftClamp, _levelWidth - (_viewport.Width / Zoom) + _rightClampPadding);
+        _position.Y = _fixedCameraY;
 
         if (_position.X > _furthestRight)
             _furthestRight = _position.X;

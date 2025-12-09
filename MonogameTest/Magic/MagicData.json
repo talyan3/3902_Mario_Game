@@ -6,7 +6,8 @@
     "ZoomDivisor": 100,
     "LeftClamp": 128,
     "FixedCameraY": 120,
-    "TileSize": 16
+    "TileSize": 16,
+    "RightClampPadding": 100
   },
 
   "EnemyCollision": {

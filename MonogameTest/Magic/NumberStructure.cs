@@ -37,6 +37,7 @@ public class CameraMan
     public float LeftClamp { get; set; }
     public float FixedCameraY { get; set; }
     public float TileSize { get; set; }
+    public int RightClampPadding { get; set; }
 }
 
 public class EnemyCollision

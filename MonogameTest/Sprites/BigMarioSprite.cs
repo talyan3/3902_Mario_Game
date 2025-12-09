@@ -28,7 +28,7 @@ namespace MonogameTest
         private float _frameTimer = 0f;
         private float _frameTime = 0.12f;
 
-        private bool _isJumping = false;
+        public bool _isJumping = false;
         private bool _isCrouching = false;
         private float _jumpOffset = 100f;
 		private Vector2 _groundPos;
@@ -36,9 +36,11 @@ namespace MonogameTest
 
         private const float CROUCH_DRAW_OFFSET = 6f; // how far lower the crouch sprite is drawn
         
-        private float verticalVelocity = 0f;
+        public float verticalVelocity = 0f;
         private float gravity = 900f;
         private float jumpStrength = -350f;
+        public bool ForceAutoWalkRight = false;
+
 
 
         public override Rectangle Bounds
@@ -111,8 +113,9 @@ namespace MonogameTest
                     AdvanceRun(dt);
                 }
                 // === MOVE RIGHT ===
-                else if (kb.IsKeyDown(Keys.Right))
+                else if (kb.IsKeyDown(Keys.Right) || ForceAutoWalkRight)
                 {
+                    if (ForceAutoWalkRight) _moveSpeed = 20f;
                     Position = new Vector2(Position.X + speed * dt, Position.Y);
                     moving = true;
                     _effects = SpriteEffects.FlipHorizontally;

@@ -8,26 +8,34 @@ namespace MonogameTest.Screens
     {
         private readonly SpriteFont _font;
         private readonly HUDScreen _hud;
-        private double _timer = 4.0; 
+
+        // Timer until auto-return to title
+        private double _timer = DefaultTimerSeconds;
+
+        // Constants to avoid magic numbers
+        private const double DefaultTimerSeconds = 4.0;
+        private const float TextOffsetX = 120f;    // half text width for centering
+        private const float TextOffsetY = 0f;      // vertical offset if needed
 
         public GameOverScreen(Game1 game, ScreenManager manager, SpriteFont font, Texture2D coin)
             : base(game, manager)
         {
             _font = font;
             _hud = new HUDScreen(font, coin, manager);
+
         }
 
         public override void Update(GameTime gameTime)
         {
+            // Countdown
             _timer -= gameTime.ElapsedGameTime.TotalSeconds;
 
             var k = Keyboard.GetState();
             bool skip = k.IsKeyDown(Keys.Enter);
-            
 
+            // When timer ends or player skips
             if (_timer <= 0 || skip)
             {
-    
                 Manager.ResetLevel();
                 Manager.ChangeState(GameState.Title);
             }
@@ -37,14 +45,20 @@ namespace MonogameTest.Screens
         {
             sb.GraphicsDevice.Clear(Color.Black);
 
-            // HUD at top
+            // HUD at top of screen
             _hud.Draw(sb);
 
-            // "GAME OVER" 
-            sb.DrawString(_font, "GAME OVER",
-                new Vector2(sb.GraphicsDevice.Viewport.Width / 2f - 120,
-                            sb.GraphicsDevice.Viewport.Height / 2f),
-                Color.White);
+            // Center point of screen
+            float centerX = sb.GraphicsDevice.Viewport.Width / 2f;
+            float centerY = sb.GraphicsDevice.Viewport.Height / 2f;
+
+            // Draw Game Over text centered
+            sb.DrawString(
+                _font,
+                "GAME OVER",
+                new Vector2(centerX - TextOffsetX, centerY + TextOffsetY),
+                Color.White
+            );
         }
     }
 }

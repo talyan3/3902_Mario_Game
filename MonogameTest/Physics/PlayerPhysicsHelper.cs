@@ -4,8 +4,8 @@ public class PlayerPhysics
 {
     public Vector2 velocity;
     public bool isGrounded;
-    private float moveAcceleration = 1000f;
-    private float maxMoveSpeed = 400f;
+    public float moveAcceleration = 1000f;
+    public float maxMoveSpeed = 400f;
     private float groundFriction = 800f;
     private float airFriction = 100f;
     public float jumpStrength = -100f;

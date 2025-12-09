@@ -13,7 +13,12 @@ namespace MonogameTest.Sounds
 
         public void Load(Game game)
         {
-            soundManager.LoadSong(game, "mainTheme", "Sounds/01-main-theme-overworld");
+            soundManager.LoadSong(
+                game,
+                "mainTheme",
+                Game1.ChristmasMode ? "Sounds/TechnoXmas" : "Sounds/01-main-theme-overworld."
+            );
+
         }
 
         public void Play(bool loop = true)

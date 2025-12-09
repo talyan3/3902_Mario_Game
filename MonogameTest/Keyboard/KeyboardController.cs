@@ -1,23 +1,39 @@
-using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using System.Windows.Input;
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework.Input;
 
 namespace MonogameTest;
 
-// Class used to store KeyCombo and their respective command(s)
+// Unified Input + Command Controller
 public class KeyboardController : IController
 {
+    // -----------------------------
+    // COMMAND SYSTEM
+    // -----------------------------
     private Dictionary<KeyCombo, ICommand> keyMap;
+
+    // -----------------------------
+    // REAL-TIME INPUT STATE (OLD FILE 2)
+    // -----------------------------
+    public bool moveLeft { get; private set; }
+    public bool moveRight { get; private set; }
+    public bool jumpPressed { get; private set; }
+    public bool jumpHeld { get; private set; }
+    public bool crouch { get; private set; }
+    public bool InputLocked { get; private set; } = false;
+
+
+    private KeyboardState prevState;
 
     public KeyboardController()
     {
         keyMap = new Dictionary<KeyCombo, ICommand>(new KeyboardKeyComparator());
     }
 
-    // Return true if successfully added, return false if there already exists a mapping for the key combo
+    // -----------------------------
+    // COMMAND MAPPING SYSTEM
+    // -----------------------------
     public bool addMapping(KeyCombo key, ICommand command)
     {
         if (!keyMap.ContainsKey(key))
@@ -28,7 +44,7 @@ public class KeyboardController : IController
         return false;
     }
 
-    // Return true if successfully removed, return false if there does not exist a mapping for the key combo
+
     public bool removeMapping(KeyCombo key)
     {
         if (keyMap.ContainsKey(key))
@@ -41,15 +57,73 @@ public class KeyboardController : IController
 
     public ICommand getCommand(KeyCombo key)
     {
-        ICommand toReturn = null;
-        if (keyMap.ContainsKey(key))
-        {
-            toReturn = keyMap[key];
-        }
-        return toReturn;
+        return keyMap.ContainsKey(key) ? keyMap[key] : null;
     }
 
-    // Checks the current state of the game and what keys are pressed, and executes any matching states (KeyCombo)
+    // -----------------------------
+    // REAL-TIME INPUT UPDATE
+    // -----------------------------
+    public void Update()
+    {
+        if (Game1.InputLocked)
+        {
+            moveLeft = false;
+            moveRight = false;
+            crouch = false;
+            jumpHeld = false;
+            jumpPressed = false;
+            return;
+        }
+
+
+        KeyboardState state = Keyboard.GetState();
+
+        moveLeft  = state.IsKeyDown(Keys.Left)  || state.IsKeyDown(Keys.F);
+        moveRight = state.IsKeyDown(Keys.Right) || state.IsKeyDown(Keys.H);
+        crouch    = state.IsKeyDown(Keys.Down)  || state.IsKeyDown(Keys.G);
+
+        bool currentJump  = state.IsKeyDown(Keys.Space) || state.IsKeyDown(Keys.T);
+        bool previousJump = prevState.IsKeyDown(Keys.Space) || prevState.IsKeyDown(Keys.T);
+
+        jumpHeld    = currentJump;
+        jumpPressed = currentJump && !previousJump;
+
+        prevState = state;
+    }
+
+    public void LockInput()
+    {
+        InputLocked = true;
+        moveLeft = false;
+        moveRight = false;
+        jumpHeld = false;
+        jumpPressed = false;
+        crouch = false;
+    }
+
+    public void UnlockInput()
+    {
+        InputLocked = false;
+    }
+
+
+    public int GetMoveDirection()
+    {
+        if (moveLeft && !moveRight) return -1;
+        if (moveRight && !moveLeft) return +1;
+        return 0;
+    }
+
+        public void ForceRight(bool state)
+    {
+        moveRight = state;
+        moveLeft = false;
+    }
+
+
+    // -----------------------------
+    // COMMAND EXECUTION SYSTEM
+    // -----------------------------
     public void checkKeys()
     {
         foreach (Keys key in Keyboard.GetState().GetPressedKeys())
@@ -59,7 +133,6 @@ public class KeyboardController : IController
             {
                 keyMap[combo].Execute();
             }
-
         }
     }
 }

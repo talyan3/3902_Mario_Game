@@ -29,16 +29,18 @@ namespace MonogameTest
         private float _frameTimer = 0f;
         private float _frameTime = 0.12f;
 
-        private bool _isJumping = false;
+        public bool _isJumping = false;
         private bool _isCrouching = false;
         private float _jumpOffset = 100f;
         private Vector2 _groundPos;
         public SoundManager SoundManager { get; set; }
 
         // physics
-        private float verticalVelocity = 0f;
+        public float verticalVelocity = 0f;
         const float gravity = 900f;        // pixels/sec² 
         const float jumpStrength = -350f;  // upward
+        public bool ForceAutoWalkRight = false;
+
 
 
         public override Rectangle Bounds
@@ -116,8 +118,9 @@ namespace MonogameTest
                     AdvanceRun(dt);
                 }
                 // === MOVE RIGHT ===
-                else if (kb.IsKeyDown(Keys.Right))
+                else if (kb.IsKeyDown(Keys.Right) || ForceAutoWalkRight)
                 {
+                    if (ForceAutoWalkRight) _moveSpeed = 20f;
                     Position = new Vector2(Position.X + speed * dt, Position.Y);
                     moving = true;
                     _effects = SpriteEffects.FlipHorizontally;
@@ -150,7 +153,7 @@ namespace MonogameTest
                 if (Position.Y >= _groundPos.Y)
                 {
                     Position = new Vector2(Position.X, _groundPos.Y);
-                    verticalVelocity = 0;
+                    verticalVelocity = 0; // THIS IS WHY MARIO DOESNT FALL INTO PITS!!!
                     _isJumping = false;
                 }
 
