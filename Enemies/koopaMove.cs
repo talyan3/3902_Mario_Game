@@ -153,7 +153,7 @@ namespace MonogameTest
                     break;
 
                 case KoopaState.ShellMoving:
-                    Position += new Vector2(Math.Clamp((float)direction, -2f, 2f) * ShellSpeed * deltaTime, 0);
+                    Position += new Vector2(Math.Clamp((float)direction, -1.1f, 1.1f) * ShellSpeed * deltaTime, 0);
 
                     // LOCK shell sprite while moving
                     sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);

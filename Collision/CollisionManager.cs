@@ -112,8 +112,12 @@ namespace MonogameTest.Managers
 
                 if (hitTile.TileName == "Question")
                 {
-                    if (activeMario.Position.X < tileSize * 22 &&
-                        activeMario.Position.X > tileSize * 19)
+                    if ((activeMario.Position.X < tileSize * 21 &&
+                        activeMario.Position.X > tileSize * 19) || 
+                        (activeMario.Position.X < tileSize * 80 &&
+                        activeMario.Position.X > tileSize * 76) || 
+                        (activeMario.Position.X < tileSize * 110 &&
+                        activeMario.Position.X > tileSize * 108 && activeMario.Position.Y > tileSize * 10))
                     {
                         powerupManager.Spawn(PowerupType.Mushroom, spawnPos);
                         sound.PlayEffect("powerUpAppears");
@@ -129,6 +133,11 @@ namespace MonogameTest.Managers
                 else if (hitTile.TileName == "Brick")
                 {
                     sound.PlayEffect("break");
+                    if (activeMario.Position.X <= tileSize * 102 &&
+                        activeMario.Position.X >= tileSize * 101)
+                    {
+                        powerupManager.Spawn(PowerupType.Star, spawnPos);
+                    }
                 }
             }
             if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "Ground" || hitTile.TileName == "DarkGround" || hitTile.TileName == "DarkBrick") &&
