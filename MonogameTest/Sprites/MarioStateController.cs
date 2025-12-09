@@ -9,7 +9,7 @@ namespace MonogameTest
 
         private readonly SmallMarioSprite smallMario;
         private readonly BigMarioSprite bigMario;
-        private StaticSprite currentMario;
+        public StaticSprite currentMario;
         private readonly int tileSize;
 
         public StaticSprite CurrentMario => currentMario;

@@ -217,6 +217,17 @@ namespace MonogameTest
             if (kb.IsKeyDown(Keys.M))
                 _sound.ToggleMute();
 
+            //reset level
+            if (kb.IsKeyDown(Keys.R))
+                ResetManager.SoftReset(
+                    _smallMario,
+                    _bigMario,
+                    _marioState,
+                    _spawnPoint,
+                    _camera
+                );
+            
+
             // Christmas mode toggle
             if (kb.IsKeyDown(Keys.C) && !_cWasDown)
             {
@@ -225,7 +236,6 @@ namespace MonogameTest
                 _sound.PlaySong("mainTheme");
             }
 
-            _cWasDown = kb.IsKeyDown(Keys.C);
 
             base.Update(gameTime);
         }
