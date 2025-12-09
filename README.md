@@ -9,12 +9,12 @@
 
 ## Program Controls
 
-# Arrow Controls
+### Arrow Controls
   * **Left** and **Right**: Move Mario side to side
   * **Up**: Jump
   * **Down** Crouch
 
-# Key Controls
+### Key Controls
   * **R**: Resets Mario to the beginning
   * **X**: Activate Christmas mode
   * **Shift**: Mario sprints
