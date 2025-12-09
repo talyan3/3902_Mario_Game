@@ -70,7 +70,7 @@ namespace MonogameTest
         }
 
         // ====================================================
-        // NEW: FIREBALL COOLDOWN TICK
+        // FIREBALL COOLDOWN TICK
         // ====================================================
         public void Tick(GameTime gameTime)
         {
@@ -79,7 +79,7 @@ namespace MonogameTest
         }
 
         // ====================================================
-        // NEW: Attempt to shoot fireball
+        // Attempt to shoot fireball
         // ====================================================
         public bool TryShoot()
         {
