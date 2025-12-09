@@ -13,8 +13,6 @@ namespace MonogameTest
 {
     public class Game1 : Game
     {
-        private GameConfig C => ConfigLoader.Config;
-
         // ===========================
         // CORE ENGINE OBJECTS
         // ===========================
@@ -23,8 +21,8 @@ namespace MonogameTest
 
         private KeyboardController _input;
         private ScreenManager _screenManager;
+        private PauseScreen _pauseScreen;
         private SoundManager _sound;
-        public static bool InputLocked = false;
 
         // ===========================
         // WORLD / LEVEL
@@ -63,14 +61,21 @@ namespace MonogameTest
 
         private Flagpole _flagpole;
 
+        public static bool InputLocked { get; set; }
+        public static bool DebugGodMode { get; set; }
+        public static bool ChristmasMode { get; set; }
+        private bool _cWasDown;
+        public static int ScreenWidth { get; private set; }
+        public static int ScreenHeight { get; private set; }
+
         // ===========================
         // CONFIG SHORTCUTS
         // ===========================
+        private GameConfig C => ConfigLoader.Config;
         private int TileSize => C.TileSize;
         private int ViewWidth => C.ViewWidth;
         private int Scale => C.Scale;
         private int ScaleMod => C.ScaleMod;
-        public static bool DebugGodMode = false;
 
         public Game1()
         {
@@ -88,6 +93,9 @@ namespace MonogameTest
             _graphics.PreferredBackBufferWidth = ViewWidth * Scale;
             _graphics.PreferredBackBufferHeight = ScaleMod * Scale;
             _graphics.ApplyChanges();
+
+            ScreenWidth = _graphics.PreferredBackBufferWidth;
+            ScreenHeight = _graphics.PreferredBackBufferHeight;
 
             _input = new KeyboardController();
             _screenManager = new ScreenManager();
@@ -143,11 +151,11 @@ namespace MonogameTest
             _enemyManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
 
             // ---------- FLAGPOLE ----------
-            var flagTex = Texture2D.FromFile(GraphicsDevice, "flag.png");
+            var flagTexture = Texture2D.FromFile(GraphicsDevice, "flag.png");
             var poleRect = new Rectangle(TileSize * 198, TileSize * 3, 5, 160);
             _flagpole = new Flagpole(
                 _spriteBatch,
-                flagTex,
+                flagTexture,
                 poleRect,
                 _smallMario,
                 _bigMario,
@@ -169,7 +177,7 @@ namespace MonogameTest
                 _sound,
                 _flagpole,
                 _spawnPoint,
-                TileSize,
+                C.TileSize,
                 points => _screenManager.AddScore(points),
                 () => _screenManager.AddCoin(),
                 () => _screenManager.ResetLevel()
@@ -184,6 +192,8 @@ namespace MonogameTest
             _introScreen = new LevelIntroScreen(this, _screenManager, _font, _coin);
             _timeUpScreen = new TimeUpScreen(this, _screenManager, _font, _coin);
             _gameOverScreen = new GameOverScreen(this, _screenManager, _font, _coin);
+
+            _pauseScreen = new PauseScreen(this, _screenManager, _font);
         }
 
         // =========================================================
@@ -191,8 +201,15 @@ namespace MonogameTest
         // =========================================================
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
-                Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // Pause logic first
+            _pauseScreen.Update(gameTime);
+            if (_pauseScreen.IsPaused)
+                return;
+
+            var pad = GamePad.GetState(PlayerIndex.One);
+            var kb = Keyboard.GetState();
+
+            if (pad.Buttons.Back == ButtonState.Pressed || kb.IsKeyDown(Keys.Escape))
                 Exit();
 
             _screenManager.Update(gameTime);
@@ -210,10 +227,12 @@ namespace MonogameTest
                _input.Update(); 
             }
 
-            if (PauseManager.HandlePauseInput(Keyboard.GetState()))
-                return;
+            DebugGodMode = kb.IsKeyDown(Keys.D);
 
-            // DEBUG GOD MODE (HOLD D)
+            /*if (PauseManager.HandlePauseInput(Keyboard.GetState()))
+                return;*/
+
+            /*// DEBUG GOD MODE (HOLD D)
             if (Keyboard.GetState().IsKeyDown(Keys.D))
                 DebugGodMode = true;
             else
@@ -222,26 +241,30 @@ namespace MonogameTest
             if (Keyboard.GetState().IsKeyUp(Keys.D))
             {
                 // prevents permanent hold lock
-            }
+            }*/
 
-            ResetManager.HandleSoftResetInput(
+            /*ResetManager.HandleSoftResetInput(
                 Keyboard.GetState(),
                 _smallMario,
                 _bigMario,
                 _marioState.CurrentMario,
                 _spawnPoint,
                 _camera
-            );
+            );*/
 
             //_marioState.CurrentMario.Update(gameTime);
-            if (_marioState.CurrentMario == _smallMario)
+            if(!InputLocked)
             {
-                _smallMario.Update(gameTime, _camera.LeftEdge);
+               if (_marioState.CurrentMario == _smallMario)
+                {
+                    _smallMario.Update(gameTime, _camera.LeftEdge);
+                }
+                    if (_marioState.CurrentMario == _bigMario)
+                {
+                    _bigMario.Update(gameTime, _camera.LeftEdge);
+                } 
             }
-            if (_marioState.CurrentMario == _bigMario)
-            {
-                 _bigMario.Update(gameTime, _camera.LeftEdge);
-            }
+
             _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
 
             _camera.LookAt(_marioState.CurrentMario.Position);
@@ -249,6 +272,16 @@ namespace MonogameTest
 
             if (Keyboard.GetState().IsKeyDown(Keys.M))
                 _sound.ToggleMute();
+            
+            // Christmas mode toggle
+            if (kb.IsKeyDown(Keys.C) && !_cWasDown)
+            {
+                ChristmasMode = !ChristmasMode;
+                SoundLoader.LoadAllSounds(this, _sound);
+                _sound.PlaySong("mainTheme");
+            }
+
+            _cWasDown = kb.IsKeyDown(Keys.C);
 
             base.Update(gameTime);
         }
@@ -286,6 +319,7 @@ namespace MonogameTest
 
             _spriteBatch.Begin();
             _hud.Draw(_spriteBatch);
+            _pauseScreen.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);

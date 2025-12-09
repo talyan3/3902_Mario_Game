@@ -30,6 +30,8 @@ namespace MonogameTest.Managers
         private bool _isHurt = false;
         private double _hurtTimer = 0;
 
+        private int _groundPos = 0;
+
         public CollisionManager(
             MarioStateController marioState,
             List<Tile> tiles,
@@ -93,10 +95,10 @@ namespace MonogameTest.Managers
         // TILE COLLISION + QUESTION BLOCK LOGIC
         // =========================================================
         private void HandleTileCollision(StaticSprite activeMario)
-        {
+        {   
             if (!StaticCollisionHandler.HandleMany(activeMario, mapTiles, out var res, out var hitTile))
                 return;
-
+        
             // --- HEAD HIT LOGIC ---
             if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick") &&
                 res.Side == typeCollision.Bottom &&

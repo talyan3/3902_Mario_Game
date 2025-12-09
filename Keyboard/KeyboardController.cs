@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Reflection.Metadata.Ecma335;
 using Microsoft.Xna.Framework.Input;
 
 namespace MonogameTest;
@@ -64,7 +65,7 @@ public class KeyboardController : IController
     // -----------------------------
     public void Update()
     {
-        if (InputLocked)
+        if (Game1.InputLocked)
         {
             moveLeft = false;
             moveRight = false;
@@ -73,6 +74,7 @@ public class KeyboardController : IController
             jumpPressed = false;
             return;
         }
+
 
         KeyboardState state = Keyboard.GetState();
 

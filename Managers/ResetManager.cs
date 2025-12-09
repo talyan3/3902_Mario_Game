@@ -1,5 +1,4 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
 using MonogameTest.Screens;
 
 namespace MonogameTest
@@ -10,34 +9,6 @@ namespace MonogameTest
     /// </summary>
     public static class ResetManager
     {
-        // =========================
-        // R KEY TRACKING
-        // =========================
-        private static bool _rHeldLast = false;
-
-        public static void HandleSoftResetInput(
-            KeyboardState state,
-            SmallMarioSprite smallMario,
-            BigMarioSprite bigMario,
-            StaticSprite currentMario,
-            Vector2 spawnPoint,
-            ICamera camera)
-        {
-            bool rDown = state.IsKeyDown(Keys.R);
-
-            if (rDown && !_rHeldLast)
-            {
-                SoftReset(
-                    smallMario,
-                    bigMario,
-                    ref currentMario,
-                    spawnPoint,
-                    camera
-                );
-            }
-
-            _rHeldLast = rDown;
-        }
         // =========================================================
         // SOFT RESET (R KEY)
         // =========================================================
@@ -74,6 +45,7 @@ namespace MonogameTest
 
             SoundManager.Instance.StopSong();
             SoundManager.Instance.PlaySong("mainTheme");
+            Game1.InputLocked = false;
         }
 
         // =========================================================

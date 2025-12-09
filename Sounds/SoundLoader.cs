@@ -7,7 +7,12 @@ namespace MonogameTest.Sounds
         public static void LoadAllSounds(Game game, SoundManager soundManager)
         {
             // === Background music ===
-            soundManager.LoadSong(game, "mainTheme", "Sounds/01-main-theme-overworld");
+            soundManager.LoadSong(
+                game,
+                "mainTheme",
+                Game1.ChristmasMode ? "Sounds/TechnoXmas" : "Sounds/01-main-theme-overworld"
+            );
+
             soundManager.LoadSong(game, "underworld", "Sounds/02-underworld");
             soundManager.LoadSong(game, "starman", "Sounds/05-starman");
             soundManager.LoadSong(game, "levelComplete", "Sounds/06-level-complete");

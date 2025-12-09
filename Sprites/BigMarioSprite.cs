@@ -113,7 +113,7 @@ namespace MonogameTest
                 // === MOVE RIGHT ===
                 else if (kb.IsKeyDown(Keys.Right))
                 {
-                    if (ForceAutoWalkRight) _moveSpeed = 20f;
+                    if (ForceAutoWalkRight) _moveSpeed = 30f;
                     Position = new Vector2(Position.X + speed * dt, Position.Y);
                     moving = true;
                     _effects = SpriteEffects.FlipHorizontally;
