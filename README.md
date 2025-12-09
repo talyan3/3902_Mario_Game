@@ -30,6 +30,8 @@
 ## Level 2 - *Christmas Level*
 ### Features
   * Christmas Snail
+  * <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/4e8655f0-78b6-4094-815d-3b9c5cdbbda1" />
+
   * Team members as enemies
   * Christmas-themed background
 
