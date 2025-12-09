@@ -57,8 +57,14 @@ namespace MonogameTest
         // Flags
         public static bool InputLocked { get; set; }
         public static bool DebugGodMode { get; set; }
+
+        // Christmas Mode
         public static bool ChristmasMode { get; set; }
-        private bool _cWasDown;
+        private bool _xWasDown;
+        private bool _showChristmasText = false;
+        private float _christmasTimer = 0f;
+
+
 
         public Game1()
         {
@@ -188,6 +194,18 @@ namespace MonogameTest
             if (pad.Buttons.Back == ButtonState.Pressed || kb.IsKeyDown(Keys.Escape))
                 Exit();
 
+            bool xDown = kb.IsKeyDown(Keys.X);
+            if (xDown && !_xWasDown && !ChristmasMode)
+            {
+                ChristmasMode = true;
+                _sound.StopSong();
+                _enemyManager.ActivateSnail();
+                _sound.PlaySong("mainXmas");
+                _christmasTimer = 8f;
+            }
+            _xWasDown = xDown;
+
+
             // Non-gameplay screens
             _screenManager.Update(gameTime);
             switch (_screenManager.CurrentState)
@@ -197,6 +215,14 @@ namespace MonogameTest
                 case GameState.TimeUp: _timeUpScreen.Update(gameTime); return;
                 case GameState.GameOver: _gameOverScreen.Update(gameTime); return;
             }
+
+            if (_showChristmasText)
+            {
+                _christmasTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_christmasTimer <= 0)
+                    _showChristmasText = false;
+            }
+
 
             if (!InputLocked)
                 _input.Update();
@@ -209,7 +235,12 @@ namespace MonogameTest
                 _marioState.CurrentMario.Update(gameTime);
 
             _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
-            _enemyManager.Update(gameTime, _mapTiles);
+            _enemyManager.Update(
+                    gameTime,
+                    _mapTiles,
+                    _marioState.CurrentMario.Position
+                );
+
 
             _camera.LookAt(_marioState.CurrentMario.Position);
 
@@ -217,15 +248,15 @@ namespace MonogameTest
             if (kb.IsKeyDown(Keys.M))
                 _sound.ToggleMute();
 
-            // Christmas mode toggle
-            if (kb.IsKeyDown(Keys.C) && !_cWasDown)
-            {
-                ChristmasMode = !ChristmasMode;
-                SoundLoader.LoadAllSounds(this, _sound);
-                _sound.PlaySong("mainTheme");
-            }
-
-            _cWasDown = kb.IsKeyDown(Keys.C);
+            //reset level
+            if (kb.IsKeyDown(Keys.R))
+                ResetManager.SoftReset(
+                    _smallMario,
+                    _bigMario,
+                    _marioState,
+                    _spawnPoint,
+                    _camera
+                );
 
             base.Update(gameTime);
         }
@@ -261,6 +292,16 @@ namespace MonogameTest
             // HUD and overlays
             _spriteBatch.Begin();
             _hud.Draw(_spriteBatch);
+            if (_showChristmasText)
+            {
+                _spriteBatch.DrawString(
+                    _font,
+                    "CHRISTMAS MODE",
+                    new Vector2(50, 50),
+                    Color.Red
+                );
+            }
+
             _pauseScreen.Draw(_spriteBatch);
             _spriteBatch.End();
 

@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using MonogameTest.Snail;
+
 
 namespace MonogameTest.Managers
 {
@@ -17,6 +19,8 @@ namespace MonogameTest.Managers
         private readonly int _tileSize;
 
         private readonly Vector2 _koopaSpawnTile = new Vector2(106, 12);
+        private Snail.Snail _snail;
+
 
         public EnemyManager(int tileSize)
         {
@@ -76,13 +80,22 @@ catch (Exception ex)
                 g.Position = g.SpawnPosition;
                 _goombas.Add(g);
             }
+
+            // Load snail textures directly from Snail folder
+            Texture2D snail1 = Texture2D.FromFile(graphics, "Snail/snail1.png");
+            Texture2D snail2 = Texture2D.FromFile(graphics, "Snail/snail2.png");
+
+            // Spawn point (far left)
+            Vector2 snailStart = new Vector2(200, 200);
+
+            _snail = new Snail.Snail(snail1, snail2, snailStart);
         }
 
         // ===========================
         // UPDATE
         // ===========================
 
-        public void Update(GameTime gameTime, List<Tile> mapTiles)
+        public void Update(GameTime gameTime, List<Tile> mapTiles, Vector2 marioPos)
         {
             // ---- UPDATE GOOMBAS ----
             foreach (var g in _goombas)
@@ -110,6 +123,9 @@ catch (Exception ex)
                         _koopa.ReverseDirection();
                 }
             }
+
+            // Update snail
+            _snail?.Update(gameTime, marioPos);
         }
 
         // ===========================
@@ -144,5 +160,15 @@ catch (Exception ex)
                 _koopa.Position = _koopaSpawnTile * _tileSize;
             }
         }
+
+        //SPAWN SNAIL
+        public void ActivateSnail()
+        {
+            if (_snail != null)
+            {
+                _snail.Position = new Vector2(200, 200); 
+            }
+        }
+
     }
 }

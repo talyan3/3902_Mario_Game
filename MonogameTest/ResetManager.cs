@@ -15,13 +15,17 @@ namespace MonogameTest
         public static void SoftReset(
             SmallMarioSprite smallMario,
             BigMarioSprite bigMario,
-            ref StaticSprite currentMario,
+            MarioStateController state,
             Vector2 spawnPoint,
             ICamera camera)
         {
-            ResetMarioPositions(smallMario, bigMario, ref currentMario, spawnPoint);
-            ResetCamera(camera, spawnPoint);
+            // Reset Mario to small and move to spawn
+            state.ForceSmall(spawnPoint);
 
+            // Reset camera
+            camera.Reset(spawnPoint);
+
+            // Reset music
             SoundManager.Instance.StopSong();
             SoundManager.Instance.PlaySong("mainTheme");
         }

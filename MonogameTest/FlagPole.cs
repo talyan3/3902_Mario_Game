@@ -133,7 +133,13 @@ namespace MonogameTest
                     _soundDelayTimer = SOUND_DELAY;
                     _walkDelayTimer = WALK_DELAY;
 
-                    SoundManager.Instance.PlaySong("levelComplete", false);
+                    if (Game1.ChristmasMode)
+                    {
+                        SoundManager.Instance.PlaySong("xmasWin", false);
+                    } else
+                    {
+                        SoundManager.Instance.PlaySong("levelComplete", false);
+                    }
                     return;
                 }
 

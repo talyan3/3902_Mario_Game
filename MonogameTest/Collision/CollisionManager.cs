@@ -44,7 +44,102 @@ namespace MonogameTest.Managers
             _powerupHandler.HandlePowerups(activeMario, gameTime);
 
 
-            _flagpole.Update(gameTime);
+            flagpole.Update(gameTime);
+        }
+
+        // =========================================================
+        // TILE COLLISION + QUESTION BLOCK LOGIC
+        // =========================================================
+        private void HandleTileCollision(StaticSprite activeMario)
+        {
+            if (!StaticCollisionHandler.HandleMany(activeMario, mapTiles, out var res, out var hitTile))
+                return;
+
+            // --- HEAD HIT LOGIC ---
+            if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick") &&
+                res.Side == typeCollision.Bottom &&
+                !usedQuestionBlocks.Contains(hitTile))
+            {
+                usedQuestionBlocks.Add(hitTile);
+                sound.PlayEffect("bump");
+
+                Vector2 spawnPos = hitTile.Position;
+                spawnPos.Y -= tileSize;
+
+                if (hitTile.TileName == "Question")
+                {
+                    if (activeMario.Position.X < tileSize * 22 &&
+                        activeMario.Position.X > tileSize * 19)
+                    {
+                        powerupManager.Spawn(PowerupType.Mushroom, spawnPos);
+                        sound.PlayEffect("powerUpAppears");
+                    }
+                    else
+                    {
+                        powerupManager.Spawn(PowerupType.Coin, spawnPos);
+                        if (!Game1.ChristmasMode)
+                        {
+                            SoundManager.Instance.PlayEffect("coin");
+                        } else
+                        {
+                            SoundManager.Instance.PlayEffect("jingle");
+                        }
+                        addScore?.Invoke(100);
+                        addCoin?.Invoke();
+                    }
+                }
+                else if (hitTile.TileName == "Brick")
+                {
+                    sound.PlayEffect("break");
+                }
+            }
+        }
+
+        // =========================================================
+        // ENEMY COLLISIONS
+        // =========================================================
+        private void HandleEnemyCollision(StaticSprite activeMario, CameraManager camera)
+        {
+            if (Game1.DebugGodMode)
+            return;
+
+            var enemies = enemyManager.GetLiveEnemies();
+            if (_isHurt) return;
+
+            if (marioState.IsBig)
+            {
+                EnemyCollisionHandler.HandleMarioEnemyCollision(
+                    marioState.CurrentMario as BigMarioSprite,   
+                    enemies,
+                    onBigHit: () =>
+                    {
+                        marioState.Shrink();
+                        _isHurt = true;
+                        _hurtTimer = 1.5;
+                    });
+            }
+            else
+            {
+                EnemyCollisionHandler.HandleMarioEnemyCollision(
+                    marioState.CurrentMario as SmallMarioSprite, 
+                    enemies,
+                    restart: () =>
+                    {
+                        marioState.ForceSmall(spawnPoint);
+
+                        enemyManager.Reset();
+                        camera.Reset(spawnPoint);
+                        camera.LookAt(spawnPoint);
+
+                        screenManager.LoseLife();
+
+                        if (screenManager.CurrentState != GameState.GameOver)
+                            screenManager.ChangeState(GameState.LevelIntro);
+
+                        usedQuestionBlocks.Clear();
+                        resetScoreAndCoins?.Invoke();
+                    });
+            }
         }
 
 
