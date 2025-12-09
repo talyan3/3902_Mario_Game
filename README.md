@@ -25,13 +25,25 @@
  
 ## Level 1
 
-## Level 2 - *fun name?*
 
 
-  We are using a command manager and interfaces to create more seamless and quality code. 
+## Level 2 - *Christmas Level*
+### Features
+  * Christmas Snail
+  * Team members as enemies
+  * Christmas-themed background
 
-# Program Controls
-Mario (As of right now knight) moves using WASD
+## About
+  
+## Sprints
+### Sprint 2
+
+### Sprint 3
+
+### Sprint 4
+
+### Sprint 5
+
+
 # Descriptions of known bugs
 
-# Code Metrics
