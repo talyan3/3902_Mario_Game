@@ -72,6 +72,12 @@ namespace MonogameTest
         private int ScaleMod => C.ScaleMod;
         public static bool DebugGodMode = false;
 
+        //CHRISTMAS MODE
+        public static bool ChristmasMode = false;
+
+        private bool _cWasDown = false;
+
+
 
         public Game1()
         {
@@ -218,14 +224,12 @@ namespace MonogameTest
             else
                 DebugGodMode = false;
 
-            if (Keyboard.GetState().IsKeyUp(Keys.D))
-            {
-                // prevents permanent hold lock
-            }
-
 
             _marioState.Update(gameTime);
-            _marioState.CurrentMario.Update(gameTime);
+            if (!InputLocked)
+            {
+                _marioState.CurrentMario.Update(gameTime);
+            }
             _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
 
             _camera.LookAt(_marioState.CurrentMario.Position);
@@ -233,6 +237,19 @@ namespace MonogameTest
 
             if (Keyboard.GetState().IsKeyDown(Keys.M))
                 _sound.ToggleMute();
+
+            var kb = Keyboard.GetState();
+
+            //PRESS C TO TOGGLE CHRISTMAS MODE
+            if (kb.IsKeyDown(Keys.C) && !_cWasDown)
+            {
+                ChristmasMode = !ChristmasMode;   // toggle on/off
+                SoundLoader.LoadAllSounds(this, _sound);
+                _sound.PlaySong("mainTheme");
+            }
+
+            _cWasDown = kb.IsKeyDown(Keys.C);
+
 
             base.Update(gameTime);
         }

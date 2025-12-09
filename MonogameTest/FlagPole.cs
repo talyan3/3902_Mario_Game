@@ -12,13 +12,12 @@ namespace MonogameTest
         private readonly Rectangle _poleRect;
         private Rectangle _flagRect;
 
-        private readonly MarioStateController _marioState;
-        private readonly ScreenManager _screenManager;
-
         private readonly SmallMarioSprite _smallMario;
         private readonly BigMarioSprite _bigMario;
         private StaticSprite _currentMario;
 
+        private readonly MarioStateController _marioState;
+        private readonly ScreenManager _screenManager;
         private readonly Vector2 _spawnPoint;
         private readonly ICamera _camera;
         private readonly HUDScreen _hud;
@@ -27,20 +26,14 @@ namespace MonogameTest
         private bool _isWalking = false;
         private bool _hasWon = false;
 
-        private float _slideSpeed = 18f;
+        private float _slideSpeed = 40f;
         private float _walkSpeed = 90f;
 
         private float _soundDelayTimer = 0f;
-        private const float SOUND_DELAY = 2.8f;
+        private const float SOUND_DELAY = 1.5f;
 
-        private float _walkDelayTimer = 0f;
-        private const float WALK_DELAY = 1.2f; 
-
-
-        private float _victoryTimer = 0f;
-        private const float VICTORY_DELAY = 1.5f;
-
-        private readonly DetectCollisions _collision = new DetectCollisions();
+        private float _walkDelayTimer = 2.5f;
+        private const float WALK_DELAY = 2.5f;
 
         public Flagpole(
             SpriteBatch spriteBatch,
@@ -85,8 +78,20 @@ namespace MonogameTest
             var mario = _marioState.CurrentMario;
             Rectangle marioBounds = mario.Bounds;
 
-            //COLLISION AT ANY HEIGHT
-            if (!_hasWon && marioBounds.Intersects(_poleRect))
+            // ===============================
+            // HIT POLE (RUNNING OR FALLING)
+            // ===============================
+            bool fallingOntoPole =
+                marioBounds.Bottom <= _poleRect.Top + 24 &&
+                marioBounds.Right > _poleRect.Left &&
+                marioBounds.Left < _poleRect.Right;
+
+            bool fromLeft =
+                marioBounds.Right <= _poleRect.Left + 14;
+
+            bool validHit = fallingOntoPole || fromLeft;
+
+            if (!_hasWon && validHit && marioBounds.Intersects(_poleRect))
             {
                 _hasWon = true;
                 _isSliding = true;
@@ -95,84 +100,80 @@ namespace MonogameTest
                 Game1.InputLocked = true;
 
                 _screenManager.FreezeTime();
-
                 SoundManager.Instance.StopSong();
                 SoundManager.Instance.PlayEffect("flagpole");
 
-                float hitHeight = _poleRect.Bottom - marioBounds.Bottom;
-                int heightScore =
-                    hitHeight > 120 ? 5000 :
-                    hitHeight > 96 ? 4000 :
-                    hitHeight > 64 ? 2000 :
-                    hitHeight > 32 ? 1000 : 400;
-
-                _screenManager.AddScore(heightScore);
-
-                mario.Position = new Vector2(
-                    _poleRect.Right + 4,
-                    mario.Position.Y
-                );
+                //  Snap Mario flush to pole
+                float attachX = _poleRect.Left - marioBounds.Width / 2f - 2f;
+                mario.Position = new Vector2(attachX, mario.Position.Y);
             }
 
-            //  SLOW SLIDE DOWN
+            // ===============================
+            //  SLIDE DOWN
+            // ===============================
             if (_isSliding)
             {
-                Vector2 marioPos = mario.Position;
-                marioPos.Y += _slideSpeed * dt;
+                Vector2 pos = mario.Position;
+                pos.Y += _slideSpeed * dt;
 
-                if (marioPos.Y >= _poleRect.Bottom - mario.Bounds.Height)
+                Game1.InputLocked = true;
+
+                if (pos.Y >= _poleRect.Bottom - marioBounds.Height)
                 {
-                    marioPos.Y = _poleRect.Bottom - mario.Bounds.Height;
+                    pos.Y = _poleRect.Bottom - marioBounds.Height;
+                    mario.Position = pos;
+
+                    if (mario is SmallMarioSprite sm)
+                        sm.verticalVelocity = 0;
+
+                    if (mario is BigMarioSprite bm)
+                        bm.verticalVelocity = 0;
+
                     _isSliding = false;
                     _soundDelayTimer = SOUND_DELAY;
-                    _walkDelayTimer = WALK_DELAY; 
-                    SoundManager.Instance.PlaySong("levelComplete", loop: false);
+                    _walkDelayTimer = WALK_DELAY;
+
+                    SoundManager.Instance.PlaySong("levelComplete", false);
+                    return;
                 }
 
-                mario.Position = marioPos;
-                _flagRect.Y = (int)marioPos.Y - _flagTexture.Height;
+                mario.Position = pos;
+                _flagRect.Y = (int)pos.Y - _flagTexture.Height;
                 return;
             }
 
-            //  WAIT FOR FULL SOUND
-            if (_hasWon && !_isSliding && !_isWalking)
+            // ===============================
+            //  WAIT AT BOTTOM
+            // ===============================
+            if (_hasWon && !_isWalking)
             {
-                if (_soundDelayTimer > 0f)
-                {
-                    _soundDelayTimer -= dt;
-                    return;
-                }
+                if ((_soundDelayTimer -= dt) > 0) return;
+                if ((_walkDelayTimer -= dt) > 0) return;
 
-                if (_walkDelayTimer > 0f)   
-                {
-                    _walkDelayTimer -= dt;
-                    return;
-                }
-            }
-
-
-            //  AUTO WALK TO CASTLE
-            if (_hasWon && !_isSliding && !_isWalking)
-            {
                 _isWalking = true;
             }
 
+            // ===============================
+            //  WALK TO CASTLE (REAL WALK)
+            // ===============================
             if (_isWalking)
             {
-                // FORCE AUTO WALK MODE
+                Game1.InputLocked = true;
+
+                // FORCE REAL WALK MODE (ANIMATION + PHYSICS)
                 if (mario is SmallMarioSprite sm)
                     sm.ForceAutoWalkRight = true;
 
                 if (mario is BigMarioSprite bm)
                     bm.ForceAutoWalkRight = true;
 
-                mario.Update(gameTime);
+                mario.Update(gameTime);  // now animation + gravity both work
 
                 _camera.LookAt(mario.Position);
 
-                if (mario.Position.X >= _poleRect.Right + 60)
+                if (mario.Position.X >= _poleRect.Right + 140)
                 {
-                    // turn off auto walk
+                    // TURN OFF AUTO WALK
                     if (mario is SmallMarioSprite sm2)
                         sm2.ForceAutoWalkRight = false;
 
@@ -180,40 +181,24 @@ namespace MonogameTest
                         bm2.ForceAutoWalkRight = false;
 
                     _isWalking = false;
-                    _screenManager.ResetLevel();
-                    _screenManager.ChangeState(GameState.Title);
-                }
 
-                return;
-            }
-
-
-            // END SCENE
-            if (_hasWon)
-            {
-                _victoryTimer -= dt;
-
-                _screenManager.ConvertTimeToScore();
-
-                if (_victoryTimer <= 0f && _screenManager.Time <= 0)
-                {
-                    ResetManager.FullLevelReset(
-                        _smallMario,
-                        _bigMario,
-                        ref _currentMario,
-                        _spawnPoint,
-                        _camera,
-                        _hud,
-                        _screenManager
+                    Vector2 rightSideSpawn = new Vector2(
+                        _poleRect.Right + 160,
+                        _spawnPoint.Y
                     );
 
-                    _hasWon = false;
+                    _smallMario.Position = rightSideSpawn;
+                    _bigMario.Position   = rightSideSpawn;
+
+                    Game1.InputLocked = false;
+                    Game1.DebugGodMode = false;
+
                     _screenManager.ResetLevel();
                     _screenManager.ChangeState(GameState.Title);
                 }
             }
-        }
 
+        }
         public void Draw()
         {
             _spriteBatch.Draw(_flagTexture, _flagRect, Color.White);

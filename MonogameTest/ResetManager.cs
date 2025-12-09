@@ -45,6 +45,7 @@ namespace MonogameTest
 
             SoundManager.Instance.StopSong();
             SoundManager.Instance.PlaySong("mainTheme");
+            Game1.InputLocked = false;
         }
 
         // =========================================================

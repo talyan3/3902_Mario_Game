@@ -13,7 +13,15 @@ namespace MonogameTest.Sounds
 
         public void Load(Game game)
         {
-            soundManager.LoadSong(game, "levelComplete", "Sounds/06-level-complete");
+            if (!Game1.ChristmasMode)
+            {
+                soundManager.LoadSong(game, "levelComplete", "Sounds/06-level-complete");
+            }
+            else
+            {
+                soundManager.LoadSong(game, "levelComplete", "Sounds/XmasWin");
+            }
+            
         }
 
         public void Play(bool loop = false)
