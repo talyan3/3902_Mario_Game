@@ -10,7 +10,7 @@ namespace MonogameTest.Sounds
             soundManager.LoadSong(
                 game,
                 "mainTheme",
-                Game1.ChristmasMode ? "Sounds/TechnoXmas" : "Sounds/01-main-theme-overworld."
+                Game1.ChristmasMode ? "Sounds/TechnoXmas" : "Sounds/01-main-theme-overworld"
             );
 
             soundManager.LoadSong(game, "underworld", "Sounds/02-underworld");

@@ -3,25 +3,26 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonogameTest.Screens
 {
-    // Base class for all screens (title, HUD, intro, game over, etc.)
     public abstract class BaseScreen
     {
-        // Reference to the screen manager
+        public static Texture2D Pixel;
         protected ScreenManager Manager { get; }
-
-        // Reference to the main game
         protected Game1 Game { get; }
 
         protected BaseScreen(Game1 game, ScreenManager manager)
         {
             Game = game;
             Manager = manager;
+
+            // Create 1x1 pixel for overlay rendering
+            if (Pixel == null)
+            {
+                Pixel = new Texture2D(game.GraphicsDevice, 1, 1);
+                Pixel.SetData(new[] { Color.White });
+            }
         }
 
-        // Screen-specific update logic
         public abstract void Update(GameTime gameTime);
-
-        // Screen-specific draw logic
         public abstract void Draw(SpriteBatch spriteBatch);
     }
 }
