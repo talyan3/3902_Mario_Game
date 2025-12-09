@@ -118,7 +118,13 @@ namespace MonogameTest.Managers
                     else
                     {
                         powerupManager.Spawn(PowerupType.Coin, spawnPos);
-                        sound.PlayEffect("coin");
+                        if (!Game1.ChristmasMode)
+                        {
+                            SoundManager.Instance.PlayEffect("coin");
+                        } else
+                        {
+                            SoundManager.Instance.PlayEffect("jingle");
+                        }
                         addScore?.Invoke(100);
                         addCoin?.Invoke();
                     }
