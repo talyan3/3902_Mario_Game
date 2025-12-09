@@ -9,6 +9,20 @@
 
 ## Program Controls
 
+# Arrow Controls
+  * **Left** and **Right**: Move Mario side to side
+  * **Up**: Jump
+  * **Down** Crouch
+
+# Key Controls
+  * **R**: Resets Mario to the beginning
+  * **X**: Activate Christmas mode
+  * **Shift**: Mario sprints
+  * **M**: Mute game
+  * **P**: Pause game
+  * **D** (Hold): Activates Invincible Mario
+  * **Space**: Activate Teleport Dash Mario
+ 
 ## Level 1
 
 ## Level 2 - *fun name?*
