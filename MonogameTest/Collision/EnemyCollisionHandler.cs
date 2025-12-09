@@ -62,7 +62,10 @@ namespace MonogameTest
             result.Grounded = (side == typeCollision.Top && mtv.Y < 0);
             result.BonkedHead = (side == typeCollision.Bottom && mtv.Y > 0);
             result.HitWall = (side == typeCollision.Left || side == typeCollision.Right);
-            return true;
+
+
+return true;
+
         }
 
         public static bool HandleMany(

@@ -21,6 +21,9 @@ namespace MonogameTest
         private int frames;
         private float deltaTime;
 
+        private SpriteEffects _flip = SpriteEffects.None;
+
+
         public bool IsAlive { get; set; } = true;
 
         // -1 = left, +1 = right
@@ -110,11 +113,13 @@ namespace MonogameTest
             // If walking or shell-moving → flip direction
             if (IsWalking || IsShellMoving)
             {
+                
                 // Ensure direction is never zero
                 if (direction == 0)
                     direction = -1;
 
-                direction = -direction;
+                direction *= -2;
+                _flip = (direction > 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             }
         }
 
@@ -137,6 +142,8 @@ namespace MonogameTest
 
                     Position += new Vector2((float)direction * WalkSpeed * deltaTime, 0);
 
+        
+
                     // Animate
                     elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (elapsed >= delay)
@@ -147,10 +154,13 @@ namespace MonogameTest
                     }
                     break;
 
+                    
+
 
                 case KoopaState.ShellMoving:
                     Position += new Vector2((float)direction * ShellSpeed * deltaTime, 0);
                     sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
+                    _flip = (direction > 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
                     break;
 
 
@@ -159,6 +169,8 @@ namespace MonogameTest
                     sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
                     break;
             }
+
+            
         }
 
         // ============================
@@ -167,7 +179,18 @@ namespace MonogameTest
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             if (!IsAlive) return;
-            _spriteBatch.Draw(sprite, dRect, sRect, Color.White);
+
+            _spriteBatch.Draw(
+                sprite,
+                dRect,
+                sRect,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                _flip,     
+                0f
+            );
         }
+
     }
 }
