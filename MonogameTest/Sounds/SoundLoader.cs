@@ -16,7 +16,6 @@ namespace MonogameTest.Sounds
             soundManager.LoadSong(game, "youreDead", "Sounds/08-you-re-dead");
             soundManager.LoadSong(game, "gameOver", "Sounds/09-game-over");
             soundManager.LoadSong(game, "xmasLose", "Sounds/XmasLose");
-            soundManager.LoadSong(game, "heartbeat", "Sounds/Heartbeat");
             soundManager.LoadSong(game, "gameOver2", "Sounds/10-game-over-2");
             soundManager.LoadSong(game, "intoTheTunnel", "Sounds/11-into-the-tunnel");
             soundManager.LoadSong(game, "hurry", "Sounds/13-hurry");
@@ -25,6 +24,7 @@ namespace MonogameTest.Sounds
             soundManager.LoadSong(game, "hurryOverworld", "Sounds/18-hurry-overworld-");
 
             // === Sound effects ===
+            soundManager.LoadEffect(game, "heartbeat", "Sounds/Heartbeat");
             soundManager.LoadEffect(game, "bump", "Sounds/smb_bump");
             soundManager.LoadEffect(game, "coin", "Sounds/smb_coin");
             soundManager.LoadEffect(game, "breakBlock", "Sounds/smb_breakblock");

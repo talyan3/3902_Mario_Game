@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonogameTest.Sounds;
 using MonogameTest.Screens;
+using System.Runtime.Serialization.DataContracts;
 
 namespace MonogameTest
 {
@@ -31,9 +32,8 @@ namespace MonogameTest
 
         private float _soundDelayTimer = 0f;
         private const float SOUND_DELAY = 1.5f;
-
-        private float _walkDelayTimer = 2.5f;
-        private const float WALK_DELAY = 2.5f;
+        private float _walkDelayTimer = 0.25f;
+        private const float WALK_DELAY = 0.25f;
 
         public Flagpole(
             SpriteBatch spriteBatch,
@@ -177,7 +177,7 @@ namespace MonogameTest
 
                 _camera.LookAt(mario.Position);
 
-                if (mario.Position.X >= _poleRect.Right + 140)
+                if (mario.Position.X >= _poleRect.Right + 110)
                 {
                     // TURN OFF AUTO WALK
                     if (mario is SmallMarioSprite sm2)
