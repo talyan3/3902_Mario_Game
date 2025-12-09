@@ -27,13 +27,16 @@
 
 
 
-## Level 2 - *Christmas Level*
-### Features
-  * Christmas Snail
-  * <img width="50" height="50" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
+## Level 2 - *Christmas Chaos Level*
+### Inspiration
+With the hoilday season, our team thought there would be no better way to end off the semester with our own christmas-themed chaos Mario level. Each team member added their own feature into the game, granted that it fit into the Christmas theme.
 
+### Features
+  * Christmas Snail - Inspired by the Immortal Christmas Snail, our snail will (slowly) terrorize Mario as he runs through the game. Don't get caught!
+    ** <img width="50" height="50" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
 
   * Team members as enemies
+  * 
   * Christmas-themed background
 
 ## About
