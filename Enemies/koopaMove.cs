@@ -22,6 +22,8 @@ namespace MonogameTest
         private float deltaTime;
 
         public bool IsAlive { get; set; } = true;
+        private SpriteEffects effects = SpriteEffects.None;
+
 
         // -1 = left, +1 = right
         public double direction = -1;
@@ -107,7 +109,7 @@ namespace MonogameTest
 
         public void ReverseDirection()
         {
-            direction *= -1;
+            direction *= -2;
         }
         public void ResetState()
         {
@@ -136,7 +138,10 @@ namespace MonogameTest
             switch (state)
             {
                 case KoopaState.Walking:
-                    Position += new Vector2((float)direction * WalkSpeed * deltaTime, 0);
+                    // Update sprite flip based on direction
+                    effects = (direction < 0) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+
+                    Position += new Vector2(Math.Clamp((float)direction, -2f, 2f) * WalkSpeed * deltaTime, 0);
 
                     elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (elapsed >= delay)
@@ -148,7 +153,7 @@ namespace MonogameTest
                     break;
 
                 case KoopaState.ShellMoving:
-                    Position += new Vector2((float)direction * ShellSpeed * deltaTime, 0);
+                    Position += new Vector2(Math.Clamp((float)direction, -2f, 2f) * ShellSpeed * deltaTime, 0);
 
                     // LOCK shell sprite while moving
                     sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
@@ -167,7 +172,7 @@ namespace MonogameTest
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             if (!IsAlive) return;
-            _spriteBatch.Draw(sprite, dRect, sRect, Color.White);
+            _spriteBatch.Draw(sprite, dRect, sRect, Color.White, 0f, Vector2.Zero, effects, 0f);
         }
     }
 }

@@ -10,8 +10,8 @@ public static class EnemyPositions
         new Vector2(39, 12),
         new Vector2(50, 12),
         new Vector2(52, 12),
-        //new Vector2(79, 4),   // these goombas spawn elevated, so having no gravity is a problem.
-        //new Vector2(81, 4),
+        new Vector2(79, 4),   // these goombas spawn elevated, so having no gravity is a problem.
+        new Vector2(81, 4),
         new Vector2(96, 12),
         new Vector2(98, 12),
         new Vector2(113, 12),

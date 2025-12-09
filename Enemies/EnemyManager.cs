@@ -84,6 +84,14 @@ namespace MonogameTest.Managers
 
                 g.Update(gameTime);
 
+                // ---------------------------------------
+                // NEW: Check if Goomba is about to walk off a cliff
+                // ---------------------------------------
+                if (IsAtCliff(g, mapTiles))
+                {
+                    g.ReverseDirection();
+                }
+
                 if (EnemyCollisionHandler.HandleMany(g, mapTiles, out var res, out var tile))
                 {
                     if (res.HitWall)
@@ -95,6 +103,13 @@ namespace MonogameTest.Managers
             if (_koopa != null && _koopa.IsAlive)
             {
                 _koopa.Update(gameTime);
+                // ---------------------------------------
+                // NEW: Check if Goomba is about to walk off a cliff
+                // ---------------------------------------
+                if (IsAtCliff_K(_koopa, mapTiles))
+                {
+                    _koopa.ReverseDirection();
+                }
 
                 if (EnemyCollisionHandler.HandleMany(_koopa, mapTiles, out var res, out var tile))
                 {
@@ -135,6 +150,48 @@ namespace MonogameTest.Managers
                 _koopa.ResetState();   // <-- ADD THIS
                 _koopa.Position = _koopaSpawnTile * _tileSize;
             }
+        }
+        private bool IsAtCliff(moveGoom g, List<Tile> tiles)
+        {
+            // Feet position one pixel below Goomba
+            Rectangle futureFeet = new Rectangle(
+                g.Bounds.Center.X,
+                g.Bounds.Bottom + 1,
+                2,   // tiny check width
+                2
+            );
+
+            foreach (var t in tiles)
+            {
+                if (t.TileName == "Air") 
+                    continue;
+
+                if (futureFeet.Intersects(t.Bounds))
+                    return false; // Solid ground exists
+            }
+
+            return true; // No ground → this is a cliff
+        }
+        private bool IsAtCliff_K(moveKoop k, List<Tile> tiles)
+        {
+            // Feet position one pixel below Goomba
+            Rectangle futureFeet = new Rectangle(
+                k.Bounds.Center.X,
+                k.Bounds.Bottom + 1,
+                2,   // tiny check width
+                2
+            );
+
+            foreach (var t in tiles)
+            {
+                if (t.TileName == "Air") 
+                    continue;
+
+                if (futureFeet.Intersects(t.Bounds))
+                    return false; // Solid ground exists
+            }
+
+            return true; // No ground → this is a cliff
         }
     }
 }
