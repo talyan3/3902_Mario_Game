@@ -26,11 +26,14 @@
 ## Level 1 - *Mario Replica*
 
 ### Sprint 2
- <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
+ <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
 
+ ### Sprint 3
+ <img width="300" height="300" alt="Screenshot 2025-12-09 160352" src="https://github.com/user-attachments/assets/5cb14c23-dd40-4530-a67f-b2126a80c148" />
 
 
 ## Level 2 - *Christmas Chaos Level*
+
 ### Inspiration
 With the hoilday season, our team thought there would be no better way to end off the semester with our own christmas-themed chaos Mario level. Each team member added their own feature into the game, granted that it fit into the Christmas theme. Not only is the level visually inspired by Christmas, the sounds are bright and Christmas themed.
 
@@ -44,11 +47,6 @@ With the hoilday season, our team thought there would be no better way to end of
 
 ## About
   
-## Sprints
-### Sprint 2
-
-### Sprint 3
-
 ### Sprint 4
 
 ### Sprint 5
