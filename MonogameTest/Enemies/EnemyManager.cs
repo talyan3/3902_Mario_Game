@@ -52,6 +52,16 @@ namespace MonogameTest.Managers
             _goombaSprite = content.Load<Texture2D>("Sprites/goomba-Final");
             _koopaSprite = content.Load<Texture2D>("Sprites/green-koopa");
 
+            try
+{
+    _goombaSprite = content.Load<Texture2D>("Sprites/goomba-Final");
+}
+catch (Exception ex)
+{
+    Console.WriteLine("Load failed: " + ex.Message);
+}
+
+
             // ---- CREATE KOOPA ----
             _koopa = new moveKoop(_koopaSprite, spriteBatch)
             {
