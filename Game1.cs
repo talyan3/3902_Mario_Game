@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -232,7 +233,15 @@ namespace MonogameTest
                 _camera
             );
 
-            _marioState.CurrentMario.Update(gameTime);
+            //_marioState.CurrentMario.Update(gameTime);
+            if (_marioState.CurrentMario == _smallMario)
+            {
+                _smallMario.Update(gameTime, _camera.LeftEdge);
+            }
+            if (_marioState.CurrentMario == _bigMario)
+            {
+                 _bigMario.Update(gameTime, _camera.LeftEdge);
+            }
             _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
 
             _camera.LookAt(_marioState.CurrentMario.Position);

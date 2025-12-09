@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using MonogameTest.Sounds;
+using System.Xml.XPath;
 
 namespace MonogameTest
 {
@@ -40,7 +41,7 @@ namespace MonogameTest
             {
                 pos = koop.Position;
                 enemyRect = koop.Bounds;
-                enemyRect.Inflate(-5, 0);
+                enemyRect.Inflate(-5, -0);
             }
             else
             {

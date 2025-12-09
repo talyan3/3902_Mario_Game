@@ -109,6 +109,20 @@ namespace MonogameTest
         {
             direction *= -1;
         }
+        public void ResetState()
+        {
+            IsAlive = true;
+
+            // Reset state machine
+            state = KoopaState.Walking;
+            direction = -1;
+
+            // Reset animation
+            frames = WALK_FRAME_1;
+            sRect = new Rectangle(frames * 30, 0, 30, 24);
+
+            elapsed = 0f;
+        }
 
         // ============================
         // UPDATE

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using System;
 
 namespace MonogameTest.Managers
 {
@@ -17,6 +18,7 @@ namespace MonogameTest.Managers
         private readonly int _tileSize;
 
         private readonly Vector2 _koopaSpawnTile = new Vector2(106, 12);
+        private readonly MarioStateController marioState;
 
         public EnemyManager(int tileSize)
         {
@@ -130,7 +132,7 @@ namespace MonogameTest.Managers
 
             if (_koopa != null)
             {
-                _koopa.IsAlive = true;
+                _koopa.ResetState();   // <-- ADD THIS
                 _koopa.Position = _koopaSpawnTile * _tileSize;
             }
         }
