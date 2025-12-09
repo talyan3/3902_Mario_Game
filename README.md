@@ -26,7 +26,7 @@
 ## Level 1 - *Mario Replica*
 
 ### Sprint 2
- <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
+ <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
 
 
 
