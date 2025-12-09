@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-
+// USELESS?
 namespace MonogameTest
 {
     public class Camera2D
