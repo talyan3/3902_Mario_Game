@@ -36,6 +36,7 @@ namespace MonogameTest.Managers
 
 
 
+
         public CollisionManager(
             MarioStateController marioState,
             List<Tile> tiles,
@@ -132,15 +133,18 @@ namespace MonogameTest.Managers
                         {
                             SoundManager.Instance.PlayEffect("jingle");
                         }
-                        addScore?.Invoke(100);
+                        ScreenManager.Instance.AddScore(200);
                         addCoin?.Invoke();
                     }
                 }
                 else if (hitTile.TileName == "Brick")
                 {
-                    sound.PlayEffect("break");
+                    SoundManager.Instance.PlayEffect("breakBlock");
+                    ScreenManager.Instance.AddScore(50);
                 }
             }
+            
+
         }
 
         // =========================================================
@@ -241,28 +245,29 @@ namespace MonogameTest.Managers
             {
                 case PowerupType.Mushroom:
                     marioState.Grow();
-                    addScore?.Invoke(200);
+                    ScreenManager.Instance.AddScore(200);
                     break;
 
                 case PowerupType.Coin:
                     addCoin?.Invoke();
-                    addScore?.Invoke(100);
+                    ScreenManager.Instance.AddScore(100);
                     break;
 
                 case PowerupType.GreenMushroom:
                     sound.PlayEffect("oneUp");
                     screenManager.AddScore(200);
+                    ScreenManager.Instance.GainLife();
                     screenManager.ChangeState(screenManager.CurrentState);
                     break;
 
                 case PowerupType.Star:
                     sound.PlayEffect("powerUp");
-                    addScore?.Invoke(500);
+                    ScreenManager.Instance.AddScore(500);
                     break;
 
                 case PowerupType.FireFlower:
                     sound.PlayEffect("powerUp");
-                    addScore?.Invoke(300);
+                    ScreenManager.Instance.AddScore(300);
                     break;
             }
         }

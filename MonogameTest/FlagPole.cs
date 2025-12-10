@@ -35,6 +35,10 @@ namespace MonogameTest
         private float _walkDelayTimer = 0.25f;
         private const float WALK_DELAY = 0.25f;
 
+        private int _flagScoreAwarded = 0;
+        private bool _scoreGiven = false;
+
+
         public Flagpole(
             SpriteBatch spriteBatch,
             Texture2D flagTexture,
@@ -106,6 +110,32 @@ namespace MonogameTest
                 //  Snap Mario flush to pole
                 float attachX = _poleRect.Left - marioBounds.Width / 2f - 2f;
                 mario.Position = new Vector2(attachX, mario.Position.Y);
+
+                // =========================
+                // FLAG SCORE CALCULATION
+                // =========================
+
+                // Distance from top of pole to Mario's hit point
+                float hitY = marioBounds.Top;
+                float poleTop = _poleRect.Top;
+                float poleBottom = _poleRect.Bottom;
+
+                float totalHeight = poleBottom - poleTop;
+                float relativeHeight = 1f - MathHelper.Clamp((hitY - poleTop) / totalHeight, 0f, 1f);
+
+                // Determine score
+                if (relativeHeight > 0.90f)       _flagScoreAwarded = 5000;
+                else if (relativeHeight > 0.70f) _flagScoreAwarded = 800;
+                else if (relativeHeight > 0.50f) _flagScoreAwarded = 400;
+                else if (relativeHeight > 0.30f) _flagScoreAwarded = 200;
+                else                             _flagScoreAwarded = 100;
+
+                // Award immediately (OG checks on hit)
+                _screenManager.AddScore(_flagScoreAwarded);
+                _scoreGiven = true;
+
+                // TO-DO: Trigger a score popup sprite here
+
             }
 
             // ===============================
