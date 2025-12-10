@@ -77,19 +77,19 @@ public class PlayerMario
         // Physics update
         Physics.Update(gameTime);
         // PLATFORM COLLISION
-        Rectangle rect = new Rectangle(
-            (int)Physics.position.X,
-            (int)Physics.position.Y,
-            (int)(animPlayer.CurrentAnimation.FWidth * scale),
-            (int)(animPlayer.CurrentAnimation.FHeight * scale)
-        );
+        //Rectangle rect = new Rectangle(
+            // (int)Physics.position.X,
+            // (int)Physics.position.Y,
+            // (int)(animPlayer.CurrentAnimation.FWidth * scale),
+            // (int)(animPlayer.CurrentAnimation.FHeight * scale)
+        //);
 
-        if (rect.Intersects(platformRect) && Physics.velocity.Y >= 0)
-        {
-            Physics.position.Y = platformRect.Top - rect.Height;
-            Physics.velocity.Y = 0;
-            Physics.isGrounded = true;
-        }
+        // if (rect.Intersects(platformRect) && Physics.velocity.Y >= 0)
+        // {
+        //     Physics.position.Y = platformRect.Top - rect.Height;
+        //     Physics.velocity.Y = 0;
+        //     Physics.isGrounded = true;
+        // }
 
         // Update state machine
         currState.Update(gameTime);

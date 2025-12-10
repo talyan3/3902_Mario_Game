@@ -12,6 +12,7 @@ using System.Runtime.Intrinsics.X86;
 using MonogameTest.Sounds;
 using MonogameTest.Screens;
 using MonogameTest.Managers;
+using System.IO.Pipes;
 
 namespace MonogameTest;
 
@@ -87,9 +88,11 @@ public class Game1 : Game
     private int cooldown;
     private HashSet<Tile> _usedQuestionBlocks = new HashSet<Tile>();
     private EnemyManager _enemyManager;
+    Texture2D whiteRectangle;
 
     private CollisionManager _collisionManager;
 
+    List<Pipe> pipes;
     public Game1()
     {
         ConfigLoader.Load();  // Load JSON before anything needs the values
@@ -106,7 +109,14 @@ public class Game1 : Game
         _screenManager = new ScreenManager();
         _enemyManager = new EnemyManager(TileSize);
         _powerupFieldManager = new PowerupFieldManager();
+        //
+        pipes = new List<Pipe>();
+        pipes.Add(new Pipe(
+            new Rectangle(752-16, 128, 32, 16), // pipe location/size
+            new Vector2(2384, 272)            // Destination
+        ));
         base.Initialize();
+        //
     }
 
     protected override void LoadContent()
@@ -114,7 +124,10 @@ public class Game1 : Game
         cooldown = C.Cooldown;
         time = C.StartingTime;
         _spawnPoint = new Vector2(C.MarioStartX, C.MarioStartY);
-
+        ////
+        whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
+        whiteRectangle.SetData(new[] { Color.White });
+        /// 
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         SoundManager = SoundManager.Instance;
 
@@ -241,6 +254,20 @@ public class Game1 : Game
             case GameState.Playing:
                 break;
         }
+        //TODO:PIPE TELEPORTATION
+        foreach (var entrance in pipes)
+        {
+            if (entrance.CheckCollision(_smallMario.Bounds))
+            {
+                 Console.WriteLine("Teleporting Mario!");
+                if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                {
+                _smallMario.Position= entrance.Destination;
+                }
+                break;
+            }
+        }
+        //
 
         KeyboardState state = Keyboard.GetState();
         animPlayer.Update(gameTime);
@@ -366,7 +393,11 @@ public class Game1 : Game
 
         //powerups
         _powerupFieldManager.Draw(_spriteBatch);
-
+        ////
+        Rectangle myRectangle = new Rectangle(752-16, 128, 32, 50);
+        //Rectangle myRectangle = new Rectangle(0, 0, 32, 16);
+        _spriteBatch.Draw(whiteRectangle, myRectangle, Color.Red);
+        /// 
         _flagpole.Draw(); 
 
         _spriteBatch.End();
