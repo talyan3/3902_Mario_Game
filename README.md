@@ -44,8 +44,12 @@ Above is an entire layout of Level 1. One of our group members was able to find 
  
 During Sprint 2, we worked on figuring out basic keypress commands, making sure that Mario moves, and placing all of our sprites on the screen. We started by using one member's Sprint 0 and ensured that every team member was familiar with the code. The team's most simple assignment, where we started on getting accostomed to GitHub and starting to implement the Command Design Patter with Command Managers.
  
- ### Sprint 3
+ ### Sprint 3 - Focus on Collision and Level Loading
  <img width="350" height="350" alt="Screenshot 2025-12-09 160352" src="https://github.com/user-attachments/assets/5cb14c23-dd40-4530-a67f-b2126a80c148" />
+
+During Sprint 3, our team focus on getting the level created and loaded into the game. We also worked on getting collision and physics to work. The collision used the rectangle logic that was covered in class. We focused on seeing how the two rectangles that represented the sprites were to overlap and use that information to determine the type of collision. We then passed that information to a HandleCollision class that used the information to correctly move Mario around so that he experienced collision.
+
+At the end of the Sprint, our team ended up with our infamous two Marios. One had the correct collision working with the ground and pipes. The other had the correct physics and physics animation for when Mario jumps and moves. Our group started to have trouble with GitHub and figuring out how to manage all of our branches in an effective way. Our confusion led to last minute merges and trouble getting both the physics and the collision to work well together.
  
 
  ### Sprint 4
