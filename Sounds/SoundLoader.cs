@@ -7,17 +7,15 @@ namespace MonogameTest.Sounds
         public static void LoadAllSounds(Game game, SoundManager soundManager)
         {
             // === Background music ===
-            soundManager.LoadSong(
-                game,
-                "mainTheme",
-                Game1.ChristmasMode ? "Sounds/TechnoXmas" : "Sounds/01-main-theme-overworld"
-            );
-
+            soundManager.LoadSong(game, "mainTheme", "Sounds/01-main-theme-overworld");
+            soundManager.LoadSong(game, "mainXmas", "Sounds/TechnoXmas");
             soundManager.LoadSong(game, "underworld", "Sounds/02-underworld");
             soundManager.LoadSong(game, "starman", "Sounds/05-starman");
             soundManager.LoadSong(game, "levelComplete", "Sounds/06-level-complete");
+            soundManager.LoadSong(game, "xmasWin", "Sounds/XmasWin");
             soundManager.LoadSong(game, "youreDead", "Sounds/08-you-re-dead");
             soundManager.LoadSong(game, "gameOver", "Sounds/09-game-over");
+            soundManager.LoadSong(game, "xmasLose", "Sounds/XmasLose");
             soundManager.LoadSong(game, "gameOver2", "Sounds/10-game-over-2");
             soundManager.LoadSong(game, "intoTheTunnel", "Sounds/11-into-the-tunnel");
             soundManager.LoadSong(game, "hurry", "Sounds/13-hurry");
@@ -26,6 +24,7 @@ namespace MonogameTest.Sounds
             soundManager.LoadSong(game, "hurryOverworld", "Sounds/18-hurry-overworld-");
 
             // === Sound effects ===
+            soundManager.LoadEffect(game, "heartbeat", "Sounds/Heartbeat");
             soundManager.LoadEffect(game, "bump", "Sounds/smb_bump");
             soundManager.LoadEffect(game, "coin", "Sounds/smb_coin");
             soundManager.LoadEffect(game, "breakBlock", "Sounds/smb_breakblock");
@@ -40,6 +39,9 @@ namespace MonogameTest.Sounds
             soundManager.LoadEffect(game, "pause", "Sounds/smb_pause");
             soundManager.LoadEffect(game, "warning", "Sounds/smb_warning");
             soundManager.LoadEffect(game, "oneUp", "Sounds/smb_1-up");
+            soundManager.LoadEffect(game, "jingle", "Sounds/Jingle");
+            soundManager.LoadEffect(game, "xmasThud", "Sounds/xmasThud");
+                        
         }
     }
 }

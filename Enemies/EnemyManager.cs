@@ -2,6 +2,8 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
+using MonogameTest.Snail;
+using MonogameTest;
 using System;
 
 namespace MonogameTest.Managers
@@ -18,7 +20,10 @@ namespace MonogameTest.Managers
         private readonly int _tileSize;
 
         private readonly Vector2 _koopaSpawnTile = new Vector2(106, 12);
-        private readonly MarioStateController marioState;
+        private Snail.Snail _snail;
+        private readonly Random _rng = new Random();
+        public Snail.Snail Snail => _snail;
+        //private readonly MarioStateController marioState;
 
         public EnemyManager(int tileSize)
         {
@@ -39,6 +44,9 @@ namespace MonogameTest.Managers
 
             if (_koopa != null && _koopa.IsAlive)
                 list.Add(_koopa);
+            
+            if (_snail != null && Game1.ChristmasMode)
+                list.Add(_snail);  
 
             return list;
         }
@@ -68,13 +76,22 @@ namespace MonogameTest.Managers
                 g.Position = g.SpawnPosition;
                 _goombas.Add(g);
             }
+            
+            // Load snail textures directly from Snail folder
+            Texture2D snail1 = Texture2D.FromFile(graphics, "Snail/snail1.png");
+            Texture2D snail2 = Texture2D.FromFile(graphics, "Snail/snail2.png");
+
+            // Spawn point (far left)
+            Vector2 snailStart = new Vector2(200, 200);
+
+            _snail = new Snail.Snail(snail1, snail2, snailStart);
         }
 
         // ===========================
         // UPDATE
         // ===========================
 
-        public void Update(GameTime gameTime, List<Tile> mapTiles)
+        public void Update(GameTime gameTime, List<Tile> mapTiles, Vector2 marioPos)
         {
             // ---- UPDATE GOOMBAS ----
             foreach (var g in _goombas)
@@ -117,6 +134,21 @@ namespace MonogameTest.Managers
                         _koopa.ReverseDirection();
                 }
             }
+            // Snail tile collision
+            if (_snail != null && Game1.ChristmasMode)
+            {
+                if (EnemyCollisionHandler.HandleMany(_snail, mapTiles, out var sResult, out var sTile))
+                {
+                    // Keep snail above ground
+                    if (sResult.Grounded && sResult.MTV.Y < 0)
+                    {
+                        _snail.Position += new Vector2(0, sResult.MTV.Y);
+                    }
+                }
+
+            }
+            _snail?.Update(gameTime, marioPos);
+
         }
 
         // ===========================
@@ -131,6 +163,8 @@ namespace MonogameTest.Managers
 
             if (_koopa != null && _koopa.IsAlive)
                 _koopa.Draw(spriteBatch, _koopa.Position);
+            
+            _snail?.Draw(spriteBatch);
         }
 
         // ===========================
@@ -149,6 +183,34 @@ namespace MonogameTest.Managers
             {
                 _koopa.ResetState();   // <-- ADD THIS
                 _koopa.Position = _koopaSpawnTile * _tileSize;
+            }
+        }
+
+        //SPAWN SNAIL
+        private readonly Random _rng2 = new Random();
+        public void ActivateSnail(Vector2 marioPos)
+        {
+            if (_snail == null)
+                return;
+
+            // World horizontal bounds — adjust as needed
+            float minX = 0f;
+            float maxX = 2500f;
+
+            float randomX = (float)_rng2.NextDouble() * (maxX - minX) + minX;
+
+            // Keep Y at Mario's height
+            float y = marioPos.Y;
+
+            _snail.Position = new Vector2(randomX, y);
+        }
+
+        public void ResetSnail(Vector2 spawnPoint)
+        {
+            if (_snail != null)
+            {
+                _snail.Position = spawnPoint;
+                _snail.Reset();
             }
         }
         private bool IsAtCliff(moveGoom g, List<Tile> tiles)

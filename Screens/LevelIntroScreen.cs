@@ -50,7 +50,14 @@ namespace MonogameTest.Screens
             if (_timer <= 0)
             {
                 SoundManager.Instance.StopSong();
-                SoundManager.Instance.PlaySong("mainTheme");
+                if (!Game1.ChristmasMode)
+                {
+                    SoundManager.Instance.PlaySong("mainTheme");
+                }
+                else
+                {
+                    SoundManager.Instance.PlaySong("mainXmas");
+                }
 
                 Manager.ChangeState(GameState.Playing);
                 _timer = DefaultIntroTime;

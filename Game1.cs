@@ -29,7 +29,6 @@ namespace MonogameTest
         // ===========================
         private List<Tile> _mapTiles;
         private Vector2 _spawnPoint;
-
         private ICamera _camera;
         private BackgroundManager _backgroundManager;
 
@@ -53,18 +52,25 @@ namespace MonogameTest
         private SpriteFont _font;
         private Texture2D _coin;
         private HUDScreen _hud;
-
         private TitleScreen _titleScreen;
         private LevelIntroScreen _introScreen;
         private TimeUpScreen _timeUpScreen;
         private GameOverScreen _gameOverScreen;
-
         private Flagpole _flagpole;
+        private float _deathTimer = 0f;
 
+        // Flags
         public static bool InputLocked { get; set; }
         public static bool DebugGodMode { get; set; }
+
+
+        // Christmas Mode
         public static bool ChristmasMode { get; set; }
-        private bool _cWasDown;
+        private bool _xWasDown;
+        private bool _showChristmasText = false;
+        private float _christmasTimer = 0f;
+
+        // View Info
         public static int ScreenWidth { get; private set; }
         public static int ScreenHeight { get; private set; }
 
@@ -72,7 +78,7 @@ namespace MonogameTest
         // CONFIG SHORTCUTS
         // ===========================
         private GameConfig C => ConfigLoader.Config;
-        private int TileSize => C.TileSize;
+        //private int TileSize => C.TileSize;
         private int ViewWidth => C.ViewWidth;
         private int Scale => C.Scale;
         private int ScaleMod => C.ScaleMod;
@@ -98,9 +104,9 @@ namespace MonogameTest
             ScreenHeight = _graphics.PreferredBackBufferHeight;
 
             _input = new KeyboardController();
-            _screenManager = new ScreenManager();
+            _screenManager = ScreenManager.Instance;
 
-            _enemyManager = new EnemyManager(TileSize);
+            _enemyManager = new EnemyManager(C.TileSize); // THIS IS SO GOOD, USE THIS!!!
             _powerupManager = new PowerupFieldManager();
 
             base.Initialize();
@@ -116,8 +122,10 @@ namespace MonogameTest
             // ---------- SOUND ----------
             _sound = SoundManager.Instance;
             SoundLoader.LoadAllSounds(this, _sound);
-            _sound.PlaySong("mainTheme");
-
+            if (!ChristmasMode)
+                SoundManager.Instance.PlaySong("mainTheme");
+            else
+                SoundManager.Instance.PlaySong("mainXmas");
 
             // ---------- BACKGROUND ----------
             _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
@@ -127,11 +135,11 @@ namespace MonogameTest
             _smallMario = new SmallMarioSprite(GraphicsDevice) { SoundManager = _sound };
             _bigMario = new BigMarioSprite(GraphicsDevice) { SoundManager = _sound };
 
-            _spawnPoint = new Vector2(TileSize * 5, TileSize * 13);
+            _spawnPoint = new Vector2(C.TileSize * 5, C.TileSize * 13);
             _smallMario.Position = _spawnPoint;
             _bigMario.Position = _spawnPoint;
 
-            _marioState = new MarioStateController(_smallMario, _bigMario, _smallMario, TileSize);
+            _marioState = new MarioStateController(_smallMario, _bigMario, _smallMario, C.TileSize);
 
             // ---------- MAP ----------
             using var fs = new FileStream("blocksV10.png", FileMode.Open);
@@ -150,9 +158,22 @@ namespace MonogameTest
             // ---------- ENEMIES ----------
             _enemyManager.LoadContent(Content, GraphicsDevice, _spriteBatch);
 
+            // ---------- HUD / SCREENS ----------
+            _font = Content.Load<SpriteFont>("marioFont");
+            _coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
+
+            _hud = new HUDScreen(_font, _coin, _screenManager);
+
+            _titleScreen = new TitleScreen(this, _screenManager, Texture2D.FromFile(GraphicsDevice, "titlescreen.png"), _font, _coin);
+            _introScreen = new LevelIntroScreen(this, _screenManager, _font, _coin);
+            _timeUpScreen = new TimeUpScreen(this, _screenManager, _font, _coin);
+            _gameOverScreen = new GameOverScreen(this, _screenManager, _font, _coin);
+
+            _pauseScreen = new PauseScreen(this, _screenManager, _font);
+
             // ---------- FLAGPOLE ----------
             var flagTexture = Texture2D.FromFile(GraphicsDevice, "flag.png");
-            var poleRect = new Rectangle(TileSize * 198, TileSize * 3, 5, 160);
+            var poleRect = new Rectangle(C.TileSize * 198, C.TileSize * 3, 5, 160);
             _flagpole = new Flagpole(
                 _spriteBatch,
                 flagTexture,
@@ -178,22 +199,10 @@ namespace MonogameTest
                 _flagpole,
                 _spawnPoint,
                 C.TileSize,
-                points => _screenManager.AddScore(points),
-                () => _screenManager.AddCoin(),
-                () => _screenManager.ResetLevel()
+                _smallMario,
+                _bigMario,
+                _camera
             );
-
-            // ---------- HUD / SCREENS ----------
-            _font = Content.Load<SpriteFont>("marioFont");
-            _coin = Texture2D.FromFile(GraphicsDevice, "coin2.png");
-
-            _hud = new HUDScreen(_font, _coin, _screenManager);
-            _titleScreen = new TitleScreen(this, _screenManager, Texture2D.FromFile(GraphicsDevice, "titlescreen.png"), _font, _coin);
-            _introScreen = new LevelIntroScreen(this, _screenManager, _font, _coin);
-            _timeUpScreen = new TimeUpScreen(this, _screenManager, _font, _coin);
-            _gameOverScreen = new GameOverScreen(this, _screenManager, _font, _coin);
-
-            _pauseScreen = new PauseScreen(this, _screenManager, _font);
         }
 
         // =========================================================
@@ -201,6 +210,28 @@ namespace MonogameTest
         // =========================================================
         protected override void Update(GameTime gameTime)
         {
+            // =============== DEATH TIMER HANDLING ===============
+            if (PendingDeathTimer > 0f)
+            {
+                PendingDeathTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                // Still waiting → skip gameplay
+                if (PendingDeathTimer > 0f)
+                    return;
+
+                // Timer finished → now reset
+                ResetManager.SoftReset(
+                    _smallMario,
+                    _bigMario,
+                    _marioState,
+                    _spawnPoint,
+                    _camera,
+                    _enemyManager
+                );
+
+                _screenManager.ChangeState(GameState.LevelIntro);
+                Game1.InputLocked = false;
+            }
             // Pause logic first
             _pauseScreen.Update(gameTime);
             if (_pauseScreen.IsPaused)
@@ -211,6 +242,22 @@ namespace MonogameTest
 
             if (pad.Buttons.Back == ButtonState.Pressed || kb.IsKeyDown(Keys.Escape))
                 Exit();
+            
+            bool xDown = kb.IsKeyDown(Keys.X);
+            if (xDown && !_xWasDown && !ChristmasMode)
+            {
+                ChristmasMode = true;
+                _sound.StopSong();
+                _enemyManager.ActivateSnail(_marioState.CurrentMario.Position);
+                SoundManager.Instance.PlayEffect("jingle");
+                if (SoundManager.Instance.IsSongPlaying())
+                {
+                    SoundManager.Instance.StopSong();
+                    SoundManager.Instance.PlaySong("mainXmas");
+                }
+                _christmasTimer = 8f;
+            }
+            _xWasDown = xDown;
 
             _screenManager.Update(gameTime);
 
@@ -220,6 +267,12 @@ namespace MonogameTest
                 case GameState.LevelIntro: _introScreen.Update(gameTime); return;
                 case GameState.TimeUp: _timeUpScreen.Update(gameTime); return;
                 case GameState.GameOver: _gameOverScreen.Update(gameTime); return;
+            }
+            if (_showChristmasText)
+            {
+                _christmasTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (_christmasTimer <= 0)
+                    _showChristmasText = false;
             }
 
             if (!InputLocked)
@@ -268,20 +321,22 @@ namespace MonogameTest
             _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
 
             _camera.LookAt(_marioState.CurrentMario.Position);
-            _enemyManager.Update(gameTime, _mapTiles);
+            _enemyManager.Update(gameTime, _mapTiles,_marioState.CurrentMario.Position);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.M))
+            // Sound mute toggle
+            if (kb.IsKeyDown(Keys.M))
                 _sound.ToggleMute();
             
-            // Christmas mode toggle
-            if (kb.IsKeyDown(Keys.C) && !_cWasDown)
-            {
-                ChristmasMode = !ChristmasMode;
-                SoundLoader.LoadAllSounds(this, _sound);
-                _sound.PlaySong("mainTheme");
-            }
-
-            _cWasDown = kb.IsKeyDown(Keys.C);
+            //reset level
+            if (kb.IsKeyDown(Keys.R))
+                ResetManager.SoftReset(
+                    _smallMario,
+                    _bigMario,
+                    _marioState,
+                    _spawnPoint,
+                    _camera,
+                    _enemyManager
+                );
 
             base.Update(gameTime);
         }
@@ -319,10 +374,58 @@ namespace MonogameTest
 
             _spriteBatch.Begin();
             _hud.Draw(_spriteBatch);
+            if (_showChristmasText)
+            {
+                _spriteBatch.DrawString(
+                    _font,
+                    "CHRISTMAS MODE",
+                    new Vector2(50, 50),
+                    Color.Red
+                );
+            }
             _pauseScreen.Draw(_spriteBatch);
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+        // ===============================================
+        // HARD RELOAD (FULL GAME RESET) — Option 1
+        // ===============================================
+        public void HardReload()
+        {
+            // Turn off Christmas mode, unlock controls
+            ChristmasMode = false;
+            InputLocked = false;
+
+            // Stop all audio
+            SoundManager.Instance.StopSong();
+
+            // Clear UI & screen states
+            _screenManager = ScreenManager.Instance;
+            _pauseScreen = new PauseScreen(this, _screenManager, _font);
+
+            // Recreate core systems
+            _enemyManager = new EnemyManager(C.TileSize);
+            _powerupManager = new PowerupFieldManager();
+
+            // Reset Mario to small + start position
+            _smallMario.Position = _spawnPoint;
+            _bigMario.Position = _spawnPoint;
+            _marioState.ForceSmall(_spawnPoint);
+
+            // Reload EVERYTHING just like startup
+            Content.Unload();
+            LoadContent();
+
+            // Reset screen flow to level intro
+            _screenManager.ChangeState(GameState.LevelIntro);
+        }
+
+        public static float PendingDeathTimer = 0f;
+
+        public static void StartDeathTimer()
+        {
+            PendingDeathTimer = 5.0f;
         }
     }
 }

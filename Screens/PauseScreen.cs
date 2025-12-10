@@ -22,10 +22,26 @@ namespace MonogameTest.Screens
             IsPaused = !IsPaused;
             Game1.InputLocked = IsPaused;
 
-            if (IsPaused)
+            if (IsPaused){
                 SoundManager.Instance.PauseSong();
-            else
+                if (!Game1.ChristmasMode)
+                {
+                    SoundManager.Instance.PlayEffect("pause");
+                } else
+                {
+                    SoundManager.Instance.PlayEffect("jingle");
+                }
+             }
+            else{
                 SoundManager.Instance.ResumeSong();
+                if (!Game1.ChristmasMode)
+                {
+                    SoundManager.Instance.PlayEffect("pause");
+                } else
+                {
+                    SoundManager.Instance.PlayEffect("jingle");
+                }
+            }
         }
 
 
