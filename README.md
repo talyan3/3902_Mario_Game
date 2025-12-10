@@ -67,14 +67,25 @@ Sprint 4 was the big assignment, when our game should look similar to the Super 
 With the hoilday season, our team thought there would be no better way to end off the semester with our own christmas-themed chaos Mario level. Each team member added their own feature into the game, granted that it fit into the Christmas theme. Not only is the level visually inspired by Christmas, the sounds are bright and Christmas themed.
 
 ### Features
-  * Christmas Snail - Inspired by the Immortal Christmas Snail, our snail will (slowly) terrorize Mario as he runs through the game. Don't get caught!
-    ** <img width="50" height="50" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
+  * **Christmas Snail** <br> <img width="100" height="100" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
+    * Inspired by the Immortal Christmas Snail, our snail will (slowly) terrorize Mario as he runs through the game. Don't get caught!
+    * 
+    
 
   * Mario Dash Feature
 
   * Christmas-themed background
 
 ## Program Structure
+
+### Command Design Pattern
+
+### State Machine
+
+### Factory Machine
+
+### How Game1 Evolved
+
 ### Collision UML Diagram
 <img width="2820" height="1865" alt="UML class (1)" src="https://github.com/user-attachments/assets/89638b76-d23a-4f22-a806-743a9cd1e776" />
 
