@@ -6,11 +6,16 @@ namespace MonogameTest
     public class MarioStateController
     {
         public bool IsBig { get; private set; }
+        public bool IsFire { get; private set; }
+        public readonly FireMarioSprite fireMario;
 
         public readonly SmallMarioSprite smallMario;
         public readonly BigMarioSprite bigMario;
         private StaticSprite currentMario;
         private readonly int tileSize;
+
+        private double _fireCooldown = 0;
+        public bool FireReady => _fireCooldown <= 0;
 
         public StaticSprite CurrentMario => currentMario;
 
@@ -27,15 +32,18 @@ namespace MonogameTest
         public MarioStateController(
             SmallMarioSprite small,
             BigMarioSprite big,
+            FireMarioSprite fire,          
             StaticSprite startingMario,
             int tileSize)
         {
             smallMario = small;
             bigMario = big;
+            fireMario = fire;           
             currentMario = startingMario;
             this.tileSize = tileSize;
 
-            IsBig = startingMario == bigMario;
+            IsBig = startingMario == big;
+            IsFire = startingMario == fire; 
         }
         // MUST BE CALLED EVERY FRAME FROM Game1.Update
         public void Update(GameTime gameTime)
@@ -88,24 +96,60 @@ namespace MonogameTest
         public void Grow()
         {
             // Do not re-enter while flashing
-            if (IsBig || isFlashing)
+            if ((IsBig && !IsFire) || isFlashing)
                 return;
 
             SoundManager.Instance.PlayEffect("powerUp");
 
             Vector2 pos = smallMario.Position;
-            pos.Y = tileSize * 13;
+            pos.Y = tileSize * 13;   // might be a problem idk
             bigMario.Position = pos;
 
             // Start from SMALL logically,
             // Update() will toggle and keep IsBig in sync
             currentMario = smallMario;
             IsBig = false;
+            IsFire = false; // Could be the problem
 
             targetBig = true;
             isFlashing = true;
             flashTimer = 0f;
             flashCount = 0;
+        }
+        // ====================================================
+        // NEW: FIRE FLOWER → Fire Mario
+        // ====================================================
+        public void Fire()
+        {
+            if (IsFire) return;
+
+            Vector2 pos = currentMario.Position;
+            fireMario.Position = pos;
+
+            currentMario = fireMario;
+            IsBig = true;
+            IsFire = true;
+        }
+
+        // ====================================================
+        // FIREBALL COOLDOWN TICK
+        // ====================================================
+        public void Tick(GameTime gameTime)
+        {
+            if (_fireCooldown > 0)
+                _fireCooldown -= gameTime.ElapsedGameTime.TotalSeconds;
+        }
+
+        // ====================================================
+        // Attempt to shoot fireball
+        // ====================================================
+        public bool TryShoot()
+        {
+            if (!IsFire || !FireReady)
+                return false;
+
+            _fireCooldown = 0.35; // 350ms cooldown
+            return true;
         }
 
         // ====================================================
@@ -113,6 +157,16 @@ namespace MonogameTest
         // ====================================================
         public void Shrink()
         {
+            if (IsFire)
+            {
+                Vector2 posF = fireMario.Position;
+                bigMario.Position = posF;
+
+                currentMario = bigMario;
+                IsBig = true;
+                IsFire = false;
+                return;
+            }
             if (!IsBig || isFlashing)
                 return;
 
@@ -144,8 +198,10 @@ namespace MonogameTest
             targetBig = false;
 
             IsBig = false;
+            IsFire = false; 
             smallMario.Position = spawnPoint;
             bigMario.Position = spawnPoint;
+            fireMario.Position = spawnPoint; 
             currentMario = smallMario;
         }
     }

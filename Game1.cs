@@ -38,6 +38,7 @@ namespace MonogameTest
         private SmallMarioSprite _smallMario;
         private BigMarioSprite _bigMario;
         private MarioStateController _marioState;
+        private FireMarioSprite _fireMario;
 
         // ===========================
         // GAMEPLAY SYSTEMS
@@ -45,6 +46,7 @@ namespace MonogameTest
         private EnemyManager _enemyManager;
         private PowerupFieldManager _powerupManager;
         private CollisionManager _collisionManager;
+        private FireballManager _fireballs;
 
         // ===========================
         // UI / SCREENS
@@ -52,6 +54,7 @@ namespace MonogameTest
         private SpriteFont _font;
         private Texture2D _coin;
         private HUDScreen _hud;
+        private Texture2D _fireballTexture;
         private TitleScreen _titleScreen;
         private LevelIntroScreen _introScreen;
         private TimeUpScreen _timeUpScreen;
@@ -134,12 +137,19 @@ namespace MonogameTest
             // ---------- MARIO ----------
             _smallMario = new SmallMarioSprite(GraphicsDevice) { SoundManager = _sound };
             _bigMario = new BigMarioSprite(GraphicsDevice) { SoundManager = _sound };
+            _fireMario = new FireMarioSprite(GraphicsDevice) {SoundManager = _sound};
 
             _spawnPoint = new Vector2(C.TileSize * 5, C.TileSize * 13);
             _smallMario.Position = _spawnPoint;
             _bigMario.Position = _spawnPoint;
+            _fireMario.Position = _spawnPoint;
 
-            _marioState = new MarioStateController(_smallMario, _bigMario, _smallMario, C.TileSize);
+            _marioState = new MarioStateController(_smallMario, _bigMario, _fireMario, _smallMario, C.TileSize);
+
+            // -------- FIREBALL --------
+            _fireballTexture = Texture2D.FromFile(GraphicsDevice, "fireball.png");
+            _fireballs = new FireballManager();
+            _fireballs.Load(_fireballTexture);
 
             // ---------- MAP ----------
             using var fs = new FileStream("blocksV10.png", FileMode.Open);
@@ -309,15 +319,32 @@ namespace MonogameTest
             _marioState.Update(gameTime);
             if(!InputLocked)
             {
-               if (_marioState.CurrentMario == _smallMario)
+                if (_marioState.CurrentMario == _smallMario)
                 {
                     _smallMario.Update(gameTime, _camera.LeftEdge);
                 }
-                    if (_marioState.CurrentMario == _bigMario)
+                if (_marioState.CurrentMario == _bigMario)
                 {
                     _bigMario.Update(gameTime, _camera.LeftEdge);
+                }
+                if (_marioState.CurrentMario == _fireMario)
+                {
+                    _fireMario.Update(gameTime, _camera.LeftEdge);
                 } 
             }
+            _marioState.Tick(gameTime);
+
+            if (kb.IsKeyDown(Keys.Z))
+            {
+            if (_marioState.TryShoot())
+                {
+                bool facingRight = true; 
+
+                 Vector2 fbStart = _marioState.CurrentMario.Position + new Vector2(0, -10);
+                _fireballs.Shoot(fbStart, facingRight);
+                }
+            }
+            _fireballs.Update(gameTime, _mapTiles, _enemyManager.GetLiveEnemies());
 
             _collisionManager.Update(gameTime, _marioState.CurrentMario, (CameraManager)_camera);
 
@@ -370,6 +397,7 @@ namespace MonogameTest
             _enemyManager.Draw(_spriteBatch);
             _powerupManager.Draw(_spriteBatch);
             _flagpole.Draw();
+            _fireballs.Draw(_spriteBatch);
 
             _spriteBatch.End();
 
@@ -426,7 +454,7 @@ namespace MonogameTest
 
         public static void StartDeathTimer()
         {
-            PendingDeathTimer = 5.0f;
+            PendingDeathTimer = 2f;
         }
     }
 }

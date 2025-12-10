@@ -77,7 +77,6 @@ namespace MonogameTest
             if (side == typeCollision.None) return false;
 
             var newPos = pos + mtv.ToVector2();
-
             if (enemyAny is moveGoom g) g.Position = newPos;
             else if (enemyAny is moveKoop k) k.Position = newPos;
 
@@ -109,6 +108,16 @@ namespace MonogameTest
             }
             result = default;
             hitTile = default!;
+            return false;
+        }
+        public static bool HandleMany(object enemyAny, IEnumerable<Rectangle> solidTiles, out EnemyCollisionResult result)
+        {
+            foreach (var rect in solidTiles)
+            {
+                if (Handle(enemyAny, rect, out result))
+                    return true;
+            }
+            result = default;
             return false;
         }
 
@@ -340,6 +349,17 @@ namespace MonogameTest
                 marioVelocity: mario.verticalVelocity,
                 bounce: () => mario.Bounce(-250f),
                 onHit: onBigHit,
+                enemies: enemies
+            );
+        }
+        public static void HandleMarioEnemyCollision(
+            FireMarioSprite mario, IList<object> enemies, Action onFireHit)
+        {
+            HandleMarioVsEnemiesCore(
+                marioBounds: mario.Bounds,
+                marioVelocity: mario.verticalVelocity,
+                bounce: () => mario.Bounce(-250f),
+                onHit: onFireHit,
                 enemies: enemies
             );
         }

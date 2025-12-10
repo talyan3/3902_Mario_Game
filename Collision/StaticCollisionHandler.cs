@@ -13,51 +13,55 @@ public struct StaticCollisionResult
 public static class StaticCollisionHandler
 {
     // Handle a single ground/wall rectangle
-    public static bool Handle(StaticSprite marioAny, Rectangle tileRect, out StaticCollisionResult result)
-    {
-        result = default;
-
-        Vector2 pos, scale;
-        if (marioAny is SmallMarioSprite sm)
+        public static bool Handle(StaticSprite marioAny, Rectangle tileRect, out StaticCollisionResult result)
         {
-            pos = sm.Position;
-            scale = sm.Scale;
+            result = default;
+
+            // --- Get current Mario position (for repositioning) ---
+            Vector2 pos;
+            if (marioAny is SmallMarioSprite sm)
+            {
+                pos = sm.Position;
+            }
+            else if (marioAny is BigMarioSprite bm)
+            {
+                pos = bm.Position;
+            }
+            else if (marioAny is FireMarioSprite fm)   
+            {
+                pos = fm.Position;
+            }
+            else
+            {
+                return false;
+            }
+
+            // --- USE BOUNDS instead of recomputing from Region ---
+            Rectangle marioRect = marioAny.Bounds;
+            if (marioRect == Rectangle.Empty)
+                return false;
+
+            var detector = new DetectCollisions();
+            var side = detector.GetCollision(marioRect, tileRect, out Point mtv);
+            if (side == typeCollision.None)
+                return false;
+
+            // --- Apply MTV to Mario's position ---
+            Vector2 newPos = pos + mtv.ToVector2();
+
+            if (marioAny is SmallMarioSprite smW)
+                smW.Position = newPos;
+            else if (marioAny is BigMarioSprite bmW)
+                bmW.Position = newPos;
+            else if (marioAny is FireMarioSprite fmW)   
+                fmW.Position = newPos;
+
+            result.Side = side;
+            result.MTV = mtv;
+            result.TileRect = tileRect;
+
+            return true;
         }
-        else if (marioAny is BigMarioSprite bm)
-        {
-            pos = bm.Position;
-            scale = bm.Scale;
-        }
-        else
-        {
-            return false; 
-        }
-
-        var region = marioAny.Region; // current frame
-        int w = (int)(region.Width  * scale.X);
-        int h = (int)(region.Height * scale.Y);
-        int left = (int)(pos.X - w / 2f);
-        int top  = (int)(pos.Y - h);
-        var marioRect = new Rectangle(left, top, w, h);
-
-        var detector = new DetectCollisions();
-        var side = detector.GetCollision(marioRect, tileRect, out Point mtv);
-        /*if(Game1.InputLocked && (side == typeCollision.Left || side == typeCollision.Right))
-        {
-            return false;
-        }*/
-        if (side == typeCollision.None) return false;
-
-        var newPos = pos + mtv.ToVector2();
-        if (marioAny is SmallMarioSprite smW) smW.Position = newPos;
-        else if (marioAny is BigMarioSprite bmW) bmW.Position = newPos;
-
-        result.Side = side;
-        result.MTV = mtv;
-        result.TileRect = tileRect;
-        
-        return true;
-    }
 
     // iterate many tiles; stop on first collision handled
     public static bool HandleMany(StaticSprite marioAny, IEnumerable<Rectangle> solidTiles, out StaticCollisionResult result)

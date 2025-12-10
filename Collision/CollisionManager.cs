@@ -61,10 +61,6 @@ namespace MonogameTest.Managers
 
             spawnPoint = spawn;
             this.tileSize = tileSize;
-
-            this.addScore = addScore;
-            this.addCoin = addCoin;
-            this.resetScoreAndCoins = resetScoreAndCoins;
         }
 
         // =========================================================
@@ -113,10 +109,26 @@ namespace MonogameTest.Managers
                 spawnPos.Y -= tileSize;
                 marioState.smallMario.verticalVelocity = 0f;
                 marioState.bigMario.verticalVelocity = 0f;
+                marioState.fireMario.verticalVelocity = 0f;
 
                 if (hitTile.TileName == "Question")
                 {
-                    if ((activeMario.Position.X < tileSize * 21 &&
+                    int tileX = (int)(hitTile.Position.X / tileSize);
+                    int tileY = (int)(hitTile.Position.Y / tileSize);
+                    if (tileX == 20 || tileX == 78 || tileX == 109)// && tileY == 5)
+                    {
+                        if (marioState.IsBig || marioState.IsFire)
+                        {
+                            powerupManager.Spawn(PowerupType.FireFlower, spawnPos);
+                            sound.PlayEffect("powerUpAppears");
+                        }
+                        else
+                        {
+                            powerupManager.Spawn(PowerupType.Mushroom, spawnPos);
+                            sound.PlayEffect("powerUpAppears");
+                        }
+                    }
+                    /*if ((activeMario.Position.X < tileSize * 21 &&
                         activeMario.Position.X > tileSize * 19) || 
                         (activeMario.Position.X < tileSize * 80 &&
                         activeMario.Position.X > tileSize * 76) || 
@@ -125,7 +137,7 @@ namespace MonogameTest.Managers
                     {
                         powerupManager.Spawn(PowerupType.Mushroom, spawnPos);
                         sound.PlayEffect("powerUpAppears");
-                    }
+                    }*/
                     else
                     {
                         powerupManager.Spawn(PowerupType.Coin, spawnPos);
@@ -156,25 +168,37 @@ namespace MonogameTest.Managers
             {
                 int tileTop = hitTile.Bounds.Top;
 
+                 // Small Mario
                 marioState.smallMario.Position = new Vector2(marioState.smallMario.Position.X, tileTop + 1);
-                marioState.bigMario.Position = new Vector2(marioState.bigMario.Position.X, tileTop + 1);
-
                 marioState.smallMario.verticalVelocity = 0f;
                 marioState.smallMario._isJumping = false;
-                //marioState.smallMario.gravity = 0f;
+
+                // Big Mario
+                marioState.bigMario.Position = new Vector2(marioState.bigMario.Position.X, tileTop + 1);
                 marioState.bigMario.verticalVelocity = 0f;
                 marioState.bigMario._isJumping = false;
-                //marioState.bigMario.gravity = 0;
+
+                // Fire Mario (ADDED)
+                if (marioState.fireMario != null)
+                {
+                    marioState.fireMario.Position = new Vector2(marioState.fireMario.Position.X, tileTop + 1);
+                    marioState.fireMario.verticalVelocity = 0f;
+                    marioState.fireMario._isJumping = false;
+                }
             }
             if ((hitTile.TileName == "Ground" || hitTile.TileName == "PipeTopLeft" || hitTile.TileName == "PipeTopRight" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "DarkGround") && (marioState.smallMario._isJumping == false || marioState.bigMario._isJumping == false) && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
             {
                 marioState.smallMario.verticalVelocity = -15f;
                 marioState.bigMario.verticalVelocity = -15f;
+                if (marioState.fireMario != null && marioState.fireMario._isJumping == false)
+                    marioState.fireMario.verticalVelocity = -15f;
             }
             if ((hitTile.TileName == "Ground" || hitTile.TileName == "PipeTopLeft" || hitTile.TileName == "PipeTopRight" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "DarkGround") && (marioState.smallMario._isJumping == true || marioState.bigMario._isJumping == true) && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
             {
                 marioState.smallMario._isJumping = false;
                 marioState.bigMario._isJumping = false;
+                if (marioState.fireMario != null && marioState.fireMario._isJumping == true)
+                    marioState.fireMario._isJumping = false;
             }
         }
 
@@ -201,8 +225,6 @@ namespace MonogameTest.Managers
                         screenManager.LoseLife();
                     }
 
-
-
                     screenManager.ChangeState(GameState.GameOver);
 
                     return;
@@ -213,6 +235,21 @@ namespace MonogameTest.Managers
 
             var enemies = enemyManager.GetLiveEnemies();
             if (_isHurt) return;
+
+            if (marioState.IsFire)
+            {
+                EnemyCollisionHandler.HandleMarioEnemyCollision(
+                    marioState.CurrentMario as FireMarioSprite,
+                    enemies,
+                    onFireHit: () =>
+                    {
+                        marioState.Shrink();  
+                        _isHurt = true;
+                        _hurtTimer = 1.5;
+                    });
+
+                return; 
+            }
 
             if (marioState.IsBig)
             {
@@ -312,6 +349,7 @@ namespace MonogameTest.Managers
                 case PowerupType.FireFlower:
                     sound.PlayEffect("powerUp");
                     ScreenManager.Instance.AddScore(300);
+                    marioState.Fire();
                     break;
             }
         }
