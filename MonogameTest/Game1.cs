@@ -12,6 +12,8 @@ namespace MonogameTest
 {
     public class Game1 : Game
     {
+        //
+        private DashComponent dash;
         // Graphics / Core
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
@@ -79,6 +81,7 @@ namespace MonogameTest
 
         protected override void Initialize()
         {
+            dash = new DashComponent();
             _graphics.PreferredBackBufferWidth = Config.ViewWidth * Config.Scale;
             _graphics.PreferredBackBufferHeight = Config.ScaleMod * Config.Scale;
             _graphics.ApplyChanges();
@@ -220,6 +223,10 @@ namespace MonogameTest
 
         protected override void Update(GameTime gameTime)
         {
+//
+            dash.Update(gameTime, _marioState.CurrentMario.Position);
+            _marioState.CurrentMario.Position = dash.position;
+
             // =============== DEATH TIMER HANDLING ===============
             if (PendingDeathTimer > 0f)
             {
