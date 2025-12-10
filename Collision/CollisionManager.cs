@@ -30,7 +30,10 @@ namespace MonogameTest.Managers
         private bool _isHurt = false;
         private double _hurtTimer = 0;
 
-        private int _groundPos = 0;
+        private readonly SmallMarioSprite smallMario;
+        private readonly BigMarioSprite bigMario;
+        private readonly ICamera camera;
+        private readonly Game1 game;
 
         public CollisionManager(
             MarioStateController marioState,
@@ -72,7 +75,6 @@ namespace MonogameTest.Managers
             if (Game1.InputLocked)
             {
                 flagpole.Update(gameTime);  // allow victory sequence
-                //HandleTileCollision(activeMario);
                 return;
             }
             // === HURT INVINCIBILITY TIMER ===

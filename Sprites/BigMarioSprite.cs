@@ -111,7 +111,7 @@ namespace MonogameTest
                     AdvanceRun(dt);
                 }
                 // === MOVE RIGHT ===
-                else if (kb.IsKeyDown(Keys.Right))
+                else if (kb.IsKeyDown(Keys.Right) || ForceAutoWalkRight)
                 {
                     if (ForceAutoWalkRight) _moveSpeed = 30f;
                     Position = new Vector2(Position.X + speed * dt, Position.Y);
@@ -141,6 +141,12 @@ namespace MonogameTest
                     //Position = new Vector2(Position.X, _groundPos.Y);
                     //verticalVelocity = 0;
                     //_isJumping = false;
+                }
+                if (Position.Y >= (13 * 16) && Game1.InputLocked)
+                {
+                    Position = new Vector2(Position.X, 13 * 16);
+                    verticalVelocity = 0f; // THIS IS WHY MARIO DOESNT FALL INTO PITS!!!
+                    _isJumping = false;
                 }
 
                 // ---- ANIMATIONS ----
