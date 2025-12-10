@@ -8,20 +8,26 @@
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/21ba2075-0edf-4eed-b778-049db8690e23" /> Krista <br>
 
 ## Program Controls
+<img width="1920" height="1080" alt="Mario Controls (3)" src="https://github.com/user-attachments/assets/841c8e37-1b25-4ef5-84ca-bf5263806cde" />
 
-### Arrow Controls
+
+
+
+### Basic Mario Controls
   * **Left** and **Right**: Move Mario side to side
   * **Up**: Jump
   * **Down** Crouch
-
-### Key Controls
-  * **R**: Resets Mario to the beginning
-  * **X**: Activate Christmas mode
   * **Shift**: Mario sprints
-  * **M**: Mute game
-  * **P**: Pause game
+    
+### Activating Different Marios
   * **D** (Hold): Activates Invincible Mario
   * **Space**: Activate Teleport Dash Mario
+
+### Game Controls
+  * **R**: Resets Mario to the beginning
+  * **X**: Activate Christmas mode
+  * **M**: Mute game
+  * **P**: Pause game
  
 ## Level 1 - *Mario Replica*
 
