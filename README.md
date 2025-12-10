@@ -54,12 +54,9 @@ During Sprint 3, our team focus on getting the level created and loaded into the
 At the end of the Sprint, our team ended up with our infamous two Marios. One had the correct collision working with the ground and pipes. The other had the correct physics and physics animation for when Mario jumps and moves. Our group started to have trouble with GitHub and figuring out how to manage all of our branches in an effective way. Our confusion led to last minute merges and trouble getting both the physics and the collision to work well together. However, our team was able to start communicating better about how our code was breaking so that we could effictively work together.
 
  
- ### Sprint 4 - Focus on Finishing Game
+ ### Sprint 4 - Focus on Finishing Level 1
 
-Sprint 4 was the big assignment, when our game should look similar to the Super Mario Bros Level 1. We had backlogged 
-
- ### Sprint 5
-
+Sprint 4 was the big assignment, when our game should look similar to the Super Mario Bros Level 1. We had backlogged a lot throughout the year, and ended up having to backlog a lot of details. We did not have correct collision for enemies or powerups, as well as not having the pipe logic coded for the game. Our merging issues persisted in this sprint as well, with us having multiple aspects of the game finished in different branches. Our game was functional for the most part, our team just had issues getting all of the small details done. Throughout all of our sprints, our **Game1.cs** class had gotten bloated and a lot of the code had been left in Game1 that should have been abstracted. Our focus for the next sprint was to make our Game1 at least marginally smaller.
 
 ## Level 2 - *Christmas Chaos Level*
 
@@ -72,6 +69,11 @@ With the hoilday season, our team thought there would be no better way to end of
     * As the snail gets closer to Mario, the heartbeat sound gets louder and louder
   * **Mario Dash Feature**
   * **Christmas-Mode**
+
+### Sprint 5 - Focus on Fixing and Fun Elements
+
+
+Now that our team had the comments from Sprint 4, we were able to use that to focus on what to fix for our game. 
 
 ## Program Structure
 
