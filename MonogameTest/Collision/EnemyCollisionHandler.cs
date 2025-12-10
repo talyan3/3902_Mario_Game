@@ -120,7 +120,14 @@ return true;
 
                     if (goomRect != Rectangle.Empty && shellBounds.Intersects(goomRect))
                     {
-                        SoundManager.Instance.PlayEffect("stomp");
+                        if (!Game1.ChristmasMode)
+                        {
+                            SoundManager.Instance.PlayEffect("stomp");
+                        }
+                        else
+                        {
+                            SoundManager.Instance.PlayEffect("xmasThud");
+                        }
                         g.IsAlive = false;
                     }
                 }
@@ -158,6 +165,12 @@ return true;
                     alive = goom.IsAlive;
                     enemyRect.Inflate(-6, 0);
                 }
+                else if (enemy is Snail.Snail snail)
+                {
+                    enemyRect = snail.Bounds;
+                    alive = true;  // snail is always alive 
+                    enemyRect.Inflate(-6, 0); 
+                }
                 else if (enemy is moveKoop koop)
                 {
                     enemyRect = koop.Bounds;
@@ -168,6 +181,8 @@ return true;
                 {
                     continue;
                 }
+
+
 
                 if (!alive) continue;
                 if (enemyRect == Rectangle.Empty) continue;
@@ -183,7 +198,14 @@ return true;
                 {
                     if (stomp)
                     {
-                        SoundManager.Instance.PlayEffect("stomp");
+                        if (!Game1.ChristmasMode)
+                        {
+                            SoundManager.Instance.PlayEffect("stomp");
+                        }
+                        else
+                        {
+                            SoundManager.Instance.PlayEffect("xmasThud");
+                        }
                         g.IsAlive = false;
                         bounce?.Invoke();
                         continue;
@@ -200,7 +222,14 @@ return true;
                 {
                     if (stomp)
                     {
-                        SoundManager.Instance.PlayEffect("stomp");
+                        if (!Game1.ChristmasMode)
+                        {
+                            SoundManager.Instance.PlayEffect("stomp");
+                        }
+                        else
+                        {
+                            SoundManager.Instance.PlayEffect("xmasThud");
+                        }
 
                         if (k.IsWalking)
                         {
@@ -211,7 +240,14 @@ return true;
                         {
                             // Stomp idle shell -> kick it
                             int dir = marioBounds.Center.X > enemyRect.Center.X ? -1 : 1;
-                            SoundManager.Instance.PlayEffect("kick");
+                            if (!Game1.ChristmasMode)
+                            {
+                                SoundManager.Instance.PlayEffect("kick");
+                            }
+                            else
+                            {
+                                SoundManager.Instance.PlayEffect("xmasThud");
+                            }
                             k.Kick(dir);
                         }
                         else if (k.IsShellMoving)

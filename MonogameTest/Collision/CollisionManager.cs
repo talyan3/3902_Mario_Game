@@ -29,6 +29,13 @@ namespace MonogameTest.Managers
         private bool _isHurt = false;
         private double _hurtTimer = 0;
 
+        private readonly SmallMarioSprite smallMario;
+        private readonly BigMarioSprite bigMario;
+        private readonly ICamera camera;
+        private readonly Game1 game;
+
+
+
         public CollisionManager(
             MarioStateController marioState,
             List<Tile> tiles,
@@ -39,9 +46,9 @@ namespace MonogameTest.Managers
             Flagpole flag,
             Vector2 spawn,
             int tileSize,
-            System.Action<int> addScore,
-            System.Action addCoin,
-            System.Action resetScoreAndCoins
+            SmallMarioSprite smallMario,
+            BigMarioSprite bigMario,
+            ICamera camera
         )
         {
             this.marioState = marioState;
@@ -141,6 +148,32 @@ namespace MonogameTest.Managers
         // =========================================================
         private void HandleEnemyCollision(StaticSprite activeMario, CameraManager camera)
         {
+            // --- SNAIL INSTANT-KILL COLLISION ---
+            if (Game1.ChristmasMode && enemyManager.Snail != null)
+            {
+                var snail = enemyManager.Snail;
+                Rectangle marioRect = activeMario.Bounds;
+                Rectangle snailRect = snail.Bounds;   // we must add this property (see below)
+
+                if (marioRect.Intersects(snailRect))
+                {
+                    // Trigger game over or restart logic
+                    marioState.ForceSmall(spawnPoint);
+                    enemyManager.Reset();
+                    camera.Reset(spawnPoint);
+                    while (screenManager.Lives > 0)
+                    {
+                        screenManager.LoseLife();
+                    }
+
+
+
+                    screenManager.ChangeState(GameState.GameOver);
+
+                    return;
+                }
+            }
+
             if (Game1.DebugGodMode)
             return;
 
@@ -173,6 +206,15 @@ namespace MonogameTest.Managers
                         camera.LookAt(spawnPoint);
 
                         screenManager.LoseLife();
+                        
+
+                        // Freeze gameplay and start the death timer
+                        Game1.InputLocked = true;
+                        SoundManager.Instance.StopSong();
+                        SoundManager.Instance.PlaySong("youreDead");
+                        Game1.StartDeathTimer();
+
+
 
                         if (screenManager.CurrentState != GameState.GameOver)
                             screenManager.ChangeState(GameState.LevelIntro);

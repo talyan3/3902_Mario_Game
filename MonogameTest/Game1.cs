@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -48,6 +49,8 @@ namespace MonogameTest
         private TimeUpScreen _timeUpScreen;
         private GameOverScreen _gameOverScreen;
         private Flagpole _flagpole;
+        private float _deathTimer = 0f;
+
 
         // Config and View Info
         private GameConfig Config => ConfigLoader.Config;
@@ -160,19 +163,21 @@ namespace MonogameTest
 
             // Collision system
             _collisionManager = new CollisionManager(
-                _marioState,
-                _mapTiles,
-                _enemyManager,
-                _powerupManager,
-                _screenManager,
-                _sound,
-                _flagpole,
-                _spawnPoint,
-                Config.TileSize,
-                points => _screenManager.AddScore(points),
-                () => _screenManager.AddCoin(),
-                () => _screenManager.ResetLevel()
-            );
+            _marioState,
+            _mapTiles,
+            _enemyManager,
+            _powerupManager,
+            _screenManager,
+            _sound,
+            _flagpole,
+            _spawnPoint,
+            Config.TileSize,
+            _smallMario,
+            _bigMario,
+            _camera
+        );
+
+
 
             // UI Screens
             _font = Content.Load<SpriteFont>("marioFont");
@@ -190,6 +195,29 @@ namespace MonogameTest
 
         protected override void Update(GameTime gameTime)
         {
+            // =============== DEATH TIMER HANDLING ===============
+            if (PendingDeathTimer > 0f)
+            {
+                PendingDeathTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                // Still waiting → skip gameplay
+                if (PendingDeathTimer > 0f)
+                    return;
+
+                // Timer finished → now reset
+                ResetManager.SoftReset(
+                    _smallMario,
+                    _bigMario,
+                    _marioState,
+                    _spawnPoint,
+                    _camera,
+                    _enemyManager
+                );
+
+                _screenManager.ChangeState(GameState.LevelIntro);
+                Game1.InputLocked = false;
+            }
+
             // Pause logic first
             _pauseScreen.Update(gameTime);
             if (_pauseScreen.IsPaused)
@@ -206,7 +234,7 @@ namespace MonogameTest
             {
                 ChristmasMode = true;
                 _sound.StopSong();
-                _enemyManager.ActivateSnail();
+                _enemyManager.ActivateSnail(_marioState.CurrentMario.Position);
                 SoundManager.Instance.PlayEffect("jingle");
                 if (SoundManager.Instance.IsSongPlaying())
                 {
@@ -267,7 +295,8 @@ namespace MonogameTest
                     _bigMario,
                     _marioState,
                     _spawnPoint,
-                    _camera
+                    _camera,
+                    _enemyManager
                 );
 
             base.Update(gameTime);
@@ -319,5 +348,48 @@ namespace MonogameTest
 
             base.Draw(gameTime);
         }
+
+        // ===============================================
+        // HARD RELOAD (FULL GAME RESET) — Option 1
+        // ===============================================
+        public void HardReload()
+        {
+            // Turn off Christmas mode, unlock controls
+            ChristmasMode = false;
+            InputLocked = false;
+
+            // Stop all audio
+            SoundManager.Instance.StopSong();
+
+            // Clear UI & screen states
+            _screenManager = new ScreenManager();
+            _pauseScreen = new PauseScreen(this, _screenManager, _font);
+
+            // Recreate core systems
+            _enemyManager = new EnemyManager(Config.TileSize);
+            _powerupManager = new PowerupFieldManager();
+
+            // Reset Mario to small + start position
+            _smallMario.Position = _spawnPoint;
+            _bigMario.Position = _spawnPoint;
+            _marioState.ForceSmall(_spawnPoint);
+
+            // Reload EVERYTHING just like startup
+            Content.Unload();
+            LoadContent();
+
+            // Reset screen flow to level intro
+            _screenManager.ChangeState(GameState.LevelIntro);
+        }
+
+        public static float PendingDeathTimer = 0f;
+
+        public static void StartDeathTimer()
+        {
+            PendingDeathTimer = 5.0f;
+        }
+
+
     }
+
 }

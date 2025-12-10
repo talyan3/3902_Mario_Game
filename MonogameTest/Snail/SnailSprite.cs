@@ -14,6 +14,10 @@ namespace MonogameTest.Snail
 
         private SpriteEffects _flip = SpriteEffects.None;
 
+        public Texture2D CurrentTexture => 
+         (_currentFrame == 0 ? _frame1 : _frame2);
+
+
         public SnailSprite(Texture2D frame1, Texture2D frame2)
         {
             _frame1 = frame1;
@@ -33,7 +37,7 @@ namespace MonogameTest.Snail
             if (_timer >= _animationSpeed)
             {
                 _timer = 0;
-                _currentFrame = (_currentFrame + 1) % 2; // 0 → 1 → 0
+                _currentFrame = (_currentFrame + 1) % 2; 
             }
         }
 
@@ -41,17 +45,21 @@ namespace MonogameTest.Snail
         {
             Texture2D tex = (_currentFrame == 0) ? _frame1 : _frame2;
 
+            // Bottom-center origin so snail sits on ground like Mario
+            Vector2 origin = new Vector2(tex.Width / 2f, tex.Height);
+
             sb.Draw(
                 tex,
                 position,
                 null,
                 Color.White,
                 0f,
-                Vector2.Zero,
+                origin,
                 1f,
                 _flip,
                 0f
             );
         }
+
     }
 }

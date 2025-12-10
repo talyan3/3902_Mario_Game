@@ -40,8 +40,8 @@ namespace MonogameTest.Sounds
             soundManager.LoadEffect(game, "warning", "Sounds/smb_warning");
             soundManager.LoadEffect(game, "oneUp", "Sounds/smb_1-up");
             soundManager.LoadEffect(game, "jingle", "Sounds/Jingle");
-            
-            
+            soundManager.LoadEffect(game, "xmasThud", "Sounds/xmasThud");
+                        
         }
     }
 }

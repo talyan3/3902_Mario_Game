@@ -3,6 +3,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using MonogameTest.Snail;
+using MonogameTest;
+using System;
+
 
 
 
@@ -21,6 +24,11 @@ namespace MonogameTest.Managers
 
         private readonly Vector2 _koopaSpawnTile = new Vector2(106, 12);
         private Snail.Snail _snail;
+
+        private readonly Random _rng = new Random();
+        public Snail.Snail Snail => _snail;
+
+
 
 
         public EnemyManager(int tileSize)
@@ -43,8 +51,12 @@ namespace MonogameTest.Managers
             if (_koopa != null && _koopa.IsAlive)
                 list.Add(_koopa);
 
+            if (_snail != null && Game1.ChristmasMode)
+                list.Add(_snail);   
+
             return list;
         }
+
 
         // ===========================
         // LOAD CONTENT
@@ -116,6 +128,20 @@ namespace MonogameTest.Managers
             }
 
             // Update snail
+            // Snail tile collision
+            if (_snail != null && Game1.ChristmasMode)
+            {
+                if (EnemyCollisionHandler.HandleMany(_snail, mapTiles, out var sResult, out var sTile))
+                {
+                    // Keep snail above ground
+                    if (sResult.Grounded && sResult.MTV.Y < 0)
+                    {
+                        _snail.Position += new Vector2(0, sResult.MTV.Y);
+                    }
+                }
+
+            }
+
             _snail?.Update(gameTime, marioPos);
         }
 
@@ -131,6 +157,8 @@ namespace MonogameTest.Managers
 
             if (_koopa != null && _koopa.IsAlive)
                 _koopa.Draw(spriteBatch, _koopa.Position);
+
+            _snail?.Draw(spriteBatch);
         }
 
         // ===========================
@@ -153,13 +181,33 @@ namespace MonogameTest.Managers
         }
 
         //SPAWN SNAIL
-        public void ActivateSnail()
+        public void ActivateSnail(Vector2 marioPos)
+        {
+            if (_snail == null)
+                return;
+
+            // Spawn right next to Mario for testing
+            float offsetX = 80f;
+
+            // Snail should be on Mario's ground
+            float groundY = marioPos.Y;
+
+            _snail.Position = new Vector2(marioPos.X + offsetX, groundY);
+        }
+
+        public void ResetSnail(Vector2 spawnPoint)
         {
             if (_snail != null)
             {
-                _snail.Position = new Vector2(200, 200); 
+                _snail.Position = spawnPoint;
+                _snail.Reset();
             }
         }
+
+
+
+
+
 
     }
 }

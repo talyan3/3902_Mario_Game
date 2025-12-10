@@ -10,6 +10,7 @@ namespace MonogameTest.Snail
         private readonly SnailBehavior _behavior;
         private readonly Texture2D _texture1;
         private readonly Texture2D _texture2;
+        private float _fixedY;
 
         public Vector2 Position;
         public bool Active => Game1.ChristmasMode; // Only exists during Christmas mode
@@ -28,6 +29,8 @@ namespace MonogameTest.Snail
             _texture2 = t2;
 
             Position = startPosition;
+            _fixedY = startPosition.Y;
+
             _sprite = new SnailSprite(_texture1, _texture2);
             _behavior = new SnailBehavior();
 
@@ -58,6 +61,7 @@ namespace MonogameTest.Snail
                 (float)gameTime.ElapsedGameTime.TotalSeconds
             );
 
+
             // Update animation
             _sprite.Update(gameTime, Position, marioPos);
 
@@ -78,25 +82,55 @@ namespace MonogameTest.Snail
 
             float distance = Vector2.Distance(Position, marioPos);
 
+            // Closer = louder
             float volume;
 
-            if (distance >= _heartbeatMaxDistance)
-            {
-                volume = _heartbeatMinVolume;
-            }
-            else if (distance <= _heartbeatMinDistance)
-            {
+            if (distance <= _heartbeatMinDistance)
                 volume = _heartbeatMaxVolume;
-            }
+            else if (distance >= _heartbeatMaxDistance)
+                volume = _heartbeatMinVolume;
             else
             {
                 float t = (distance - _heartbeatMinDistance) /
-                          (_heartbeatMaxDistance - _heartbeatMinDistance);
+                        (_heartbeatMaxDistance - _heartbeatMinDistance);
 
+                // Invert the curve so close = loud
                 volume = MathHelper.Lerp(_heartbeatMaxVolume, _heartbeatMinVolume, t);
             }
 
             _heartbeatInstance.Volume = MathHelper.Clamp(volume, 0f, 1f);
         }
+
+
+        public Rectangle Bounds
+        {
+            get
+            {
+                Texture2D tex = _sprite.CurrentTexture; 
+                int w = tex.Width;
+                int h = tex.Height;
+
+                return new Rectangle(
+                    (int)Position.X,
+                    (int)Position.Y - h,
+                    w,
+                    h
+                );
+            }
+        }
+
+        public void Reset()
+        {
+            // silence heartbeat
+            if (_heartbeatInstance != null)
+                _heartbeatInstance.Volume = 0f;
+
+            // (optional) reset animation frame
+            // (optional) reset behavior
+        }
+
+
+
+
     }
 }
