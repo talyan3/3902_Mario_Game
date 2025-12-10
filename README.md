@@ -56,7 +56,7 @@ At the end of the Sprint, our team ended up with our infamous two Marios. One ha
  
  ### Sprint 4 - Focus on Finishing Level 1
 
-Sprint 4 was the big assignment, when our game should look similar to the Super Mario Bros Level 1. We had backlogged a lot throughout the year, and ended up having to backlog a lot of details. We did not have correct collision for enemies or powerups, as well as not having the pipe logic coded for the game. Our merging issues persisted in this sprint as well, with us having multiple aspects of the game finished in different branches. Our game was functional for the most part, our team just had issues getting all of the small details done. Throughout all of our sprints, our **Game1.cs** class had gotten bloated and a lot of the code had been left in Game1 that should have been abstracted. Our focus for the next sprint was to make our Game1 at least marginally smaller.
+Sprint 4 was the big assignment, when our game should look similar to the Super Mario Bros Level 1. We had backlogged a lot throughout the year, and ended up having to backlog a lot of details. We did not have correct collision for enemies or powerups, as well as not having the pipe logic coded for the game. Our merging issues persisted in this sprint as well, with us having multiple aspects of the game finished in different branches. Our game was functional for the most part, our team just had issues getting all of the small details done. Throughout all of our sprints, our **Game1.cs** class had gotten bloated and a lot of the code had been left in Game1 that should have been abstracted. Our focus for the next sprint was to make our Game1 at least marginally smaller. One of our team members, Jack, took on a majority of the merging which we all really appreciate. He worked really hard to merge code together and doing a lot of the work on GitHub when we were confused.
 
 ## Level 2 - *Christmas Chaos Level*
 
@@ -64,26 +64,40 @@ Sprint 4 was the big assignment, when our game should look similar to the Super 
 With the hoilday season, our team thought there would be no better way to end off the semester with our own christmas-themed chaos Mario level. Each team member added their own feature into the game, granted that it fit into the Christmas theme. Not only is the level visually inspired by Christmas, the sounds are bright and Christmas themed.
 
 ### Features
-  * **Christmas Snail** <br> <img width="100" height="100" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
+  * **Immortal Snail** <br> <img width="100" height="100" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
     * Inspired by the Immortal Christmas Snail, our snail will (slowly) terrorize Mario as he runs through the game. Don't get caught!
     * As the snail gets closer to Mario, the heartbeat sound gets louder and louder
+    * All Mario's lives will be lost and he will die no matter what Mario State he is in
   * **Mario Dash Feature**
+  * 
   * **Christmas-Mode**
+    * Added a Christmas-themed texture pack by adding Christmas elements to the background and sprites
+    * Christmas Mario: <img width="585" height="52" alt="small-mario-final_Christmas(1)" src="https://github.com/user-attachments/assets/63d57c51-230c-4d9d-999c-9e48ef916cb4" />
+  * **Team Member Sprites** - We created sprites that show each of our team members so that we could be placed into our game, either as enemies or just as sprites in the background
 
 ### Sprint 5 - Focus on Fixing and Fun Elements
 
+Now that our team had the comments from Sprint 4, we were able to use that to focus on what to fix for our game. We focused on abstracting out the collision code into a **CollisionManager.cs** since it affected many different aspects of the game and we saw repeated code. By putting the collision code in a different place, we were able to trim down our Game1 and focus on cleaning up other parts of our code. We also got the functionality working to get Level 1 working correctly.
 
-Now that our team had the comments from Sprint 4, we were able to use that to focus on what to fix for our game. 
+With the main part of Sprint 4, we all decided to split up and our own aspects of the code. I have explained what we added earlier in the **Features** section. We decided to focus on a Christmas theme, inspired by this time of the year.
 
 ## Program Structure
 
 ### Command Design Pattern
 
+
 ### State Machine
+
 
 ### Factory Machine
 
+
 ### How Game1 Evolved
+
+Throughout our time working on the sprints, we just kept adding and adding to the Game1 file. The **Game1.cs** is basically the hub of all the code, it should only Load, Update, and Draw our content. But our Game1 was handling collision, physics, and many other parts of the game that it should not. We recognized that and wanted to make it better thoughout the semester. We got grader comments calling it "bloated" and saying that it was doing way too much.
+
+While we did get caught up in working with other parts of the game to make it work, we focused on abstracting our collision code into a manager, as I touched on when talking about our Sprint 5. We wanted code that affects many parts of the game to be in one place and have it focused on collision, instead of working collision into our enemies in our Game1 class. We recognized that that was inefficent and not following the code quality rules that we were striving for. Like I said earlier, our Game1 isn't as cut down as we would like it to be, but we have learned a lot about abstracting code and have made plans to cut it down if we move forward with the project in the future, when we have more time.
+
 
 ### Collision UML Diagram
 <img width="2820" height="1865" alt="UML class (1)" src="https://github.com/user-attachments/assets/89638b76-d23a-4f22-a806-743a9cd1e776" />
