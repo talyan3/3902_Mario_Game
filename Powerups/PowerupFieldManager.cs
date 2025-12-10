@@ -4,7 +4,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MonogameTest.Managers
+
 {
+    
     /// <summary>
     /// Handles all active powerups in the level: spawn, update, collision, and draw.
     /// </summary>
@@ -14,6 +16,7 @@ namespace MonogameTest.Managers
 
         private Texture2D _powerupSheet;
         private SpriteBatch _spriteBatch;
+        private List<Tile> _tiles;
 
         public PowerupFieldManager() { }
 
@@ -46,6 +49,11 @@ namespace MonogameTest.Managers
             _powerups.Add(p);
         }
 
+        public void SetTiles(List<Tile> tiles)
+        {
+            _tiles = tiles;
+        }
+
         // =========================================================
         // UPDATE + COLLISION
         // =========================================================
@@ -58,6 +66,14 @@ namespace MonogameTest.Managers
             foreach (var p in _powerups)
             {
                 p.Update(gameTime);
+                // Handle powerup vs ground collisions
+            if (_tiles != null)
+            {
+                foreach (var tile in _tiles)
+                 PowerupCollisionHandler.HandleTileCollision(p, tile);
+            }
+            p.Update(gameTime);
+
 
                 if (p.IsAlive && PowerupCollisionHandler.CheckMarioPowerupCollision(mario, p))
                 {
