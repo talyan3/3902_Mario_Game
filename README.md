@@ -39,20 +39,24 @@ We have learned many different design patterns to implement to our code. As we h
 <img width="1104" height="165" alt="Screenshot_2025-12-08_130329" src="https://github.com/user-attachments/assets/02172ade-4a9e-444c-b5c4-bccd0b9cacf8" />
 Above is an entire layout of Level 1. One of our group members was able to find a tool to create a layout of the level, and automatically convert it into a JSON file. The group is then able to use the JSON file to store the level data and use it to load and construct the level. The code in **TiledMapLoader.cs** shows how we utilize this information.
 
-### Sprint 2 - Focus on functionality & familialrizing ourselves
+
+### Sprint 2 - Focus on Functionality & Familiarizing Ourselves
  <img width="400" height="400" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
  
 During Sprint 2, we worked on figuring out basic keypress commands, making sure that Mario moves, and placing all of our sprites on the screen. We started by using one member's Sprint 0 and ensured that every team member was familiar with the code. The team's most simple assignment, where we started on getting accostomed to GitHub and starting to implement the Command Design Patter with Command Managers.
+
  
  ### Sprint 3 - Focus on Collision and Level Loading
  <img width="350" height="350" alt="Screenshot 2025-12-09 160352" src="https://github.com/user-attachments/assets/5cb14c23-dd40-4530-a67f-b2126a80c148" />
 
 During Sprint 3, our team focus on getting the level created and loaded into the game. We also worked on getting collision and physics to work. The collision used the rectangle logic that was covered in class. We focused on seeing how the two rectangles that represented the sprites were to overlap and use that information to determine the type of collision. We then passed that information to a HandleCollision class that used the information to correctly move Mario around so that he experienced collision.
 
-At the end of the Sprint, our team ended up with our infamous two Marios. One had the correct collision working with the ground and pipes. The other had the correct physics and physics animation for when Mario jumps and moves. Our group started to have trouble with GitHub and figuring out how to manage all of our branches in an effective way. Our confusion led to last minute merges and trouble getting both the physics and the collision to work well together.
- 
+At the end of the Sprint, our team ended up with our infamous two Marios. One had the correct collision working with the ground and pipes. The other had the correct physics and physics animation for when Mario jumps and moves. Our group started to have trouble with GitHub and figuring out how to manage all of our branches in an effective way. Our confusion led to last minute merges and trouble getting both the physics and the collision to work well together. However, our team was able to start communicating better about how our code was breaking so that we could effictively work together.
 
- ### Sprint 4
+ 
+ ### Sprint 4 - Focus on Finishing Game
+
+Sprint 4 was the big assignment, when our game should look similar to the Super Mario Bros Level 1.
 
  ### Sprint 5
 
@@ -73,3 +77,11 @@ With the hoilday season, our team thought there would be no better way to end of
 ## Program Structure
 ### Collision UML Diagram
 <img width="2820" height="1865" alt="UML class (1)" src="https://github.com/user-attachments/assets/89638b76-d23a-4f22-a806-743a9cd1e776" />
+> Blue: Manager being observed <br>
+> Red: Concrete Classes
+> Green: Abstract Classes
+
+The UML diagram above is a visual representation of one of our Command Managers: CollisionManager. It shows how CollisionManager interacts with the other aspects of the game. Collision is such a vital part of our game because Mario has to interact with almost every element, so seeing how it affects the different parts of the game is very helpful.
+
+
+
