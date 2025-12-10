@@ -133,6 +133,7 @@ namespace MonogameTest
                 // Award immediately (OG checks on hit)
                 _screenManager.AddScore(_flagScoreAwarded);
                 _scoreGiven = true;
+            
 
                 // TO-DO: Trigger a score popup sprite here
 
@@ -194,6 +195,7 @@ namespace MonogameTest
             // ===============================
             if (_isWalking)
             {
+                _screenManager.ConvertTimeToScore();
                 Game1.InputLocked = true;
 
                 // FORCE REAL WALK MODE (ANIMATION + PHYSICS)
@@ -207,7 +209,7 @@ namespace MonogameTest
 
                 _camera.LookAt(mario.Position);
 
-                if (mario.Position.X >= _poleRect.Right + 112)
+                if ((mario.Position.X >= _poleRect.Right + 112) && _screenManager.getTime() == 0)
                 {
                     // TURN OFF AUTO WALK
                     if (mario is SmallMarioSprite sm2)

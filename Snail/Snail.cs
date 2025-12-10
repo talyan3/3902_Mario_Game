@@ -1,6 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Audio;
+using System;
 
 namespace MonogameTest.Snail
 {
@@ -10,7 +11,11 @@ namespace MonogameTest.Snail
         private readonly SnailBehavior _behavior;
         private readonly Texture2D _texture1;
         private readonly Texture2D _texture2;
+        private readonly Texture2D _texture3;
+        private readonly Texture2D _texture4;
         private float _fixedY;
+        public float GroundY => _fixedY;
+
 
         public Vector2 Position;
         public bool Active => Game1.ChristmasMode; // Only exists during Christmas mode
@@ -20,18 +25,36 @@ namespace MonogameTest.Snail
         private float _heartbeatMinDistance = 80f;  // very close = max volume
         private float _heartbeatMaxVolume = 1.0f;   // loudest
         private float _heartbeatMinVolume = 0.0f;   // silent
+     
 
         private SoundEffectInstance _heartbeatInstance;
 
-        public Snail(Texture2D t1, Texture2D t2, Vector2 startPosition)
+        //flying snail
+        public bool IsFlying { get; private set; } = false;
+
+        public void SetFlying(bool isFlying)
+        {
+            IsFlying = isFlying;
+        }
+
+        public void SetGround(Vector2 marioPos)
+        {
+            _behavior.setGround(marioPos);
+        }
+
+
+
+        public Snail(Texture2D t1, Texture2D t2, Vector2 startPosition, Texture2D t3, Texture2D t4)
         {
             _texture1 = t1;
             _texture2 = t2;
+            _texture3 = t3;
+            _texture4 = t4;
 
             Position = startPosition;
             _fixedY = startPosition.Y;
 
-            _sprite = new SnailSprite(_texture1, _texture2);
+            _sprite = new SnailSprite(_texture1, _texture2, _texture3, _texture4);
             _behavior = new SnailBehavior();
 
             // Create heartbeat instance (looping)
@@ -58,12 +81,13 @@ namespace MonogameTest.Snail
             Position = _behavior.UpdateSnail(
                 Position,
                 marioPos,
-                (float)gameTime.ElapsedGameTime.TotalSeconds
+                (float)gameTime.ElapsedGameTime.TotalSeconds,
+                this
             );
 
 
             // Update animation
-            _sprite.Update(gameTime, Position, marioPos);
+            _sprite.Update(gameTime, Position, marioPos, IsFlying);
 
             // Adjust heartbeat loudness
             UpdateHeartbeatVolume(marioPos);
@@ -72,7 +96,7 @@ namespace MonogameTest.Snail
         public void Draw(SpriteBatch sb)
         {
             if (!Active) return;
-            _sprite.Draw(sb, Position);
+            _sprite.Draw(sb, Position, IsFlying);
         }
 
         private void UpdateHeartbeatVolume(Vector2 marioPos)
@@ -106,7 +130,8 @@ namespace MonogameTest.Snail
         {
             get
             {
-                Texture2D tex = _sprite.CurrentTexture; 
+                Texture2D tex = _sprite.CurrentTexture(IsFlying);
+
                 int w = tex.Width;
                 int h = tex.Height;
 

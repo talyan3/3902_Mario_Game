@@ -7,24 +7,35 @@ namespace MonogameTest.Snail
     {
         private Texture2D _frame1;
         private Texture2D _frame2;
-
+        private Texture2D _frame3;
+        private Texture2D _frame4;
+        
+    
         private float _timer;
         private float _animationSpeed = 0.25f; // smoother, faster animation
         private int _currentFrame = 0;
 
         private SpriteEffects _flip = SpriteEffects.None;
 
-        public Texture2D CurrentTexture => 
-         (_currentFrame == 0 ? _frame1 : _frame2);
+        public Texture2D CurrentTexture(bool isFlying)
+        {
+            if (isFlying)
+                return (_currentFrame == 0) ? _frame3 : _frame4; // flying animation
+            else
+                return (_currentFrame == 0) ? _frame1 : _frame2; // ground animation
+        }
 
 
-        public SnailSprite(Texture2D frame1, Texture2D frame2)
+
+        public SnailSprite(Texture2D frame1, Texture2D frame2, Texture2D frame3, Texture2D frame4)
         {
             _frame1 = frame1;
             _frame2 = frame2;
+            _frame3 = frame3;
+            _frame4 = frame4;
         }
 
-        public void Update(GameTime gameTime, Vector2 snailPos, Vector2 marioPos)
+        public void Update(GameTime gameTime, Vector2 snailPos, Vector2 marioPos, bool isFlying)
         {
             // Flip based on chase direction
             if (marioPos.X < snailPos.X)
@@ -32,20 +43,20 @@ namespace MonogameTest.Snail
             else
                 _flip = SpriteEffects.None;
 
-            // Smooth animation
+            // Animate
             _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (_timer >= _animationSpeed)
             {
                 _timer = 0;
-                _currentFrame = (_currentFrame + 1) % 2; 
+                _currentFrame = (_currentFrame + 1) % 2;
             }
         }
 
-        public void Draw(SpriteBatch sb, Vector2 position)
-        {
-            Texture2D tex = (_currentFrame == 0) ? _frame1 : _frame2;
 
-            // Bottom-center origin so snail sits on ground like Mario
+        public void Draw(SpriteBatch sb, Vector2 position, bool isFlying)
+        {
+            Texture2D tex = CurrentTexture(isFlying);
+
             Vector2 origin = new Vector2(tex.Width / 2f, tex.Height);
 
             sb.Draw(
@@ -60,6 +71,7 @@ namespace MonogameTest.Snail
                 0f
             );
         }
+
 
     }
 }

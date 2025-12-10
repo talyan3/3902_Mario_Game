@@ -259,6 +259,7 @@ namespace MonogameTest
                 ChristmasMode = true;
                 _sound.StopSong();
                 _enemyManager.ActivateSnail(_marioState.CurrentMario.Position);
+                _enemyManager.Snail.SetGround(_marioState.CurrentMario.Position);
                 SoundManager.Instance.PlayEffect("jingle");
                 if (SoundManager.Instance.IsSongPlaying())
                 {
