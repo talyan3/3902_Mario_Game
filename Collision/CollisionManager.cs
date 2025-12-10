@@ -72,7 +72,7 @@ namespace MonogameTest.Managers
             if (Game1.InputLocked)
             {
                 flagpole.Update(gameTime);  // allow victory sequence
-                HandleTileCollision(activeMario);
+                //HandleTileCollision(activeMario);
                 return;
             }
             // === HURT INVINCIBILITY TIMER ===

@@ -2,6 +2,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonogameTest.Sounds;
 using MonogameTest.Screens;
+using System.Runtime.Serialization.DataContracts;
 
 namespace MonogameTest
 {
@@ -31,9 +32,12 @@ namespace MonogameTest
 
         private float _soundDelayTimer = 0f;
         private const float SOUND_DELAY = 1.5f;
+        private float _walkDelayTimer = 0.25f;
+        private const float WALK_DELAY = 0.25f;
 
-        private float _walkDelayTimer = 2.5f;
-        private const float WALK_DELAY = 2.5f;
+        private int _flagScoreAwarded = 0;
+        private bool _scoreGiven = false;
+
 
         public Flagpole(
             SpriteBatch spriteBatch,
@@ -106,6 +110,32 @@ namespace MonogameTest
                 //  Snap Mario flush to pole
                 float attachX = _poleRect.Left - marioBounds.Width / 2f - 2f;
                 mario.Position = new Vector2(attachX, mario.Position.Y);
+
+                // =========================
+                // FLAG SCORE CALCULATION
+                // =========================
+
+                // Distance from top of pole to Mario's hit point
+                float hitY = marioBounds.Top;
+                float poleTop = _poleRect.Top;
+                float poleBottom = _poleRect.Bottom;
+
+                float totalHeight = poleBottom - poleTop;
+                float relativeHeight = 1f - MathHelper.Clamp((hitY - poleTop) / totalHeight, 0f, 1f);
+
+                // Determine score
+                if (relativeHeight > 0.90f)       _flagScoreAwarded = 5000;
+                else if (relativeHeight > 0.70f) _flagScoreAwarded = 800;
+                else if (relativeHeight > 0.50f) _flagScoreAwarded = 400;
+                else if (relativeHeight > 0.30f) _flagScoreAwarded = 200;
+                else                             _flagScoreAwarded = 100;
+
+                // Award immediately (OG checks on hit)
+                _screenManager.AddScore(_flagScoreAwarded);
+                _scoreGiven = true;
+
+                // TO-DO: Trigger a score popup sprite here
+
             }
 
             // ===============================
@@ -133,7 +163,13 @@ namespace MonogameTest
                     _soundDelayTimer = SOUND_DELAY;
                     _walkDelayTimer = WALK_DELAY;
 
-                    SoundManager.Instance.PlaySong("levelComplete", false);
+                    if (Game1.ChristmasMode)
+                    {
+                        SoundManager.Instance.PlaySong("xmasWin", false);
+                    } else
+                    {
+                        SoundManager.Instance.PlaySong("levelComplete", false);
+                    }
                     return;
                 }
 
@@ -159,7 +195,6 @@ namespace MonogameTest
             if (_isWalking)
             {
                 Game1.InputLocked = true;
-                Vector2 pos = mario.Position;
 
                 // FORCE REAL WALK MODE (ANIMATION + PHYSICS)
                 if (mario is SmallMarioSprite sm)
@@ -172,7 +207,7 @@ namespace MonogameTest
 
                 _camera.LookAt(mario.Position);
 
-                if (mario.Position.X >= _poleRect.Right + 140)
+                if (mario.Position.X >= _poleRect.Right + 112)
                 {
                     // TURN OFF AUTO WALK
                     if (mario is SmallMarioSprite sm2)

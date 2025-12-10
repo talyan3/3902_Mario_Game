@@ -17,7 +17,6 @@ public static class StaticCollisionHandler
     {
         result = default;
 
-        
         Vector2 pos, scale;
         if (marioAny is SmallMarioSprite sm)
         {
@@ -43,6 +42,10 @@ public static class StaticCollisionHandler
 
         var detector = new DetectCollisions();
         var side = detector.GetCollision(marioRect, tileRect, out Point mtv);
+        /*if(Game1.InputLocked && (side == typeCollision.Left || side == typeCollision.Right))
+        {
+            return false;
+        }*/
         if (side == typeCollision.None) return false;
 
         var newPos = pos + mtv.ToVector2();
