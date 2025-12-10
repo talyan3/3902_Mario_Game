@@ -56,7 +56,7 @@ At the end of the Sprint, our team ended up with our infamous two Marios. One ha
  
  ### Sprint 4 - Focus on Finishing Game
 
-Sprint 4 was the big assignment, when our game should look similar to the Super Mario Bros Level 1.
+Sprint 4 was the big assignment, when our game should look similar to the Super Mario Bros Level 1. We had backlogged 
 
  ### Sprint 5
 
