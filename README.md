@@ -33,12 +33,13 @@
 Above is an entire layout of Level 1. One of our group members was able to find a tool to create a layout of the level, and automatically convert it into a JSON file. The group is then able to use the JSON file to store the level data and use it to load and construct the level. The code in **TiledMapLoader.cs** shows how we utilize this information.
 
 ### Sprint 2 - Focus on functionality & familialrizing ourselves
- <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
+ <img width="400" height="400" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
  
 During Sprint 2, we worked on figuring out basic keypress commands, making sure that Mario moves, and placing all of our sprites on the screen. We started by using one member's Sprint 0 and ensured that every team member was familiar with the code. The team's most simple assignment, where we started on getting accostomed to GitHub and starting to implement the Command Design Patter with Command Managers.
  
  ### Sprint 3
- <img width="300" height="300" alt="Screenshot 2025-12-09 160352" src="https://github.com/user-attachments/assets/5cb14c23-dd40-4530-a67f-b2126a80c148" />
+ <img width="350" height="350" alt="Screenshot 2025-12-09 160352" src="https://github.com/user-attachments/assets/5cb14c23-dd40-4530-a67f-b2126a80c148" />
+ 
 
  ### Sprint 4
 
@@ -54,8 +55,8 @@ With the hoilday season, our team thought there would be no better way to end of
   * Christmas Snail - Inspired by the Immortal Christmas Snail, our snail will (slowly) terrorize Mario as he runs through the game. Don't get caught!
     ** <img width="50" height="50" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
 
-  * Team members as enemies
-  * 
+  * Mario Dash Feature
+
   * Christmas-themed background
 
 ## Program Structure
