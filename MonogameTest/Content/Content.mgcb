@@ -20,23 +20,35 @@
 /processorParam:TextureFormat=Compressed
 /build:marioFont.spritefont
 
-#begin Sounds/Jingle.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
+#begin Sounds/Jingle.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Sounds/Jingle.mp3
+/build:Sounds/Jingle.wav
 
-#begin Sounds/Heartbeat.mp3
-/importer:Mp3Importer
-/processor:SongProcessor
+#begin Sounds/Heartbeat.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
 /processorParam:Quality=Best
-/build:Sounds/Heartbeat.mp3
+/build:Sounds/Heartbeat.wav
 
-#begin Sounds/XmaslLose.mp3
+#begin Sounds/XmasLose.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Sounds/XmasLose.mp3
+
+#begin Sounds/XmasWin.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/XmasWin.mp3
+
+#begin Sounds/TechnoXmas.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/TechnoXmas.mp3
 
 #begin Sounds/01-main-theme-overworld.mp3
 /importer:Mp3Importer

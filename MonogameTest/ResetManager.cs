@@ -27,7 +27,14 @@ namespace MonogameTest
 
             // Reset music
             SoundManager.Instance.StopSong();
-            SoundManager.Instance.PlaySong("mainTheme");
+            if (!Game1.ChristmasMode)
+            {
+                SoundManager.Instance.PlaySong("mainTheme");
+            }
+            else
+            {
+                SoundManager.Instance.PlaySong("mainXmas");
+            }
         }
 
         // =========================================================
@@ -48,7 +55,14 @@ namespace MonogameTest
             screenManager.ResetLevel();
 
             SoundManager.Instance.StopSong();
-            SoundManager.Instance.PlaySong("mainTheme");
+            if (!Game1.ChristmasMode)
+            {
+                SoundManager.Instance.PlaySong("mainTheme");
+            }
+            else
+            {
+                SoundManager.Instance.PlaySong("mainXmas");
+            }
             Game1.InputLocked = false;
         }
 

@@ -99,8 +99,15 @@ namespace MonogameTest
             // Sound
             _sound = SoundManager.Instance;
             SoundLoader.LoadAllSounds(this, _sound);
-            _sound.PlaySong("mainTheme");
-
+            if (!ChristmasMode)
+            {
+                SoundManager.Instance.PlaySong("mainTheme");
+            }
+            else
+            {
+                SoundManager.Instance.PlaySong("mainXmas");
+            }
+            
             // Background
             _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
             _backgroundManager.LoadContent();
@@ -200,7 +207,12 @@ namespace MonogameTest
                 ChristmasMode = true;
                 _sound.StopSong();
                 _enemyManager.ActivateSnail();
-                _sound.PlaySong("mainXmas");
+                SoundManager.Instance.PlayEffect("jingle");
+                if (SoundManager.Instance.IsSongPlaying())
+                {
+                    SoundManager.Instance.StopSong();
+                    SoundManager.Instance.PlaySong("mainXmas");
+                }
                 _christmasTimer = 8f;
             }
             _xWasDown = xDown;
