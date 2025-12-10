@@ -77,9 +77,10 @@ With the hoilday season, our team thought there would be no better way to end of
 ## Program Structure
 ### Collision UML Diagram
 <img width="2820" height="1865" alt="UML class (1)" src="https://github.com/user-attachments/assets/89638b76-d23a-4f22-a806-743a9cd1e776" />
-> Blue: Manager being observed <br>
-> Red: Concrete Classes
-> Green: Abstract Classes
+
+> **Blue:** Manager being observed <br>
+> **Red:** Concrete Classes <br>
+> **Green:** Abstract Classes
 
 The UML diagram above is a visual representation of one of our Command Managers: CollisionManager. It shows how CollisionManager interacts with the other aspects of the game. Collision is such a vital part of our game because Mario has to interact with almost every element, so seeing how it affects the different parts of the game is very helpful.
 
