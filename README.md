@@ -26,7 +26,11 @@
   * **M**: Mute game
   * **P**: Pause game
  
-## Level 1 - *Mario Replica*
+## Level 1 - *Super Mario Bros Replica*
+
+### Layout
+<img width="1104" height="165" alt="Screenshot_2025-12-08_130329" src="https://github.com/user-attachments/assets/02172ade-4a9e-444c-b5c4-bccd0b9cacf8" />
+Above is an entire layout of Level 1. One of our group members was able to find a tool to create a layout of the level, and automatically convert it into a JSON file. The group is then able to use the JSON file to store the level data and use it to load and construct the level. 
 
 ### Sprint 2
  <img width="300" height="300" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
@@ -53,4 +57,5 @@ With the hoilday season, our team thought there would be no better way to end of
   * Christmas-themed background
 
 ## Program Structure
+### 
 
