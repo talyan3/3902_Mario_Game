@@ -9,6 +9,16 @@ namespace MonogameTest
         public Rectangle SourceRect { get; }
         public Vector2 Position { get; }
 
+        public bool IsSolid =>
+    TileName == "Ground" ||
+    TileName == "Brick" ||
+    TileName == "Question" ||
+    TileName == "PipeTopLeft" ||
+    TileName == "PipeTopRight" ||
+    TileName == "PipeBodyLeft" ||
+    TileName == "PipeBodyRight" ||
+    TileName == "Stair";
+
         public Rectangle Bounds =>
             new Rectangle((int)Position.X, (int)Position.Y, SourceRect.Width, SourceRect.Height);
             public bool IsActive { get; set; } = true;
