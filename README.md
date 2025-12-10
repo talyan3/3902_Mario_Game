@@ -10,9 +10,6 @@
 ## Program Controls
 <img width="1920" height="1080" alt="Mario Controls (3)" src="https://github.com/user-attachments/assets/841c8e37-1b25-4ef5-84ca-bf5263806cde" />
 
-
-
-
 ### Basic Mario Controls
   * **Left** and **Right**: Move Mario side to side
   * **Up**: Jump
@@ -20,7 +17,7 @@
   * **Shift**: Mario sprints
     
 ### Activating Different Marios
-  * **D** (Hold): Activates Invincible Mario
+  * **D** *(Hold)*: Activates Invincible Mario
   * **Space**: Activate Teleport Dash Mario
 
 ### Game Controls
