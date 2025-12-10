@@ -5,7 +5,7 @@ This project is a semester-long work for OSU CSE 3902. We were tasked to recreat
 > **M** aintainable <br>
 > **R** eusable <br>
 
-We have learned many different design patterns to implement to our code. As we have learned throughout the semester, an important part of creating video game code, is how complicated it is to add a new element to a game. Our team focused on making sure code had high cohesion, so that elements were grouped together. As well as low coupling, no more than 3 "." to call an element.
+Our team worked with an OOP oriented style, focusin on **Readability** so that we can understand each others' code well. We worked on abstracting our code. We have learned many different design patterns to implement to our code. As we have learned throughout the semester, an important part of creating video game code, is how complicated it is to add a new element to a game. Our team focused on making sure code had high cohesion, so that elements were grouped together. As well as low coupling, no more than 3 "." to call an element.
 
 ## Team 2 - Members
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Anika <br>
