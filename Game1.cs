@@ -147,6 +147,7 @@ namespace MonogameTest
             using var fs = new FileStream("blocksV10.png", FileMode.Open);
             var tileset = Texture2D.FromStream(GraphicsDevice, fs);
             _mapTiles = TiledMapLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "level1.json"), tileset);
+            _powerupManager.SetTiles(_mapTiles);
 
             // ---------- CAMERA ----------
             _camera = new CameraManager(GraphicsDevice.Viewport);
