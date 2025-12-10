@@ -53,6 +53,7 @@ namespace MonogameTest
                 11 => "PipeBodyRight",
                 12 => "DarkGround",
                 13 => "DarkBrick",
+                15 => "Coin",
                 _  => $"gid={gid}"
             };
 

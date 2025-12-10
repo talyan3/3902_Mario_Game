@@ -25,7 +25,11 @@ namespace MonogameTest.Screens
             spriteBatch.DrawString(_font, "x" + _screenManager.Coins.ToString("00"), new Vector2(375, 55), Color.White);
 
             spriteBatch.DrawString(_font, "WORLD", new Vector2(550,15), Color.White);
-            spriteBatch.DrawString(_font, "1-1", new Vector2(580,55), Color.White);
+            if (Game1.pipeMode == false)
+                spriteBatch.DrawString(_font, "1-1", new Vector2(580,55), Color.White);
+            else
+                spriteBatch.DrawString(_font, "1-???", new Vector2(570,55), Color.White);
+
 
             spriteBatch.DrawString(_font, "TIME", new Vector2(800, 15), Color.White);
             spriteBatch.DrawString(_font, ((int)_screenManager.Time).ToString(), new Vector2(825, 55), Color.White);

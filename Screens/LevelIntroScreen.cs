@@ -92,7 +92,11 @@ namespace MonogameTest.Screens
             sb.DrawString(_font, time, TimeValuePos, Color.White);
 
             // Large center intro text
-            sb.DrawString(_font, $"WORLD {world}", WorldIntroPos, Color.White);
+            if(Game1.pipeMode == false)
+                sb.DrawString(_font, $"WORLD {world}", WorldIntroPos, Color.White);
+            else
+                sb.DrawString(_font, "WORLD 1-???", WorldIntroPos, Color.White);
+
 
             sb.DrawString(_font, "MARIO", MarioIntroPos, Color.White);
             sb.DrawString(_font, $"x0{Manager.Lives}", LivesIntroPos, Color.White);

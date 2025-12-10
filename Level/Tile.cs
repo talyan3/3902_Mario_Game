@@ -7,12 +7,12 @@ namespace MonogameTest
     {
         public Texture2D Texture { get; }
         public Rectangle SourceRect { get; }
-        public Vector2 Position { get; }
+        public Vector2 Position { get;}
 
         public Rectangle Bounds =>
             new Rectangle((int)Position.X, (int)Position.Y, SourceRect.Width, SourceRect.Height);
-            public bool IsActive { get; set; } = true;
-        public int Gid { get; }        
+        public bool IsActive { get; set; } = true;
+        public int Gid { get; set;}        
         public string TileName { get; }
         public Tile(Texture2D texture, Rectangle sourceRect, Vector2 position)
         {

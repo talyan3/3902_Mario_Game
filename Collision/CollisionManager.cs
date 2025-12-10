@@ -164,7 +164,7 @@ namespace MonogameTest.Managers
                 }
             }
             if ((hitTile.TileName == "Question" || hitTile.TileName == "Brick" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "Ground" || hitTile.TileName == "DarkGround" || hitTile.TileName == "DarkBrick") &&
-                res.Side == typeCollision.Top)
+                res.Side == typeCollision.Top && hitTile.TileName != "Coin")
             {
                 int tileTop = hitTile.Bounds.Top;
 
@@ -186,20 +186,26 @@ namespace MonogameTest.Managers
                     marioState.fireMario._isJumping = false;
                 }
             }
-            if ((hitTile.TileName == "Ground" || hitTile.TileName == "PipeTopLeft" || hitTile.TileName == "PipeTopRight" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "DarkGround") && (marioState.smallMario._isJumping == false || marioState.bigMario._isJumping == false) && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
+            if ((hitTile.TileName == "Ground" || hitTile.TileName == "PipeTopLeft" || hitTile.TileName == "PipeTopRight" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "DarkGround" || hitTile.TileName == "DarkBrick") && (marioState.smallMario._isJumping == false || marioState.bigMario._isJumping == false) && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
             {
                 marioState.smallMario.verticalVelocity = -15f;
                 marioState.bigMario.verticalVelocity = -15f;
                 if (marioState.fireMario != null && marioState.fireMario._isJumping == false)
                     marioState.fireMario.verticalVelocity = -15f;
             }
-            if ((hitTile.TileName == "Ground" || hitTile.TileName == "PipeTopLeft" || hitTile.TileName == "PipeTopRight" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "DarkGround") && (marioState.smallMario._isJumping == true || marioState.bigMario._isJumping == true) && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
+            if ((hitTile.TileName == "Ground" || hitTile.TileName == "PipeTopLeft" || hitTile.TileName == "PipeTopRight" || hitTile.TileName == "PipeBodyLeft" || hitTile.TileName == "PipeBodyRight" || hitTile.TileName == "Stair" || hitTile.TileName == "DarkGround" || hitTile.TileName == "DarkBrick") && (marioState.smallMario._isJumping == true || marioState.bigMario._isJumping == true) && (res.Side == typeCollision.Right || res.Side == typeCollision.Left))
             {
                 marioState.smallMario._isJumping = false;
                 marioState.bigMario._isJumping = false;
                 if (marioState.fireMario != null && marioState.fireMario._isJumping == true)
                     marioState.fireMario._isJumping = false;
             }
+            /*if (hitTile.TileName == "Coin")
+            {
+                hitTile.IsActive = false;
+                hitTile.Gid = 0;
+                ScreenManager.Instance.AddCoin();
+            }*/
         }
 
         // =========================================================
@@ -294,7 +300,7 @@ namespace MonogameTest.Managers
         }
         private void HandleVoid(StaticSprite activeMario, CameraManager camera)
         {
-            if (marioState.smallMario.Position.Y > tileSize * 18 || marioState.bigMario.Position.Y > tileSize * 18)
+            if (marioState.smallMario.Position.Y > tileSize * 18 || marioState.bigMario.Position.Y > tileSize * 18 || marioState.fireMario.Position.Y > tileSize * 18)
             {
                 marioState.ForceSmall(spawnPoint);
 

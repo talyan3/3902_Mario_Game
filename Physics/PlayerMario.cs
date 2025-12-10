@@ -30,7 +30,6 @@ namespace MonogameTest
         {
             Physics = new Physics();
             Physics.position = new Vector2(-100, 100);
-
             PhysicsP = new PlayerPhysics();
             animPlayer = new AnimationPlayer();
             Input = new KeyboardController();
@@ -102,9 +101,17 @@ namespace MonogameTest
                     Physics.isGrounded = false;
                     ChangeState(new JumpState(this));
                 }
+                if (moveDir != 0)
+                {
+                    FacingRight = moveDir > 0;
+                }
             }
 
             Physics.Update(gameTime);
+
+            // Update facing direction
+            if (Physics.velocity.X > 0) FacingRight = true;
+            if (Physics.velocity.X < 0) FacingRight = false;
 
             currState.Update(gameTime);
             animPlayer.Update(gameTime);

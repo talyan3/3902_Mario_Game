@@ -40,6 +40,7 @@ namespace MonogameTest
         public float gravity = 900f;        // pixels/sec² 
         const float jumpStrength = -350f;  // upward
         public bool ForceAutoWalkRight = false;
+        private readonly Game1 game;
 
         public override Rectangle Bounds
         {
@@ -155,7 +156,7 @@ namespace MonogameTest
                 //}
 
                 // ---- LANDING ----
-                if (Position.Y >= _groundPos.Y)
+                if (Position.Y >= _groundPos.Y)// && Game1.pipeMode == false)
                 {
                     //Position = new Vector2(Position.X, _groundPos.Y);
                     //verticalVelocity = 0f; // THIS IS WHY MARIO DOESNT FALL INTO PITS!!!

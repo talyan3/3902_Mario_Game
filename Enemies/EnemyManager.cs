@@ -69,12 +69,25 @@ namespace MonogameTest.Managers
             };
 
             // ---- LOAD GOOMBAS FROM STATIC POSITION DATA ----
-            foreach (var posTile in EnemyPositions.Goombas)
+            if (Game1.pipeMode == false)
             {
-                var g = new moveGoom(_goombaSprite, spriteBatch);
-                g.SpawnPosition = posTile * _tileSize;
-                g.Position = g.SpawnPosition;
-                _goombas.Add(g);
+                foreach (var posTile in EnemyPositions.Goombas)
+                {
+                    var g = new moveGoom(_goombaSprite, spriteBatch);
+                    g.SpawnPosition = posTile * _tileSize;
+                    g.Position = g.SpawnPosition;
+                    _goombas.Add(g);
+                }
+            }
+            else
+            {
+                foreach (var posTile in EnemyPositionsSecret.Goombas)
+                {
+                    var g = new moveGoom(_goombaSprite, spriteBatch);
+                    g.SpawnPosition = posTile * _tileSize;
+                    g.Position = g.SpawnPosition;
+                    _goombas.Add(g);
+                }
             }
             
             // Load snail textures directly from Snail folder
@@ -213,6 +226,7 @@ namespace MonogameTest.Managers
                 _snail.Reset();
             }
         }
+        
         private bool IsAtCliff(moveGoom g, List<Tile> tiles)
         {
             // Feet position one pixel below Goomba

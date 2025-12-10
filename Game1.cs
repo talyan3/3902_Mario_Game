@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using MonogameTest.Managers;
 using MonogameTest.Screens;
 using MonogameTest.Sounds;
-
+using System.IO.Pipes;
 
 namespace MonogameTest
 {
@@ -86,6 +86,10 @@ namespace MonogameTest
         private int Scale => C.Scale;
         private int ScaleMod => C.ScaleMod;
 
+        List<Pipe> pipes;
+        Texture2D whiteRectangle;
+        public static bool pipeMode = false;
+        private DashComponent dash;
         public Game1()
         {
             ConfigLoader.Load();
@@ -111,6 +115,13 @@ namespace MonogameTest
 
             _enemyManager = new EnemyManager(C.TileSize); // THIS IS SO GOOD, USE THIS!!!
             _powerupManager = new PowerupFieldManager();
+
+            pipes = new List<Pipe>();
+            pipes.Add(new Pipe(
+                new Rectangle(752-16, 128, 32, 16), // pipe location/size
+                new Vector2(_spawnPoint.X, _spawnPoint.Y)            // Destination
+            ));
+            dash = new DashComponent();
 
             base.Initialize();
         }
@@ -140,6 +151,9 @@ namespace MonogameTest
             _fireMario = new FireMarioSprite(GraphicsDevice) {SoundManager = _sound};
 
             _spawnPoint = new Vector2(C.TileSize * 5, C.TileSize * 13);
+
+            whiteRectangle = new Texture2D(GraphicsDevice, 1, 1);
+            whiteRectangle.SetData(new[] { Color.White });
             _smallMario.Position = _spawnPoint;
             _bigMario.Position = _spawnPoint;
             _fireMario.Position = _spawnPoint;
@@ -154,7 +168,11 @@ namespace MonogameTest
             // ---------- MAP ----------
             using var fs = new FileStream("blocksV10.png", FileMode.Open);
             var tileset = Texture2D.FromStream(GraphicsDevice, fs);
-            _mapTiles = TiledMapLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "level1.json"), tileset);
+            if (pipeMode == false)
+                _mapTiles = TiledMapLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "level1.json"), tileset);
+            else 
+                _mapTiles = TiledMapLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "customLevel.json"), tileset);
+
 
             // ---------- CAMERA ----------
             _camera = new CameraManager(GraphicsDevice.Viewport);
@@ -257,6 +275,7 @@ namespace MonogameTest
             if (xDown && !_xWasDown && !ChristmasMode)
             {
                 ChristmasMode = true;
+                _showChristmasText = true;
                 _sound.StopSong();
                 _enemyManager.ActivateSnail(_marioState.CurrentMario.Position);
                 SoundManager.Instance.PlayEffect("jingle");
@@ -278,6 +297,20 @@ namespace MonogameTest
                 case GameState.TimeUp: _timeUpScreen.Update(gameTime); return;
                 case GameState.GameOver: _gameOverScreen.Update(gameTime); return;
             }
+            //TODO:PIPE TELEPORTATION
+            foreach (var entrance in pipes)
+            {
+                if (entrance.CheckCollision(_smallMario.Bounds))
+                {
+                    Console.WriteLine("Teleporting Mario!");
+                    if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                    {
+                        pipeMode = true;
+                        HardReload();
+                    }
+                    break;
+                }
+            }
             if (_showChristmasText)
             {
                 _christmasTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -291,29 +324,6 @@ namespace MonogameTest
             }
 
             DebugGodMode = kb.IsKeyDown(Keys.D);
-
-            /*if (PauseManager.HandlePauseInput(Keyboard.GetState()))
-                return;*/
-
-            /*// DEBUG GOD MODE (HOLD D)
-            if (Keyboard.GetState().IsKeyDown(Keys.D))
-                DebugGodMode = true;
-            else
-                DebugGodMode = false;
-
-            if (Keyboard.GetState().IsKeyUp(Keys.D))
-            {
-                // prevents permanent hold lock
-            }*/
-
-            /*ResetManager.HandleSoftResetInput(
-                Keyboard.GetState(),
-                _smallMario,
-                _bigMario,
-                _marioState.CurrentMario,
-                _spawnPoint,
-                _camera
-            );*/
 
             //_marioState.CurrentMario.Update(gameTime);
             _marioState.Update(gameTime);
@@ -332,6 +342,8 @@ namespace MonogameTest
                     _fireMario.Update(gameTime, _camera.LeftEdge);
                 } 
             }
+            dash.Update(gameTime, _marioState.CurrentMario.Position);
+            _marioState.CurrentMario.Position = dash.position;
             _marioState.Tick(gameTime);
 
             if (kb.IsKeyDown(Keys.Z))
@@ -374,7 +386,10 @@ namespace MonogameTest
         // =========================================================
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(new Color(92, 148, 252));
+            if (pipeMode == false)
+                GraphicsDevice.Clear(new Color(92, 148, 252));
+            else 
+                GraphicsDevice.Clear(Color.Black);
 
             _spriteBatch.Begin();
             switch (_screenManager.CurrentState)
@@ -388,15 +403,18 @@ namespace MonogameTest
 
             _spriteBatch.Begin(transformMatrix: _camera.GetViewMatrix());
 
-            _backgroundManager.Draw(_spriteBatch, 0f);
+            if (pipeMode == false)
+                _backgroundManager.Draw(_spriteBatch, 0f);
 
             foreach (var tile in _mapTiles)
                 tile.Draw(_spriteBatch);
 
             _marioState.CurrentMario.Draw(_spriteBatch, _marioState.CurrentMario.Position);
+            _flagpole.Draw();
+
             _enemyManager.Draw(_spriteBatch);
             _powerupManager.Draw(_spriteBatch);
-            _flagpole.Draw();
+            
             _fireballs.Draw(_spriteBatch);
 
             _spriteBatch.End();
@@ -408,7 +426,7 @@ namespace MonogameTest
                 _spriteBatch.DrawString(
                     _font,
                     "CHRISTMAS MODE",
-                    new Vector2(50, 50),
+                    new Vector2(320, ScreenHeight/2),
                     Color.Red
                 );
             }

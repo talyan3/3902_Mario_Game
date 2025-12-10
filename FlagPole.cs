@@ -218,19 +218,24 @@ namespace MonogameTest
 
                     _isWalking = false;
 
-                    Vector2 rightSideSpawn = new Vector2(
+                    /*Vector2 rightSideSpawn = new Vector2(
                         _poleRect.Right + 160,
                         _spawnPoint.Y
-                    );
+                    );*/
 
-                    _smallMario.Position = rightSideSpawn;
-                    _bigMario.Position   = rightSideSpawn;
+                    //_smallMario.Position = rightSideSpawn;
+                    //_bigMario.Position   = rightSideSpawn;
+                    //_fireMario.Position   = rightSideSpawn;
 
                     Game1.InputLocked = false;
                     Game1.DebugGodMode = false;
 
-                    _screenManager.ResetLevel();
-                    _screenManager.ChangeState(GameState.Title);
+                    _screenManager.ResetAll();
+
+                    _smallMario.Position = new Vector2(32,16*13);
+                    _bigMario.Position   = new Vector2(32,16*13);
+
+                    _camera.Reset(_smallMario.Position);
                 }
             }
 
