@@ -3,6 +3,10 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using MonogameTest.Snail;
+using MonogameTest;
+using System;
+
+
 
 
 namespace MonogameTest.Managers
@@ -20,6 +24,11 @@ namespace MonogameTest.Managers
 
         private readonly Vector2 _koopaSpawnTile = new Vector2(106, 12);
         private Snail.Snail _snail;
+
+        private readonly Random _rng = new Random();
+        public Snail.Snail Snail => _snail;
+
+
 
 
         public EnemyManager(int tileSize)
@@ -42,8 +51,12 @@ namespace MonogameTest.Managers
             if (_koopa != null && _koopa.IsAlive)
                 list.Add(_koopa);
 
+            if (_snail != null && Game1.ChristmasMode)
+                list.Add(_snail);   
+
             return list;
         }
+
 
         // ===========================
         // LOAD CONTENT
@@ -125,6 +138,20 @@ catch (Exception ex)
             }
 
             // Update snail
+            // Snail tile collision
+            if (_snail != null && Game1.ChristmasMode)
+            {
+                if (EnemyCollisionHandler.HandleMany(_snail, mapTiles, out var sResult, out var sTile))
+                {
+                    // Keep snail above ground
+                    if (sResult.Grounded && sResult.MTV.Y < 0)
+                    {
+                        _snail.Position += new Vector2(0, sResult.MTV.Y);
+                    }
+                }
+
+            }
+
             _snail?.Update(gameTime, marioPos);
         }
 
@@ -140,6 +167,8 @@ catch (Exception ex)
 
             if (_koopa != null && _koopa.IsAlive)
                 _koopa.Draw(spriteBatch, _koopa.Position);
+
+            _snail?.Draw(spriteBatch);
         }
 
         // ===========================
@@ -162,13 +191,39 @@ catch (Exception ex)
         }
 
         //SPAWN SNAIL
-        public void ActivateSnail()
+        private readonly Random _rng2 = new Random();
+
+        public void ActivateSnail(Vector2 marioPos)
+        {
+            if (_snail == null)
+                return;
+
+            // World horizontal bounds — adjust as needed
+            float minX = 0f;
+            float maxX = 2500f;
+
+            float randomX = (float)_rng2.NextDouble() * (maxX - minX) + minX;
+
+            // Keep Y at Mario's height
+            float y = marioPos.Y;
+
+            _snail.Position = new Vector2(randomX, y);
+        }
+
+
+        public void ResetSnail(Vector2 spawnPoint)
         {
             if (_snail != null)
             {
-                _snail.Position = new Vector2(200, 200); 
+                _snail.Position = spawnPoint;
+                _snail.Reset();
             }
         }
+
+
+
+
+
 
     }
 }

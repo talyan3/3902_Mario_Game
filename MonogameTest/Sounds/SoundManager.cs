@@ -25,6 +25,8 @@ namespace MonogameTest
         // Volume constants
         private const float DefaultVolume = 1f;
         private const float MutedVolume = 0f;
+        private readonly Dictionary<string, SoundEffectInstance> _effectInstances = new();
+
 
         private SoundManager() { }
 
@@ -129,5 +131,35 @@ namespace MonogameTest
             if (MediaPlayer.State == MediaState.Paused)
                 MediaPlayer.Resume();
         }
+
+        public SoundEffectInstance CreateEffectInstance(string key, bool looped = false)
+        {
+            if (_effects.TryGetValue(key, out SoundEffect effect))
+            {
+                var instance = effect.CreateInstance();
+                instance.IsLooped = looped;
+                _effectInstances[key] = instance;
+                return instance;
+            }
+
+            Console.WriteLine($"Effect '{key}' not found.");
+            return null;
+        }
+
+        public void SetEffectVolume(string key, float volume)
+        {
+            if (_effectInstances.TryGetValue(key, out SoundEffectInstance inst))
+            {
+                inst.Volume = MathHelper.Clamp(volume, 0f, 1f);
+            }
+        }
+
+        public SoundEffectInstance GetEffectInstance(string key)
+        {
+            _effectInstances.TryGetValue(key, out SoundEffectInstance inst);
+            return inst;
+        }
+
+
     }
 }

@@ -14,11 +14,28 @@ namespace MonogameTest.Managers
         private readonly PowerupCollisionHandlerWrapper _powerupHandler;
         private readonly Flagpole _flagpole;  
 
+        private readonly SmallMarioSprite smallMario;
+        private readonly BigMarioSprite bigMario;
+        private readonly ICamera camera;
+        private readonly Game1 game;
+
+
+
+
         public CollisionManager(
-            TileCollisionHandler tileHandler,
-            EnemyCollisionHandlerWrapper enemyHandler,
-            PowerupCollisionHandlerWrapper powerupHandler,
-            Flagpole flagpole)
+            MarioStateController marioState,
+            List<Tile> tiles,
+            EnemyManager enemies,
+            PowerupFieldManager powerups,
+            ScreenManager screens,
+            SoundManager snd,
+            Flagpole flag,
+            Vector2 spawn,
+            int tileSize,
+            SmallMarioSprite smallMario,
+            BigMarioSprite bigMario,
+            ICamera camera
+        )
         {
             _tileHandler = tileHandler;
             _enemyHandler = enemyHandler;
@@ -84,15 +101,18 @@ namespace MonogameTest.Managers
                         {
                             SoundManager.Instance.PlayEffect("jingle");
                         }
-                        addScore?.Invoke(100);
+                        ScreenManager.Instance.AddScore(200);
                         addCoin?.Invoke();
                     }
                 }
                 else if (hitTile.TileName == "Brick")
                 {
-                    sound.PlayEffect("break");
+                    SoundManager.Instance.PlayEffect("breakBlock");
+                    ScreenManager.Instance.AddScore(50);
                 }
             }
+            
+
         }
 
         // =========================================================
@@ -100,6 +120,32 @@ namespace MonogameTest.Managers
         // =========================================================
         private void HandleEnemyCollision(StaticSprite activeMario, CameraManager camera)
         {
+            // --- SNAIL INSTANT-KILL COLLISION ---
+            if (Game1.ChristmasMode && enemyManager.Snail != null)
+            {
+                var snail = enemyManager.Snail;
+                Rectangle marioRect = activeMario.Bounds;
+                Rectangle snailRect = snail.Bounds;   // we must add this property (see below)
+
+                if (marioRect.Intersects(snailRect))
+                {
+                    // Trigger game over or restart logic
+                    marioState.ForceSmall(spawnPoint);
+                    enemyManager.Reset();
+                    camera.Reset(spawnPoint);
+                    while (screenManager.Lives > 0)
+                    {
+                        screenManager.LoseLife();
+                    }
+
+
+
+                    screenManager.ChangeState(GameState.GameOver);
+
+                    return;
+                }
+            }
+
             if (Game1.DebugGodMode)
             return;
 
@@ -132,6 +178,15 @@ namespace MonogameTest.Managers
                         camera.LookAt(spawnPoint);
 
                         screenManager.LoseLife();
+                        
+
+                        // Freeze gameplay and start the death timer
+                        Game1.InputLocked = true;
+                        SoundManager.Instance.StopSong();
+                        SoundManager.Instance.PlaySong("youreDead");
+                        Game1.StartDeathTimer();
+
+
 
                         if (screenManager.CurrentState != GameState.GameOver)
                             screenManager.ChangeState(GameState.LevelIntro);
@@ -143,5 +198,49 @@ namespace MonogameTest.Managers
         }
 
 
+<<<<<<< HEAD
+=======
+        // =========================================================
+        // POWERUPS
+        // =========================================================
+        private void HandlePowerups(StaticSprite activeMario, GameTime gameTime)
+        {
+            var pickedUp = powerupManager.Update(gameTime, activeMario);
+            if (pickedUp == null)
+                return;
+
+            pickedUp.IsAlive = false;
+
+            switch (pickedUp.Type)
+            {
+                case PowerupType.Mushroom:
+                    marioState.Grow();
+                    ScreenManager.Instance.AddScore(200);
+                    break;
+
+                case PowerupType.Coin:
+                    addCoin?.Invoke();
+                    ScreenManager.Instance.AddScore(100);
+                    break;
+
+                case PowerupType.GreenMushroom:
+                    sound.PlayEffect("oneUp");
+                    screenManager.AddScore(200);
+                    ScreenManager.Instance.GainLife();
+                    screenManager.ChangeState(screenManager.CurrentState);
+                    break;
+
+                case PowerupType.Star:
+                    sound.PlayEffect("powerUp");
+                    ScreenManager.Instance.AddScore(500);
+                    break;
+
+                case PowerupType.FireFlower:
+                    sound.PlayEffect("powerUp");
+                    ScreenManager.Instance.AddScore(300);
+                    break;
+            }
+        }
+>>>>>>> a0620f0b459ef8db59fa204fee2945770d871778
     }
 }

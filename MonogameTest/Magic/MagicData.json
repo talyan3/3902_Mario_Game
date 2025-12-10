@@ -10,27 +10,84 @@
     "RightClampPadding": 100
   },
 
+  "CollisionManager": {
+     "HurtInvincibleTime": 1.5,
+
+    "SpecialBlockStartTileX": 19,
+    "SpecialBlockEndTileX": 22,
+
+    "BrickScore": 50,
+    "QuestionCoinScore": 200,
+    "SmallCoinScore": 100,
+    "GreenMushroomScore": 200,
+    "StarScore": 500,
+    "FireFlowerScore": 300,
+
+    "PowerupSpawnYOffsetTiles": 1
+  },
+
   "EnemyCollision": {
     "EnemyInflateX": -5,
     "StompInflateX": -6,
-    "FeetHeight": 4,
+    "SnailInflateX": -6,
+    "SnailKillScore": 400,
     "StompThreshold": 4,
-    "SmallMarioBounce": 20,
-    "BigMarioBounce": 24,
-    "Direction": -2,
-    "Frames": 2
+    "BounceVelocity": -250,
+    "StompComboScores": {
+      "1": 100,
+      "2": 200,
+      "3": 400,
+      "4": 800,
+      "5": 1000,
+      "6": 2000,
+      "7": 4000,
+      "8plus": 8000
+    }
   },
 
-    "GoombaM": {
+  "PowerupCoinState": {
+    "RiseSpeed": 40,
+    "LifeTime": 0.5
+  },
+
+  "PowerupFactory":
+  {
+    "TileSize": 16,
+
+    "MushroomX": 0,
+    "MushroomY": 0,
+
+    "GreenMushroomX": 16,
+    "GreenMushroomY": 0,
+
+    "FireFlowerX": 32,
+    "FireFlowerY": 0,
+
+    "StarX": 48,
+    "StarY": 0,
+
+    "CoinX": 64,
+    "CoinY": 0
+  },
+
+  "PowerupStarState":
+  {
+    "BobFrequency": 5.0,
+    "BobAmplitude": 0.5
+  },
+  
+
+    "goombaMove": {
         "SpriteWidth": 32,
         "SpriteHeight": 16,
-        "Speed": 30,
+        "Speed": 30.0,
         "AnimationDelay": 150,
         "ClampMin": -2,
         "ClampMax": 2
   },
 
-  "KoopaM": {
+
+  "koopaMove": {
     "DestWidth": 32,
     "DestHeight": 24,
     "SrcWidth": 30,
@@ -43,6 +100,11 @@
     "RightFrames": [4, 5],
     "Direction": -2,
     "Flag": -1
+  },
+
+  "KeyCombo": {
+    "Res": 31,
+    "Multiplier": 37
   },
 
   "MapSettings": {
@@ -61,7 +123,7 @@
     "11": "PipeBodyRight"
   },
 
-  "GPhysics": {
+  "Gphysics": {
     "Gravity": 1000,
     "GroundY": 400
   },
@@ -81,7 +143,7 @@
     "Scale": 1
   },
 
-"PlayerAnimations": {
+"PlayerMario": {
   "Texture": "small-mario-final.png",
 
   
@@ -108,9 +170,75 @@
     "FrameCount": 1,
     "FrameDuration": 0.20,
     "StartFrame": 13
-  }
+  },
+
+  "Star": {
+      "FrameWidth": 30,
+      "FrameHeight": 16,
+      "FrameCount": 4,
+      "FrameTime": 0.08,
+      "StartIndex": 0
+    }
 
 },
+
+"GameOverScreen":
+{
+  "DefaultTimerSeconds": 4.0,
+    "TextOffsetX": 120.0,
+    "TextOffsetY": 0.0
+},
+
+"HUDScreen":
+{
+    "MarioTextX": 90.0,
+    "MarioTextY": 15.0,
+    "ScoreX": 90.0,
+    "ScoreY": 55.0,
+    "CoinTextureX": 330.0,
+    "CoinTextureY": 45.0,
+    "CoinScale": 3.0,
+    "CoinTextX": 375.0,
+    "CoinTextY": 55.0,
+    "TimeTextX": 800.0,
+    "TimeTextY": 15.0,
+    "TimerX": 825.0,
+    "TimerY": 55.0
+  },
+
+  "LevelIntroScreens":
+  {
+    "DefaultIntroTime": 2.0,
+    "CoinScale": 3.0,
+    "MarioLabelX": 90.0,
+    "MarioLabelY": 15.0,
+    "ScoreX": 90.0,
+    "ScoreY": 55.0,
+    "CoinIconX": 330.0,
+    "CoinIconY": 45.0,
+    "CoinTextX": 375.0,
+    "CoinTextY": 55.0,
+    "WorldLabelX": 550.0,
+    "WorldLabelY": 15.0,
+    "WorldValueX": 580.0,
+    "WorldValueY": 55.0,
+    "TimeLabelX": 800.0,
+    "TimeLabelY": 15.0,
+    "TimeValueX": 825.0,
+    "TimeValueY": 55.0,
+    "WorldIntroX": 360.0,
+    "WorldIntroY": 350.0,
+    "MarioIntroX": 360.0,
+    "MarioIntroY": 520.0,
+    "LivesIntroX": 560.0,
+    "LivesIntroY": 520.0
+  },
+
+  "TimeUpScreen":
+  {
+    "DefaultTimerSeconds": 2.0,
+    "TextOffsetX": 80.0
+  },
 
 "BigMario": {
   "MoveSpeed": 100,
@@ -157,41 +285,20 @@
   "JumpOffset": 100
 },
 
-"GameNum":
+"Game1":
 {
-    "Scale": 4,
-    "TilePos": 12,
-    "TitlePosX": 90,
-    "TopPosY": 15,
-    "CoinsPosX": 375,
-    "LowPosY": 55,
-    "WorldPosX": 550,
-    "LevelPosX": 580,
-    "TimePosX": 800,
-    "ElapsedTimeX": 825,
-    "TilePosHighY": 12,
-    "TilePosLowY": 4,
-    "BackBufferHeight": 240,
-
-    "ColorFirst": 92,
-    "ColorSecond": 148,
-    "ColorThird": 252,
-
-    "TopLeftPosX": 330,
-    "TopLeftPosY": 45,
-
-    "StartMarioX": 5,
-    "StartMarioY": 13,
-
-    "MushroomPosX": 10,
-    "MushroomPosY": 11,
-
-    "KoopaPosX": 106,
-    "KoopaPosY": 12,
-
-    "SpriteScale": 3,
-
-    "TimeStart": 360
+    "ViewWidth": 256,
+  "ViewHeight": 224,
+  "Scale": 3,
+  "ScaleMod": 224,
+  "TileSize": 16,
+  "DeathTimerSeconds": 5.0,
+  "ChristmasModeDuration": 8.0,
+  "ChristmasTextX": 50.0,
+  "ChristmasTextY": 50.0,
+  "BackgroundColor": { "R": 92, "G": 148, "B": 252 },
+  "SpawnTileX": 5,
+  "SpawnTileY": 13
 
 },
 

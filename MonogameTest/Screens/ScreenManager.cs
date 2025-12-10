@@ -12,8 +12,17 @@ namespace MonogameTest.Screens
         GameOver
     }
 
-    public class ScreenManager
+    public sealed class ScreenManager
     {
+        // ===========================
+        // SINGLETON IMPLEMENTATION
+        // ===========================
+        private static readonly ScreenManager _instance = new ScreenManager();
+        public static ScreenManager Instance => _instance;
+
+        // Prevent outside construction
+        private ScreenManager() { }
+
         // ===========================
         // DEFAULT GAME VALUES
         // ===========================
@@ -31,7 +40,6 @@ namespace MonogameTest.Screens
         public int Lives { get; private set; } = DefaultLives;
         public double Time { get; private set; } = DefaultTime;
 
-        //  THESE WERE MISSING (CAUSE OF YOUR ERROR)
         public string World { get; private set; } = "1";
         public string Level { get; private set; } = "1";
 
@@ -49,14 +57,22 @@ namespace MonogameTest.Screens
         // ===========================
         // HUD MUTATORS
         // ===========================
-        public void AddScore(int points) => Score += points;
-        public void AddCoin() => Coins++;
+        public void AddScore(int points) 
+            => Score += points;
+
+        public void AddCoin() 
+            => Coins++;
 
         public void LoseLife()
         {
             Lives--;
             if (Lives <= 0)
                 CurrentState = GameState.GameOver;
+        }
+
+        public void GainLife()
+        {
+            Lives++;
         }
 
         public void SetWorld(string world, string level)

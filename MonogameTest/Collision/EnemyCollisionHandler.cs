@@ -3,6 +3,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Graphics;
 using MonogameTest.Sounds;
+using MonogameTest;
+using MonogameTest.Screens;
+using MonogameTest.Managers;
 
 namespace MonogameTest
 {
@@ -15,10 +18,37 @@ namespace MonogameTest
         public bool Grounded;
         public bool BonkedHead;
         public bool HitWall;
+
+
     }
 
     public static class EnemyCollisionHandler
     {
+
+        private static int stompCombo = 0;
+
+        private static int GetStompScore()
+        {
+            stompCombo++;
+
+            return stompCombo switch
+            {
+                1 => 100,
+                2 => 200,
+                3 => 400,
+                4 => 800,
+                5 => 1000,
+                6 => 2000,
+                7 => 4000,
+                _ => 8000      // 8 or more
+            };
+        }
+
+        public static void ResetStompCombo()
+        {
+            stompCombo = 0;
+        }
+
         // ============================================
         // ENEMY VS TILES
         // ============================================
@@ -62,7 +92,10 @@ namespace MonogameTest
             result.Grounded = (side == typeCollision.Top && mtv.Y < 0);
             result.BonkedHead = (side == typeCollision.Bottom && mtv.Y > 0);
             result.HitWall = (side == typeCollision.Left || side == typeCollision.Right);
+
+
             return true;
+
         }
 
         public static bool HandleMany(
@@ -117,8 +150,18 @@ namespace MonogameTest
 
                     if (goomRect != Rectangle.Empty && shellBounds.Intersects(goomRect))
                     {
-                        SoundManager.Instance.PlayEffect("stomp");
+                        if (!Game1.ChristmasMode)
+                        {
+                            SoundManager.Instance.PlayEffect("stomp");
+                        }
+                        else
+                        {
+                            SoundManager.Instance.PlayEffect("xmasThud");
+                        }
                         g.IsAlive = false;
+                        ResetStompCombo();                            // Shell kills don’t chain
+                        ScreenManager.Instance.AddScore(400);          // NES shell kill value
+
                     }
                 }
             }
@@ -155,6 +198,12 @@ namespace MonogameTest
                     alive = goom.IsAlive;
                     enemyRect.Inflate(-6, 0);
                 }
+                else if (enemy is Snail.Snail snail)
+                {
+                    enemyRect = snail.Bounds;
+                    alive = true;  // snail is always alive 
+                    enemyRect.Inflate(-6, 0); 
+                }
                 else if (enemy is moveKoop koop)
                 {
                     enemyRect = koop.Bounds;
@@ -165,6 +214,8 @@ namespace MonogameTest
                 {
                     continue;
                 }
+
+
 
                 if (!alive) continue;
                 if (enemyRect == Rectangle.Empty) continue;
@@ -180,15 +231,25 @@ namespace MonogameTest
                 {
                     if (stomp)
                     {
-                        SoundManager.Instance.PlayEffect("stomp");
                         g.IsAlive = false;
+
+                        // Award stomp combo points
+                        int points = GetStompScore();
+                        ScreenManager.Instance.AddScore(points);   // <-- We add this below
+
                         bounce?.Invoke();
+
+                        // Play stomp sound
+                        SoundManager.Instance.PlayEffect(Game1.ChristmasMode ? "xmasThud" : "stomp");
+
                         continue;
                     }
 
-                    // Side hit by a live Goomba
+                    // SIDE HIT → reset combo
+                    ResetStompCombo();
                     onHit?.Invoke();
                 }
+
 
                 // =========================
                 // KOOPA
@@ -197,7 +258,18 @@ namespace MonogameTest
                 {
                     if (stomp)
                     {
-                        SoundManager.Instance.PlayEffect("stomp");
+                        if (!Game1.ChristmasMode)
+                        {
+                            SoundManager.Instance.PlayEffect("stomp");
+                        }
+                        else
+                        {
+                            SoundManager.Instance.PlayEffect("xmasThud");
+                        }
+
+                        // Award stomp score
+                        int points = GetStompScore();
+                        ScreenManager.Instance.AddScore(points);
 
                         if (k.IsWalking)
                         {
@@ -208,7 +280,14 @@ namespace MonogameTest
                         {
                             // Stomp idle shell -> kick it
                             int dir = marioBounds.Center.X > enemyRect.Center.X ? -1 : 1;
-                            SoundManager.Instance.PlayEffect("kick");
+                            if (!Game1.ChristmasMode)
+                            {
+                                SoundManager.Instance.PlayEffect("kick");
+                            }
+                            else
+                            {
+                                SoundManager.Instance.PlayEffect("xmasThud");
+                            }
                             k.Kick(dir);
                         }
                         else if (k.IsShellMoving)
@@ -220,6 +299,8 @@ namespace MonogameTest
                         bounce?.Invoke();
                         continue;
                     }
+
+                     ResetStompCombo();
 
                     // SIDE HIT LOGIC
                     if (k.IsShellMoving)

@@ -21,6 +21,9 @@ namespace MonogameTest
         private int frames;
         private float deltaTime;
 
+        private SpriteEffects _flip = SpriteEffects.None;
+
+
         public bool IsAlive { get; set; } = true;
 
         // -1 = left, +1 = right
@@ -29,9 +32,9 @@ namespace MonogameTest
         // ============================
         // SPRITE FRAME CONSTANTS
         // ============================
-        private const int WALK_FRAME_1 = 2;  // normal ground koopa
+        private const int WALK_FRAME_1 = 2;
         private const int WALK_FRAME_2 = 3;
-        private const int SHELL_FRAME  = 9;  //  correct NON-winged shell frame
+        private const int SHELL_FRAME = 9;
 
         // ============================
         // KOOPA STATE MACHINE
@@ -56,7 +59,7 @@ namespace MonogameTest
             dRect = new Rectangle(0, 0, 32, 24);
 
             frames = WALK_FRAME_1;
-            sRect = new Rectangle(frames * 30, 0, 30, 24); //  correct starting sprite
+            sRect = new Rectangle(frames * 30, 0, 30, 24);
         }
 
         // ============================
@@ -73,12 +76,11 @@ namespace MonogameTest
         public Vector2 Scale => Vector2.One;
 
         // ============================
-        // STATE QUERIES
+        // STATE HELPERS
         // ============================
-        public bool IsShell => state != KoopaState.Walking;
+        public bool IsWalking => state == KoopaState.Walking;
         public bool IsShellIdle => state == KoopaState.ShellIdle;
         public bool IsShellMoving => state == KoopaState.ShellMoving;
-        public bool IsWalking => state == KoopaState.Walking;
 
         // ============================
         // STATE TRANSITIONS
@@ -86,9 +88,7 @@ namespace MonogameTest
         public void EnterShell()
         {
             state = KoopaState.ShellIdle;
-            direction = 0;
-
-            // FORCE correct shell sprite
+            direction = 0; // Koopa stops when first hit
             sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
         }
 
@@ -105,9 +105,22 @@ namespace MonogameTest
             Kick(dir);
         }
 
+        // ============================
+        // TURN AROUND (fixes your issue)
+        // ============================
         public void ReverseDirection()
         {
-            direction *= -1;
+            // If walking or shell-moving → flip direction
+            if (IsWalking || IsShellMoving)
+            {
+                
+                // Ensure direction is never zero
+                if (direction == 0)
+                    direction = -1;
+
+                direction *= -2;
+                _flip = (direction > 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            }
         }
 
         // ============================
@@ -122,8 +135,16 @@ namespace MonogameTest
             switch (state)
             {
                 case KoopaState.Walking:
+
+                    // Safety: ensure Koopa always moves so ReverseDirection works
+                    if (direction == 0)
+                        direction = -1;
+
                     Position += new Vector2((float)direction * WalkSpeed * deltaTime, 0);
 
+        
+
+                    // Animate
                     elapsed += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
                     if (elapsed >= delay)
                     {
@@ -133,18 +154,23 @@ namespace MonogameTest
                     }
                     break;
 
+                    
+
+
                 case KoopaState.ShellMoving:
                     Position += new Vector2((float)direction * ShellSpeed * deltaTime, 0);
-
-                    // LOCK shell sprite while moving
                     sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
+                    _flip = (direction > 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
                     break;
 
+
                 case KoopaState.ShellIdle:
-                    // LOCK shell sprite while idle
+                    // Shell stays completely still (correct)
                     sRect = new Rectangle(SHELL_FRAME * 30, 0, 30, 24);
                     break;
             }
+
+            
         }
 
         // ============================
@@ -153,7 +179,18 @@ namespace MonogameTest
         public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
             if (!IsAlive) return;
-            _spriteBatch.Draw(sprite, dRect, sRect, Color.White);
+
+            _spriteBatch.Draw(
+                sprite,
+                dRect,
+                sRect,
+                Color.White,
+                0f,
+                Vector2.Zero,
+                _flip,     
+                0f
+            );
         }
+
     }
 }

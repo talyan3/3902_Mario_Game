@@ -8,13 +8,16 @@ namespace MonogameTest.Snail
 
         public Vector2 UpdateSnail(Vector2 snailPos, Vector2 marioPos, float dt)
         {
-            Vector2 dir = marioPos - snailPos;
-            if (dir.LengthSquared() > 0.1f)
-            {
-                dir.Normalize();
-                snailPos += dir * Speed * dt;
-            }
+            float speed = 20f;
+
+            // Move only horizontally toward Mario
+            if (marioPos.X > snailPos.X)
+                snailPos.X += speed * dt;
+            else if (marioPos.X < snailPos.X)
+                snailPos.X -= speed * dt;
+
             return snailPos;
         }
+
     }
 }
