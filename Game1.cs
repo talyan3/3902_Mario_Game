@@ -306,6 +306,7 @@ namespace MonogameTest
             );*/
 
             //_marioState.CurrentMario.Update(gameTime);
+            _marioState.Update(gameTime);
             if(!InputLocked)
             {
                if (_marioState.CurrentMario == _smallMario)
