@@ -181,19 +181,25 @@ namespace MonogameTest.Managers
         }
 
         //SPAWN SNAIL
+        private readonly Random _rng2 = new Random();
+
         public void ActivateSnail(Vector2 marioPos)
         {
             if (_snail == null)
                 return;
 
-            // Spawn right next to Mario for testing
-            float offsetX = 80f;
+            // World horizontal bounds — adjust as needed
+            float minX = 0f;
+            float maxX = 2500f;
 
-            // Snail should be on Mario's ground
-            float groundY = marioPos.Y;
+            float randomX = (float)_rng2.NextDouble() * (maxX - minX) + minX;
 
-            _snail.Position = new Vector2(marioPos.X + offsetX, groundY);
+            // Keep Y at Mario's height
+            float y = marioPos.Y;
+
+            _snail.Position = new Vector2(randomX, y);
         }
+
 
         public void ResetSnail(Vector2 spawnPoint)
         {
