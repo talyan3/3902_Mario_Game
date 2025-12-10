@@ -1,9 +1,9 @@
 # 3902: Mario Game
 This project is a semester-long work for OSU CSE 3902. We were tasked to recreate the Super Mario Bros first level while focusing on code quality:
-> **S** imple
-> **R** eadable
-> **M** aintainable
-> **R** eusable
+> **S** imple <br>
+> **R** eadable <br>
+> **M** aintainable <br>
+> **R** eusable <br>
 
 ## Team 2 - Members
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Anika <br>
