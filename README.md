@@ -8,11 +8,11 @@ This project is a semester-long work for OSU CSE 3902. We were tasked to recreat
 Our team worked with an OOP oriented style, focusin on **Readability** so that we can understand each others' code well. We worked on abstracting our code. We have learned many different design patterns to implement to our code. As we have learned throughout the semester, an important part of creating video game code, is how complicated it is to add a new element to a game. Our team focused on making sure code had high cohesion, so that elements were grouped together. As well as low coupling, no more than 3 "." to call an element.
 
 ## Team 2 - Members
-  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Anika <br>
-  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/0a041384-c04f-46a9-ae2b-26a327774635" /> Donte <br>
-  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/8b1cd855-0869-42fe-b28d-0f7b6d94a4b8" /> Jack <br>
-  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/e2e426f4-b72e-42a1-ba57-e86a51ba4980" /> Jhanavi <br>
-  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/21ba2075-0edf-4eed-b778-049db8690e23" /> Krista <br>
+  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Anika <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /><br><br>
+  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Donte <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /><br><br>
+  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Jack <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /><br><br>
+  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Jhanavi <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /><br><br>
+  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Krista <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /><br><br>
 
 ## Program Controls
 <img width="1920" height="1080" alt="Mario Controls (3)" src="https://github.com/user-attachments/assets/841c8e37-1b25-4ef5-84ca-bf5263806cde" />
@@ -32,6 +32,7 @@ Our team worked with an OOP oriented style, focusin on **Readability** so that w
   * **X**: Activate Christmas mode
   * **M**: Mute game
   * **P**: Pause game
+
  
 ## Level 1 - *Super Mario Bros Replica*
 
@@ -40,11 +41,13 @@ Our team worked with an OOP oriented style, focusin on **Readability** so that w
 Above is an entire layout of Level 1. One of our group members was able to find a tool to create a layout of the level, and automatically convert it into a JSON file. The group is then able to use the JSON file to store the level data and use it to load and construct the level. The code in **TiledMapLoader.cs** shows how we utilize this information.
 
 
+<br>
 ### Sprint 2 - Focus on Functionality & Familiarizing Ourselves
  <img width="400" height="400" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
  
 During Sprint 2, we worked on figuring out basic keypress commands, making sure that Mario moves, and placing all of our sprites on the screen. We started by using one member's Sprint 0 and ensured that every team member was familiar with the code. The team's most simple assignment, where we started on getting accostomed to GitHub and starting to implement the Command Design Patter with Command Managers.
 
+<br>
  
  ### Sprint 3 - Focus on Collision and Level Loading
  <img width="350" height="350" alt="Screenshot 2025-12-09 160352" src="https://github.com/user-attachments/assets/5cb14c23-dd40-4530-a67f-b2126a80c148" />
@@ -53,6 +56,7 @@ During Sprint 3, our team focus on getting the level created and loaded into the
 
 At the end of the Sprint, our team ended up with our infamous two Marios. One had the correct collision working with the ground and pipes. The other had the correct physics and physics animation for when Mario jumps and moves. Our group started to have trouble with GitHub and figuring out how to manage all of our branches in an effective way. Our confusion led to last minute merges and trouble getting both the physics and the collision to work well together. However, our team was able to start communicating better about how our code was breaking so that we could effictively work together.
 
+<br>
  
  ### Sprint 4 - Focus on Finishing Level 1
 
@@ -62,6 +66,7 @@ Sprint 4 was the big assignment, when our game should look similar to the Super 
 
 ### Inspiration
 With the hoilday season, our team thought there would be no better way to end off the semester with our own christmas-themed chaos Mario level. Each team member added their own feature into the game, granted that it fit into the Christmas theme. Not only is the level visually inspired by Christmas, the sounds are bright and Christmas themed.
+<br>
 
 ### Features
   * **Immortal Snail** <br> <img width="100" height="100" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
@@ -74,6 +79,7 @@ With the hoilday season, our team thought there would be no better way to end of
     * Added a Christmas-themed texture pack by adding Christmas elements to the background and sprites
     * Christmas Mario: <img width="585" height="52" alt="small-mario-final_Christmas(1)" src="https://github.com/user-attachments/assets/63d57c51-230c-4d9d-999c-9e48ef916cb4" />
   * **Team Member Sprites** - We created sprites that show each of our team members so that we could be placed into our game, either as enemies or just as sprites in the background
+<br>
 
 ### Sprint 5 - Focus on Fixing and Fun Elements
 
@@ -84,13 +90,19 @@ With the main part of Sprint 4, we all decided to split up and our own aspects o
 ## Program Structure
 
 ### Command Design Pattern
-
+<br>
 
 ### State Machine
+State machines are helpful for creating distinct traits/behaviors for a common object. We recognized that both Mario and Powerups are objects that focus on many different ty
 
+**_Powerups:_** Since we knew that there w
+
+<br>
 
 ### Factory Machine
+While we did focus on integrating Managers and State Machines in a lot of aspects in our code, we focused on putting a Factory in for powerups. The **PowerupFactory.cs** allows the powerup creation to happen efficently in one place. It helps avoid duplication and confusion because it takes few lines of codes to create a new powerup.
 
+<br>
 
 ### How Game1 Evolved
 
