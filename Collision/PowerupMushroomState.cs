@@ -16,7 +16,7 @@ namespace MonogameTest
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             // Apply gravity
-            //_powerup.Velocity.Y += _gravity * dt;
+            _powerup.Velocity.Y += _gravity * dt;
 
             // Horizontal movement
             if (_powerup.Velocity.X == 0)

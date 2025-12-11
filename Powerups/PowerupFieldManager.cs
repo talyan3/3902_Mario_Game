@@ -64,11 +64,11 @@ namespace MonogameTest.Managers
             foreach (var p in _powerups)
             {
                 p.Update(gameTime);
-                /*if (_tiles != null)
+                if (_tiles != null)
                 {
                     foreach (var tile in _tiles)
                     PowerupCollisionHandler.HandleTileCollision(p, tile);
-                }*/
+                }
 
                 if (p.IsAlive && PowerupCollisionHandler.CheckMarioPowerupCollision(mario, p))
                 {

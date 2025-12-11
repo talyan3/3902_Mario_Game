@@ -16,9 +16,10 @@ public class BackgroundManager
     private Texture2D bush1, bush2, bush3;
     private Texture2D hillSmall, hillBig;
     private ContentManager _content;
+    public bool isChristmas = false;
 
-    public BackgroundManager(GraphicsDevice graphicsDevice, ContentManager content)
-    {
+    public BackgroundManager(GraphicsDevice graphicsDevice, ContentManager content,bool isXmas)
+    {   isChristmas = isXmas;
         _graphicsDevice = graphicsDevice;
         _content = content;
     }
@@ -28,12 +29,13 @@ public class BackgroundManager
         // Load textures once
         cloud1 = _content.Load<Texture2D>("Sprites/BGSprites/Cloud1");
         cloud2 = _content.Load<Texture2D>("Sprites/BGSprites/Cloud2");
-        cloud3 = _content.Load<Texture2D>("Sprites/BGSprites/Cloud3");
-        bush1 = _content.Load<Texture2D>("Sprites/BGSprites/Bush1");
-        bush2 = _content.Load<Texture2D>("Sprites/BGSprites/Bush2");
-        bush3 = _content.Load<Texture2D>("Sprites/BGSprites/Bush3");
-        hillSmall = _content.Load<Texture2D>("Sprites/BGSprites/SmallHill");
-        hillBig = _content.Load<Texture2D>("Sprites/BGSprites/BigHill");
+        cloud3 = _content.Load<Texture2D>("Sprites/BGSprites/Cloud3_Christmas");
+        bush1 = _content.Load<Texture2D>("Sprites/BGSprites/Bush1_Christmas");
+        bush2 = _content.Load<Texture2D>("Sprites/BGSprites/Bush2_Christmas");
+        bush3 = _content.Load<Texture2D>("Sprites/BGSprites/Bush3_Christmas");
+        hillSmall = _content.Load<Texture2D>("Sprites/BGSprites/SmallHill_Christmas");
+        hillBig = _content.Load<Texture2D>("Sprites/BGSprites/BigHill_Christmas");
+    
 
         // Add decorative elements to the list
         _elements.AddRange(new[]

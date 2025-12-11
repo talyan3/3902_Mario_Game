@@ -142,7 +142,7 @@ namespace MonogameTest
                 SoundManager.Instance.PlaySong("mainXmas");
 
             // ---------- BACKGROUND ----------
-            _backgroundManager = new BackgroundManager(GraphicsDevice, Content);
+            _backgroundManager = new BackgroundManager(GraphicsDevice, Content, ChristmasMode);
             _backgroundManager.LoadContent();
 
             // ---------- MARIO ----------
