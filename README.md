@@ -90,8 +90,10 @@ With the main part of Sprint 4, we all decided to split up and our own aspects o
 
 ## Program Structure
 
-### Command Design Pattern
-A big part of our code was using Managers for a Command Design Pattern.
+### Use of Managers
+A big part of our code was using Managers to break up our code effectively. Throughout the semester, we learned that working together is much more effective when we can read each other's code easily. By grouping the logic together with Managers, we are able to focus on the different aspects of the game and understand the logic quickly. It is important that all aspects of the game work and are coordinated with each other. With different people working on different aspects, it is important that they could understand how to correlate their code in an effective manner. Our **Game1.cs** class can use few lines to do something as complex as draw the entire background. 
+
+We used Managers for big parts of the game like collision and dealing with enemies in files like **CollisionManager.cs** and **EnemyCollisionHandler.cs**. For collision, one system is able to use the logic and we can avoid redundant code because almost every object in the game needs to experience collision. We use the **CollisionManager.cs** to determine how an object might collide and use files like **EnemyCollisionHandler.cs** to determine what to do with that collision. By being able to use the CollisionManager in a general way, we are able to adapt it to different aspects of the game.
 
 <br>
 
@@ -124,6 +126,9 @@ While we did get caught up in working with other parts of the game to make it wo
 > **Green:** Abstract Classes
 
 The UML diagram above is a visual representation of one of our Command Managers: CollisionManager. It shows how CollisionManager interacts with the other aspects of the game. Collision is such a vital part of our game because Mario has to interact with almost every element, so seeing how it affects the different parts of the game is very helpful.
+
+## Overall Reflection
+
 
 
 
