@@ -32,7 +32,7 @@ Our team worked with an OOP oriented style, focusin on **Readability** so that w
   * **X**: Activate Christmas mode
   * **M**: Mute game
   * **P**: Pause game
-  * **z**: Shoot fireballs
+  * **Z**: Shoot fireballs
 
  
 ## Level 1 - *Super Mario Bros Replica*
