@@ -133,6 +133,7 @@ namespace MonogameTest
                 // Award immediately (OG checks on hit)
                 _screenManager.AddScore(_flagScoreAwarded);
                 _scoreGiven = true;
+            
 
                 // TO-DO: Trigger a score popup sprite here
 
@@ -194,6 +195,7 @@ namespace MonogameTest
             // ===============================
             if (_isWalking)
             {
+                _screenManager.ConvertTimeToScore();
                 Game1.InputLocked = true;
 
                 // FORCE REAL WALK MODE (ANIMATION + PHYSICS)
@@ -207,7 +209,7 @@ namespace MonogameTest
 
                 _camera.LookAt(mario.Position);
 
-                if (mario.Position.X >= _poleRect.Right + 112)
+                if ((mario.Position.X >= _poleRect.Right + 112) && _screenManager.getTime() == 0)
                 {
                     // TURN OFF AUTO WALK
                     if (mario is SmallMarioSprite sm2)
@@ -218,24 +220,19 @@ namespace MonogameTest
 
                     _isWalking = false;
 
-                    /*Vector2 rightSideSpawn = new Vector2(
+                    Vector2 rightSideSpawn = new Vector2(
                         _poleRect.Right + 160,
                         _spawnPoint.Y
-                    );*/
+                    );
 
-                    //_smallMario.Position = rightSideSpawn;
-                    //_bigMario.Position   = rightSideSpawn;
-                    //_fireMario.Position   = rightSideSpawn;
+                    _smallMario.Position = rightSideSpawn;
+                    _bigMario.Position   = rightSideSpawn;
 
                     Game1.InputLocked = false;
                     Game1.DebugGodMode = false;
 
-                    _screenManager.ResetAll();
-
-                    _smallMario.Position = new Vector2(32,16*13);
-                    _bigMario.Position   = new Vector2(32,16*13);
-
-                    _camera.Reset(_smallMario.Position);
+                    _screenManager.ResetLevel();
+                    _screenManager.ChangeState(GameState.Title);
                 }
             }
 
@@ -246,3 +243,4 @@ namespace MonogameTest
         }
     }
 }
+    

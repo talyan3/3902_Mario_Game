@@ -10,6 +10,9 @@ public class PowerupInstance : Powerup
     public Rectangle SourceRect;
     private PowerupState _state;
 
+    public Vector2 Velocity = Vector2.Zero;
+    public bool IsFalling = true;
+
     public override Rectangle Bounds =>
         new Rectangle((int)Position.X, (int)Position.Y, SourceRect.Width, SourceRect.Height);
 

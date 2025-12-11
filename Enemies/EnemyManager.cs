@@ -93,6 +93,8 @@ namespace MonogameTest.Managers
             // Load snail textures directly from Snail folder
             Texture2D snail1 = Texture2D.FromFile(graphics, "Snail/snail1.png");
             Texture2D snail2 = Texture2D.FromFile(graphics, "Snail/snail2.png");
+            Texture2D snailFly1 = Texture2D.FromFile(graphics, "Snail/SnailFly1.png");
+            Texture2D snailFly2 = Texture2D.FromFile(graphics, "Snail/SnailFly2.png");
 
             // Spawn point (far left)
             Vector2 snailStart = new Vector2(200, 200);

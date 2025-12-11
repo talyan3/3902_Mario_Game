@@ -172,7 +172,7 @@ namespace MonogameTest
                 _mapTiles = TiledMapLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "level1.json"), tileset);
             else 
                 _mapTiles = TiledMapLoader.Load(Path.Combine(Directory.GetCurrentDirectory(), "customLevel.json"), tileset);
-
+            _powerupManager.SetTiles(_mapTiles);
 
             // ---------- CAMERA ----------
             _camera = new CameraManager(GraphicsDevice.Viewport);

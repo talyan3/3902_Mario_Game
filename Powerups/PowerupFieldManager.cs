@@ -14,6 +14,7 @@ namespace MonogameTest.Managers
 
         private Texture2D _powerupSheet;
         private SpriteBatch _spriteBatch;
+        private List<Tile> _tiles;
 
         public PowerupFieldManager() { }
 
@@ -46,6 +47,11 @@ namespace MonogameTest.Managers
             _powerups.Add(p);
         }
 
+        public void SetTiles(List<Tile> tiles)
+        {
+            _tiles = tiles;
+        }
+
         // =========================================================
         // UPDATE + COLLISION
         // =========================================================
@@ -58,12 +64,18 @@ namespace MonogameTest.Managers
             foreach (var p in _powerups)
             {
                 p.Update(gameTime);
+                /*if (_tiles != null)
+                {
+                    foreach (var tile in _tiles)
+                    PowerupCollisionHandler.HandleTileCollision(p, tile);
+                }*/
 
                 if (p.IsAlive && PowerupCollisionHandler.CheckMarioPowerupCollision(mario, p))
                 {
                     pickedUp = p;
                     p.IsAlive = false;
                 }
+                
             }
 
             // Cleanup dead powerups AFTER iteration

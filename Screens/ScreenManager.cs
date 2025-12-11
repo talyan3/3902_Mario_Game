@@ -118,6 +118,11 @@ namespace MonogameTest.Screens
             }
         }
 
+        public int getTime()
+        {
+            return (int)Time;
+        }
+
         // ===========================
         // TIMER UPDATE
         // ===========================
