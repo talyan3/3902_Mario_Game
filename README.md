@@ -23,9 +23,10 @@ Our team worked with an OOP oriented style, focusin on **Readability** so that w
   * **Down** Crouch
   * **Shift**: Mario sprints
     
-### Activating Different Marios
+### Different Mario States
   * **D** *(Hold)*: Activates Invincible Mario
   * **Space**: Activate Teleport Dash Mario
+  * **Z**: Shoot fireballs
 
 ### Game Controls
   * **R**: Resets Mario to the beginning
