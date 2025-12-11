@@ -32,6 +32,7 @@ Our team worked with an OOP oriented style, focusin on **Readability** so that w
   * **X**: Activate Christmas mode
   * **M**: Mute game
   * **P**: Pause game
+  * **z**: Shoot fireballs
 
  
 ## Level 1 - *Super Mario Bros Replica*
@@ -74,6 +75,7 @@ With the hoilday season, our team thought there would be no better way to end of
     * Inspired by the Immortal Snail, our snail will (slowly) terrorize Mario as he runs through the game. Don't get caught!
     * As the snail gets closer to Mario, the heartbeat sound gets louder and louder
     * All Mario's lives will be lost and he will die no matter what Mario State he is in
+    * If the snail realizes Mario is in the air, it will grow wings and fly after him.
    
   * **Mario Dash Feature**
 
