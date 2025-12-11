@@ -71,7 +71,7 @@ With the hoilday season, our team thought there would be no better way to end of
 
 ### Features
   * **Immortal Snail** <br> <img width="100" height="100" alt="snail2" src="https://github.com/user-attachments/assets/4d189507-04d7-44f2-9836-87dfdb9a43a3" />
-    * Inspired by the Immortal Christmas Snail, our snail will (slowly) terrorize Mario as he runs through the game. Don't get caught!
+    * Inspired by the Immortal Snail, our snail will (slowly) terrorize Mario as he runs through the game. Don't get caught!
     * As the snail gets closer to Mario, the heartbeat sound gets louder and louder
     * All Mario's lives will be lost and he will die no matter what Mario State he is in
    
