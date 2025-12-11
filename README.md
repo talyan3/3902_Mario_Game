@@ -9,10 +9,18 @@ Our team worked with an OOP oriented style, focusin on **Readability** so that w
 
 ## Team 2 - Members
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Anika Talyan<br>
+  <img width="63" height="91" alt="anika_3902" src="https://github.com/user-attachments/assets/e4495a1d-8d0e-4d3b-811c-8798340f54ae" />
+
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Donte Beck-King<br>
+  <img width="88" height="106" alt="donte_3902" src="https://github.com/user-attachments/assets/fafc302d-adaa-408d-b07c-4d9e3631a6ca" />
+
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Jack Olson<br>
+  <img width="80" height="67" alt="jack_3902_single" src="https://github.com/user-attachments/assets/8e2c8df2-856e-45e7-b2df-5c9a7fee9513" />
+
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Jahnavi Acharya<br>
-  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Krista Bair<br>
+  <img width="76" height="96" alt="jhanavi_3902_single" src="https://github.com/user-attachments/assets/eb04366a-e80b-4b46-a83b-b0989e90b5f8" />
+
+  <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Krista Bair<br> <img width="53" height="60" alt="krista_3902_single" src="https://github.com/user-attachments/assets/4ce99e02-26c7-46af-8a3a-c09447549240" />
 
 ## Program Controls
 <img width="1920" height="1080" alt="Mario Controls (3)" src="https://github.com/user-attachments/assets/841c8e37-1b25-4ef5-84ca-bf5263806cde" />
@@ -83,8 +91,7 @@ With the hoilday season, our team thought there would be no better way to end of
     * Christmas Mario: <img width="585" height="52" alt="small-mario-final_Christmas(1)" src="https://github.com/user-attachments/assets/63d57c51-230c-4d9d-999c-9e48ef916cb4" />
     * **Christmas Music:** One of our team members, Krista, has a lot of experience with music. She was able to splice Christmas music from online and change it to a specific key so that it seamlessly overlays over the Mario music, making it more personalized to Mario!
 
-  * **Team Member Sprites** - We created sprites that show each of our team members so that we could be placed into our game, either as enemies or just as sprites in the background
-<br>
+  * **Team Member Sprites** - We created sprites that show each of our team members, however we didn't have time to place them into the game.
 
 ### Sprint 5 - Focus on Fixing and Fun Elements
 
