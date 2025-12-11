@@ -22,6 +22,7 @@ Our team worked with an OOP oriented style, focusin on **Readability** so that w
 
   <img width="17" height="17" alt="image" src="https://github.com/user-attachments/assets/28aad848-e8cd-4ee6-a3be-7b8c62d7c653" /> Krista Bair<br> <img width="53" height="60" alt="krista_3902_single" src="https://github.com/user-attachments/assets/4ce99e02-26c7-46af-8a3a-c09447549240" />
 
+
 ## Program Controls
 <img width="1920" height="1080" alt="Mario Controls (3)" src="https://github.com/user-attachments/assets/841c8e37-1b25-4ef5-84ca-bf5263806cde" />
 
@@ -143,4 +144,6 @@ Creating a video game level was something most of us haven’t done before. It w
 
 
 
+<br>
+**Credits for the personal sprites go to:** <br><br><img width="250" height="114" alt="image" src="https://github.com/user-attachments/assets/150fcd6b-5494-4771-9458-7318c67e398c" />
 
