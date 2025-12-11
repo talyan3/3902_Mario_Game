@@ -91,6 +91,8 @@ With the main part of Sprint 4, we all decided to split up and our own aspects o
 ## Program Structure
 
 ### Command Design Pattern
+A big part of our code was using Managers for a Command Design Pattern.
+
 <br>
 
 ### State Machine
