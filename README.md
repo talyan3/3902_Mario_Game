@@ -76,7 +76,7 @@ With the hoilday season, our team thought there would be no better way to end of
     * All Mario's lives will be lost and he will die no matter what Mario State he is in
    
   * **Mario Dash Feature**
-  * 
+
   * **Christmas-Mode**
     * Added a Christmas-themed texture pack by adding Christmas elements to the background and sprites
     * Christmas Mario: <img width="585" height="52" alt="small-mario-final_Christmas(1)" src="https://github.com/user-attachments/assets/63d57c51-230c-4d9d-999c-9e48ef916cb4" />
