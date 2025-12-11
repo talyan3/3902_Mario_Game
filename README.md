@@ -131,6 +131,7 @@ While we did get caught up in working with other parts of the game to make it wo
 The UML diagram above is a visual representation of one of our Command Managers: CollisionManager. It shows how CollisionManager interacts with the other aspects of the game. Collision is such a vital part of our game because Mario has to interact with almost every element, so seeing how it affects the different parts of the game is very helpful.
 
 ## Overall Reflection
+Creating a video game level was something most of us haven’t done before. It was a very new experience working with such a large project and learning how important organization and a smart use of version control is for our team. Throughout the semester, we started communicating more effectively and learning how to use GitHub to our advantage. The design decisions we made: State Machine, Factory, our use of Managers, ect. By being able to learn and implement patterns that helped us create the code logically, we gained skills that will help us in future projects. The game was filled with details, and as we went through the semester, we learned how to effectively manage all those details in a big project.
 
 
 
