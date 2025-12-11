@@ -42,6 +42,7 @@ Above is an entire layout of Level 1. One of our group members was able to find 
 
 
 <br>
+
 ### Sprint 2 - Focus on Functionality & Familiarizing Ourselves
  <img width="400" height="400" alt="image" src="https://github.com/user-attachments/assets/9bfb1cde-90e6-4e4c-ae38-c1e132d455f3" />
  
@@ -93,9 +94,11 @@ With the main part of Sprint 4, we all decided to split up and our own aspects o
 <br>
 
 ### State Machine
-State machines are helpful for creating distinct traits/behaviors for a common object. We recognized that both Mario and Powerups are objects that focus on many different ty
+State machines are helpful for creating distinct traits/behaviors for a common object. We recognized that both Mario and Powerups are objects that have many different types with distinct traits that change the way the game interacts with the objects. However, lots of similar actions like physics or collision might be similar for both, so by implementing a State Machine, it helps keep the code from being tightly coupled. Adding a new state doesn't mean changing a bunch of lines of code, instead a new file can be created for that specific state and all that needs to be done is adding a few lines of code in other files.
 
-**_Powerups:_** Since we knew that there w
+**_Powerups:_** With powerups, there are many types of powerups that change Mario, but they change him in different ways. When updating Mario or the powerups based on the decisions happening in the game, it can be easily split into multiple different classes. This helps the readability, by making it easy to tell exactly what powerup is affecting the game and how it is. We have the shared data for powerups in **PowerupInstance.cs**, but use **PowerupState.cs** to differentiate the objects.
+
+**_Mario:_** Donte, one of our group members, took it upon himself to create an extensive state machine for the Mario sprites. We did not realzie at first how many different states Mario had and found ourselves getting overwhelmed by how much code seemed to need to be put in one file. Instead, we took away the "if" and "switch" statements and created seperate files for Mario. Each State file is designed to play the animation needed for that state, as well as determine the behavior of Mario. This keeps **PlayerMario.cs**, while still not short, much shorter than it would be without the State Machine. 
 
 <br>
 
