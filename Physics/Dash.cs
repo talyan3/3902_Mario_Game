@@ -34,31 +34,19 @@ public class DashComponent
         bool spacePressed = kb.IsKeyDown(Keys.Space);
         if (spacePressed && CanDash)
         {
-            Console.WriteLine("DASH!");
             CurrentCooldown = Cooldown;
             IsDashing = true;
             if (isLeftDash(kb)){
-                Console.WriteLine("DASH Left!");
             position.X -= DashDistance;
             }
             else
             {
-                Console.WriteLine("DASH Right!");
                 position.X += DashDistance;
             }
         }
     }
     
-    // public bool TryDash(Vector2 direction)
-    // {
-    //     if (CanDash && direction != Vector2.Zero)
-    //     {
-    //         IsDashing = true;
-    //         CurrentCooldown = Cooldown;
-    //         return true;
-    //     }
-    //     return false;
-    // }
+
 
     public bool isLeftDash(KeyboardState keyboard)
     {

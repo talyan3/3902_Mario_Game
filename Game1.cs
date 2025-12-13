@@ -300,9 +300,8 @@ namespace MonogameTest
             //TODO:PIPE TELEPORTATION
             foreach (var entrance in pipes)
             {
-                if (entrance.CheckCollision(_smallMario.Bounds))
+                if (entrance.CheckCollision(_marioState.CurrentMario.Bounds))
                 {
-                    Console.WriteLine("Teleporting Mario!");
                     if (Keyboard.GetState().IsKeyDown(Keys.Down))
                     {
                         pipeMode = true;
